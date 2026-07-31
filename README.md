@@ -5,8 +5,11 @@
 
 ## 진행 상태
 
-- [ ] D1 — 데이터 확보·라벨 스키마 확인
-- [ ] D2 — YOLO11n/s baseline
+- [x] D1 — 데이터 확보·라벨 스키마 확인. MVTec Screws·NPU-BOLT·PCBsmdComponents
+      셋 다 실측한 결과, 원래 계획("MVTec Screws가 주 소형 객체 벤치마크")이
+      무효화됨 — 셋 다 COCO 기준 small 객체 비율이 낮았고(0%/9.5%/0.2%), 방법론을
+      다운스케일링 중심으로 수정. 자세한 내용은 `docs/project-plan.md` 2장 참고
+- [ ] D2 — 다운스케일 파이프라인 구축 + YOLO11n/s baseline
 - [ ] D3 — YOLO26(STAL) 벤치마크
 - [ ] D4 — SAHI 타일링 추론
 - [ ] D5 — 결과 정리
