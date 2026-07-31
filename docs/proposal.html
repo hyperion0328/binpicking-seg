@@ -174,17 +174,18 @@
       <a href="#s1">01 문제</a>
       <a href="#s2">02 데이터</a>
       <a href="#s3">03 기술 요소</a>
-      <a href="#s4">04 평가</a>
-      <a href="#s5">05 로드맵</a>
-      <a href="#s6">06 왜 이렇게</a>
-      <a href="#s7">07 안 하는 것</a>
+      <a href="#s4">04 선정 이유</a>
+      <a href="#s5">05 평가</a>
+      <a href="#s6">06 로드맵</a>
+      <a href="#s7">07 왜 이렇게</a>
+      <a href="#s8">08 안 하는 것</a>
     </div>
   </div>
 </nav>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">개인 사이드 프로젝트 · 컴퓨터 비전</div>
+    <div class="eyebrow">개인 프로젝트 · 컴퓨터 비전</div>
     <h1 class="title">작고 얇은 부품도<br/><span class="g">놓치지 않는 AI</span> 만들기</h1>
     <p class="lede">나사, 볼트, 저항처럼 작고 흔한 부품을 사진에서 정확히 찾아내는 AI를 만드는 프로젝트다. 그냥 잘 되는 모델 하나를 만들고 끝내지 않고, <strong style="color:#f0ebdf">어떤 방법이 왜 효과가 있는지</strong> 하나하나 직접 실험해서 확인한다.</p>
     <div class="chips">
@@ -198,7 +199,7 @@
       <span class="chip">설명 가능한 AI</span>
     </div>
     <div class="meta">
-      <div><span class="k">종류</span><span class="v">개인 사이드 프로젝트</span></div>
+      <div><span class="k">종류</span><span class="v">개인 프로젝트</span></div>
       <div><span class="k">분야</span><span class="v">산업 부품 · 전자 부품 탐지</span></div>
       <div><span class="k">역할</span><span class="v">기획 · 설계 · 구현 전 과정</span></div>
       <div><span class="k">도구</span><span class="v">Python · PyTorch · Ultralytics</span></div>
@@ -266,9 +267,49 @@
   </div>
 </div></section>
 
-<!-- 05 평가 -->
+<!-- 04 모델 선정 이유 -->
 <section id="s4"><div class="wrap">
-  <div class="shead"><span class="snum">04</span><h2>무엇으로 "잘 됐다"를 판단하나</h2></div>
+  <div class="shead"><span class="snum">04</span><h2>모델·방법, 왜 이걸 골랐나</h2></div>
+  <p class="sdesc tight">중요한 두 가지 선택 — "어떤 AI로 찾을까"와 "학습 자료를 어떻게 늘릴까" — 를 다른 후보들과 비교해 왜 지금의 선택을 했는지 자세히 설명한다.</p>
+
+  <h3 style="font-size:15px;margin:2px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">4-1. 탐지 AI 후보 비교</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>후보</th><th>어떤 AI인가</th><th>장단점</th><th>이번 선택</th></tr></thead>
+      <tbody>
+        <tr><td><strong>YOLO11</strong></td><td>사진을 한 번에 훑어보고 바로 물체 위치를 찾아내는 방식(1단계 방식). 자료가 많고 오래 검증된 안정적인 버전</td><td>속도가 빠르지만, 아주 정교한 정확도까지는 기대하기 어려움</td><td><span class="pick">기준선(baseline)으로 채택</span></td></tr>
+        <tr><td><strong>YOLO26</strong></td><td>YOLO11의 최신 버전. 특히 <strong>작은 물체를 더 잘 찾도록</strong> 새로 설계된 기능(STAL)이 들어있음</td><td>이 프로젝트가 풀려는 문제(작은 물체)에 정확히 맞는 기능</td><td><span class="pick">소형 물체 특화 후보로 채택, 기준선과 직접 비교</span></td></tr>
+        <tr><td>Faster R-CNN류(2단계 방식)</td><td>먼저 "물체가 있을 법한 자리"를 대강 찾고, 그 다음 그 자리만 자세히 다시 살펴보는 두 단계짜리 방식</td><td>정확도가 더 높을 수 있지만, 사진 한 장을 처리하는 데 훨씬 오래 걸림</td><td><span class="tag gray">이번엔 채택 안 함</span></td></tr>
+        <tr><td>RT-DETR</td><td>최근 나온 방식으로, 물체끼리 겹쳐 있어도 잘 구분한다고 알려짐</td><td>정확도는 기대되지만 학습 자체가 더 오래 걸리고 다루기 까다로움</td><td><span class="tag gray">이번 스코프에서는 시도 안 함, 여유 시 확장 후보</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="margin-top:16px">
+    <div class="lab">판단 기준 — 정확도보다 속도를 먼저 봤다</div>
+    <p>이 AI는 결국 로봇 옆에서 계속 돌아가야 하는 상황(빈피킹)을 염두에 두고 만든다. 그래서 "한 장을 아주 정교하게" 보는 것보다 <strong>"여러 장을 빠르게, 꾸준히"</strong> 처리하는 능력을 더 중요하게 봤다 — Faster R-CNN류의 2단계 방식을 후보에서 뺀 이유도, 03절의 "가볍게 만들기(경량화)"에서 속도·크기를 따로 재는 이유도 같은 기준에서 나온다. 정확도가 크게 차이 난다면 나중에 다시 열어볼 수 있는 후보로만 남겨둔다.</p>
+  </div>
+
+  <h3 style="font-size:15px;margin:36px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">4-2. 학습 자료 늘리기 — 왜 "오려붙이기" 방식인가</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>후보</th><th>방식</th><th>장단점</th><th>이번 선택</th></tr></thead>
+      <tbody>
+        <tr><td><strong>오려붙이기(Copy-paste)</strong></td><td>이미 있는 사진에서 부품을 오려내(crop) 다른 사진 위에 작게 여러 번 붙여넣음</td><td>진짜 카메라로 찍은 화질·잡음을 그대로 쓴다. 어디에 뭘 붙였는지 알고 있으니 정답 표시(라벨)도 자동으로 만들어짐</td><td><span class="pick">채택</span></td></tr>
+        <tr><td>3D 컴퓨터그래픽 렌더링</td><td>3D 모델을 컴퓨터그래픽으로 그려서 새 장면을 통째로 만듦</td><td>각도·배치를 마음대로 정할 수 있지만, 렌더링 특유의 "너무 깨끗한" 느낌이 생겨 실제 사진과 미묘하게 달라짐(다른 프로젝트에서 실제로 겪은 문제)</td><td><span class="tag gray">채택 안 함</span></td></tr>
+        <tr><td>생성형 AI로 이미지 새로 그리기</td><td>GAN·diffusion 같은 이미지 생성 AI로 아예 새로운 사진을 만들어냄</td><td>그럴듯한 사진을 만들 수 있지만, 생성 AI 자체를 준비해야 해서 작업량이 훨씬 크고, 물체 위치를 정확히 통제하기 어려워 정답 표시가 부정확해질 위험이 큼</td><td><span class="tag gray">채택 안 함</span></td></tr>
+        <tr><td>기본 사진 변형(뒤집기·회전·색상 조정)</td><td>있는 사진 자체를 좌우로 뒤집거나 색을 조금씩 바꾸는, 가장 흔한 방법. AI 학습 과정에 기본으로 이미 포함됨</td><td>손쉽지만 "작은 물체 사례 자체가 적다"는 문제는 그대로 남는다 — 있는 물체를 살짝 바꿀 뿐, 새로 늘리는 게 아니다</td><td><span class="tag gray">기본으로 이미 사용, 별도 효과는 기대 안 함</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="margin-top:16px">
+    <div class="lab">판단 기준 — 세 가지를 동시에 만족하는 방법은 이것뿐이었다</div>
+    <p>① 진짜 카메라 화질(잡음·흐림 포함)을 그대로 쓸 것 ② 정답 표시를 사람이 새로 달지 않아도 자동으로 나올 것 ③ 작은 물체 사례 자체의 <strong>개수를 실제로 늘릴</strong> 것 — 이 세 조건을 한꺼번에 만족하는 게 오려붙이기뿐이었다. 3D 렌더링은 ②③은 만족하지만 ①에서 걸리고(렌더링 특유의 깨끗함), 생성형 AI는 ①은 기대할 만하지만 ②가 불안정하고 준비 비용도 크다. 기본 사진 변형은 셋 다 손쉽지만 애초에 ③(개수 자체를 늘리는 것)을 하지 못한다.</p>
+  </div>
+</div></section>
+
+<!-- 05 평가 -->
+<section id="s5"><div class="wrap">
+  <div class="shead"><span class="snum">05</span><h2>무엇으로 "잘 됐다"를 판단하나</h2></div>
   <div class="grid g2">
     <div class="card"><h3><span class="ic">✓</span>정확도</h3><p>AI가 부품 위치를 얼마나 정확히 찾아내는지(mAP라는 표준 점수). 특히 사진을 얼마나 줄였을 때 이 점수가 얼마나 떨어지는지를 곡선으로 그린다.</p></div>
     <div class="card"><h3><span class="ic">⏱</span>속도·크기</h3><p>AI가 한 장의 사진을 얼마나 빨리 처리하는지(초당 프레임 수), AI 파일 자체의 용량은 얼마나 되는지 — "실제로 쓸 수 있는가"를 판단하는 근거다.</p></div>
@@ -277,8 +318,8 @@
 </div></section>
 
 <!-- 06 로드맵 -->
-<section id="s5"><div class="wrap">
-  <div class="shead"><span class="snum">05</span><h2>진행 순서</h2></div>
+<section id="s6"><div class="wrap">
+  <div class="shead"><span class="snum">06</span><h2>진행 순서</h2></div>
   <p class="sdesc tight">데이터를 실제로 확인하는 단계부터 시작해서, 방법을 하나씩 더해가며 순서대로 실험한다.</p>
   <div class="wkgrid">
     <div class="wkcard done"><div class="wk">1단계 · 완료</div><h4>데이터 확인</h4><p>세 데이터를 받아서 실제로 열어보고, 계획을 다시 세움(02절 이야기)</p></div>
@@ -295,8 +336,8 @@
 </div></section>
 
 <!-- 07 왜 이렇게 -->
-<section id="s6"><div class="wrap">
-  <div class="shead"><span class="snum">06</span><h2>왜 이렇게 결정했나</h2></div>
+<section id="s7"><div class="wrap">
+  <div class="shead"><span class="snum">07</span><h2>왜 이렇게 결정했나</h2></div>
   <p class="sdesc tight">중요한 선택마다 무엇을 골랐고 왜 골랐는지 남긴다.</p>
   <div class="twrap">
     <table>
@@ -320,7 +361,7 @@
         <tr>
           <td><span class="dno">D4</span></td>
           <td><strong>3D 컴퓨터그래픽 대신 사진 오려붙이기</strong></td>
-          <td><span class="pick">Copy-paste 증강</span> — 새로 컴퓨터그래픽으로 그리면 "너무 깨끗한 가짜 사진"이라는 새로운 문제가 생긴다. 진짜 카메라로 찍은 사진 조각을 재활용하면 이 문제를 피할 수 있다.</td>
+          <td><span class="pick">04-2절 참고</span> — 3D 렌더링·생성형 AI·기본 사진 변형 등 여러 후보와 비교해, 진짜 화질·자동 정답 표시·개수 증가 세 조건을 동시에 만족하는 오려붙이기를 택했다.</td>
         </tr>
         <tr>
           <td><span class="dno">D5</span></td>
@@ -334,8 +375,8 @@
 </div></section>
 
 <!-- 08 안 하는 것 -->
-<section id="s7"><div class="wrap">
-  <div class="shead"><span class="snum">07</span><h2>이 프로젝트가 다루지 않는 것</h2></div>
+<section id="s8"><div class="wrap">
+  <div class="shead"><span class="snum">08</span><h2>이 프로젝트가 다루지 않는 것</h2></div>
   <p class="sdesc tight">무엇을 안 하는지 미리 밝히는 것도 계획의 일부다.</p>
   <div class="grid g2">
     <div class="card"><h3><span class="ic">1</span>로봇 팔 · 3D 자세 추정</h3><p>부품을 실제로 "어떻게 집을지" 계산하려면 부품의 3D 방향(포즈)까지 알아내야 하는데, 이건 다루는 데이터·AI 모델·평가 방법이 전부 달라져서 별도 프로젝트급 작업이다.</p></div>
@@ -363,7 +404,7 @@
     <div class="fmeta">
       <span>작고 얇은 부품 찾기 AI · 기획서</span>
       <span>Small Object Detection</span>
-      <span>개인 사이드 프로젝트</span>
+      <span>개인 프로젝트</span>
     </div>
   </div>
 </footer>
