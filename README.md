@@ -14,4 +14,7 @@
 - [ ] D4 — SAHI 타일링 추론
 - [ ] D5 — copy-paste 증강 (소형 객체 특화)
 - [ ] D6 — ONNX 변환·INT8 양자화 (경량화·배포)
-- [ ] D7 — 결과 정리
+- [ ] D7 — Weighted Boxes Fusion (모델 앙상블)
+- [ ] D8 — 능동 학습 시뮬레이션 (라벨 효율)
+- [ ] D9 — Grad-CAM/Eigen-CAM (설명 가능성)
+- [ ] D10 — 결과 정리
