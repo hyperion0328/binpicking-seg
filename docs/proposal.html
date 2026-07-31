@@ -172,13 +172,12 @@
     <div class="brand"><b>◧</b> 작은 부품 찾기 AI</div>
     <div class="links">
       <a href="#s1">01 문제</a>
-      <a href="#s2">02 방법 전환</a>
-      <a href="#s3">03 데이터</a>
-      <a href="#s4">04 기술 요소</a>
-      <a href="#s5">05 평가</a>
-      <a href="#s6">06 로드맵</a>
-      <a href="#s7">07 왜 이렇게</a>
-      <a href="#s8">08 안 하는 것</a>
+      <a href="#s2">02 데이터·방법 전환</a>
+      <a href="#s3">03 기술 요소</a>
+      <a href="#s4">04 평가</a>
+      <a href="#s5">05 로드맵</a>
+      <a href="#s6">06 왜 이렇게</a>
+      <a href="#s7">07 안 하는 것</a>
     </div>
   </div>
 </nav>
@@ -224,32 +223,8 @@
 
 <!-- 02 방법 전환 -->
 <section id="s2"><div class="wrap">
-  <div class="shead"><span class="snum">02</span><h2>계획이 한 번 크게 바뀐 이야기</h2></div>
-  <p class="sdesc tight">처음 세운 계획이 데이터를 직접 열어본 뒤 완전히 틀렸다는 걸 알게 됐다 — 이 프로젝트에서 가장 중요한 사건이라 따로 정리한다.</p>
-  <div class="grid g2">
-    <div class="card">
-      <h3><span class="ic">A</span>처음 생각한 계획</h3>
-      <p>"나사·저항 같은 작은 부품 사진을 공개 데이터에서 받아서, 그걸로 AI를 학습시키면 된다"고 단순하게 생각했다. 물리적으로 작은 부품이니까 사진 속에서도 당연히 작게 나올 거라고 짐작했다.</p>
-    </div>
-    <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px rgba(181,84,31,.25),var(--shadow)">
-      <h3><span class="ic">B</span>실제로 받아서 열어본 결과</h3>
-      <p>세 개의 데이터셋을 실제로 받아서 사진과 정답 표시(라벨)를 하나하나 뜯어봤더니, <strong>부품이 카메라 가까이에서 크게 찍혀 있었다</strong>. 물리적으로는 작은 부품이 맞지만, 사진 안에서는 전혀 작지 않았던 것이다.</p>
-    </div>
-  </div>
-  <div class="note" style="margin-top:16px">
-    <div class="lab">그래서 바꾼 방법 — 사진을 일부러 줄여서 실험한다</div>
-    <p>"작게 찍힌 사진을 모은다"는 원래 계획을 버리고, <strong>가진 사진을 일부러 축소해서 부품을 작게 만드는 방법</strong>으로 바꿨다. 사진을 원본 → 절반 → 4분의 1 이렇게 단계적으로 줄여가며, "몇 픽셀부터 AI가 부품을 놓치기 시작하는가"를 직접 재는 것이다. 물체 종류·배경·색깔은 그대로 두고 크기만 바꿀 수 있어서, "작아질수록 얼마나 어려워지는가"만 순수하게 확인할 수 있다.</p>
-  </div>
-  <div class="note" style="margin-top:12px">
-    <div class="lab">한 가지 주의할 점</div>
-    <p>고화질 사진을 소프트웨어로 축소하면 오히려 더 깨끗하게 보인다(축소 과정에서 잡음이 줄어드는 효과가 있다). 반면 실제로 카메라에서 멀리 떨어져서 작게 찍힌 물체는 그 거리에서 생기는 진짜 흔들림·잡음이 있다 — 그래서 "억지로 줄인 사진"과 "진짜 멀리서 찍힌 사진"은 조금 다를 수 있다. 이 차이를 무시하지 않고, 실제로 멀리서 찍힌 사진(2.1절에서 찾은 소량의 진짜 작은 사진들)과 비교해서 이 방법이 얼마나 믿을만한지도 같이 확인한다.</p>
-  </div>
-</div></section>
-
-<!-- 03 데이터 -->
-<section id="s3"><div class="wrap">
-  <div class="shead"><span class="snum">03</span><h2>사용하는 데이터</h2></div>
-  <p class="sdesc tight">전부 이미 공개된, 다른 연구자들도 쓰는 사진 모음이다. 세 개를 골라 실제로 받아서 확인했다.</p>
+  <div class="shead"><span class="snum">02</span><h2>사용하는 데이터, 그리고 계획이 한 번 바뀐 이야기</h2></div>
+  <p class="sdesc tight">전부 이미 공개된, 다른 연구자들도 쓰는 사진 모음이다. 세 개를 실제로 받아서 확인했는데, 그 과정에서 처음 계획이 완전히 틀렸다는 걸 알게 됐다.</p>
   <div class="twrap">
     <table>
       <thead><tr><th>이름</th><th>내용</th><th>사진 수 / 표시된 부품 수</th><th>실제로 확인한 특징</th></tr></thead>
@@ -263,13 +238,21 @@
 
   <div class="note" style="margin-top:16px">
     <div class="lab">중요한 발견 — 물리적 크기와 사진 속 크기는 다른 이야기다</div>
-    <p>"32×32픽셀보다 작은 물체"라는 기준(컴퓨터 비전 연구에서 흔히 쓰는 기준)으로 세 데이터를 확인해보니, <strong>진짜로 작게 찍힌 부품은 거의 없었다</strong> — MVTec Screws는 0%, PCBsmdComponents는 0.2%, 그나마 나은 NPU-BOLT도 9.5%뿐이었다. 게다가 그 9.5%(121개)도 337장 중 단 14장에만 몰려 있어서, 이것만으로는 믿을만한 실험을 하기엔 너무 적다. 그래서 02절에서 설명한 "일부러 축소하기" 방법으로 방향을 바꿨다.</p>
+    <p>"나사·저항 같은 작은 부품 사진을 받으면, 물리적으로 작은 부품이니까 사진 속에서도 당연히 작게 나올 것"이라고 단순하게 생각했다. 그런데 사진과 정답 표시(라벨)를 실제로 하나하나 뜯어보니 <strong>부품이 카메라 가까이에서 크게 찍혀 있었다</strong>. "32×32픽셀보다 작은 물체"라는 기준(컴퓨터 비전 연구에서 흔히 쓰는 기준)으로 확인해보니, 진짜로 작게 찍힌 부품은 거의 없었다 — MVTec Screws는 0%, PCBsmdComponents는 0.2%, 그나마 나은 NPU-BOLT도 9.5%뿐이었다. 게다가 그 9.5%(121개)도 337장 중 단 14장에만 몰려 있어서, 이것만으로는 믿을만한 실험을 하기엔 너무 적다.</p>
+  </div>
+  <div class="note" style="margin-top:12px">
+    <div class="lab">그래서 바꾼 방법 — 사진을 일부러 줄여서 실험한다</div>
+    <p>"작게 찍힌 사진을 모은다"는 원래 계획을 버리고, <strong>가진 사진을 일부러 축소해서 부품을 작게 만드는 방법</strong>으로 바꿨다. 사진을 원본 → 절반 → 4분의 1 이렇게 단계적으로 줄여가며, "몇 픽셀부터 AI가 부품을 놓치기 시작하는가"를 직접 재는 것이다. 물체 종류·배경·색깔은 그대로 두고 크기만 바꿀 수 있어서, "작아질수록 얼마나 어려워지는가"만 순수하게 확인할 수 있다.</p>
+  </div>
+  <div class="note" style="margin-top:12px">
+    <div class="lab">한 가지 주의할 점</div>
+    <p>고화질 사진을 소프트웨어로 축소하면 오히려 더 깨끗하게 보인다(축소 과정에서 잡음이 줄어드는 효과가 있다). 반면 실제로 카메라에서 멀리 떨어져서 작게 찍힌 물체는 그 거리에서 생기는 진짜 흔들림·잡음이 있다 — 그래서 "억지로 줄인 사진"과 "진짜 멀리서 찍힌 사진"은 조금 다를 수 있다. 이 차이를 무시하지 않고, 위에서 찾은 소량의 진짜 작은 사진들과 비교해서 이 방법이 얼마나 믿을만한지도 같이 확인한다.</p>
   </div>
 </div></section>
 
 <!-- 04 기술 요소 -->
-<section id="s4"><div class="wrap">
-  <div class="shead"><span class="snum">04</span><h2>시도해보는 방법들</h2></div>
+<section id="s3"><div class="wrap">
+  <div class="shead"><span class="snum">03</span><h2>시도해보는 방법들</h2></div>
   <p class="sdesc tight">한 가지 방법만 시험하지 않고, 서로 다른 성격의 방법 여덟 가지를 하나씩 시험해서 비교한다.</p>
   <div class="grid g2">
     <div class="card"><h3><span class="ic">1</span>기본 AI 모델 (YOLO)</h3><p>사진 속 물체를 찾아내는 데 널리 쓰이는 AI. 크기가 다른 두 버전(YOLO11, YOLO26)을 비교한다 — 특히 YOLO26은 작은 물체를 더 잘 찾도록 만들어진 기능이 있다.</p></div>
@@ -279,23 +262,23 @@
     <div class="card"><h3><span class="ic">5</span>여러 AI 의견 합치기 (앙상블)</h3><p>서로 다른 AI 모델 여러 개의 판단을 하나로 합치는 방법(Weighted Boxes Fusion). 새로 학습시키는 게 아니라, 이미 만든 결과들을 <strong>기하학적으로 잘 섞는</strong> 계산이다.</p></div>
     <div class="card"><h3><span class="ic">6</span>라벨을 아껴 쓰기 (능동 학습)</h3><p>정답 표시(라벨)는 만드는 데 비용이 든다. "어떤 사진부터 라벨을 다는 게 가장 효율적인가"를 AI가 스스로 판단하게 하는 방법을 흉내 내본다. 이미 있는 정답을 순서대로 "공개"하는 시뮬레이션이라 실제로 새로 라벨을 달지는 않는다.</p></div>
     <div class="card"><h3><span class="ic">7</span>왜 놓쳤는지 보여주기 (설명 가능한 AI)</h3><p>AI가 사진의 어느 부분을 보고 판단했는지 열지도(히트맵)로 보여주는 기법(Grad-CAM 등). "작아서 안 보였다"인지 "엉뚱한 곳을 봤다"인지 눈으로 확인할 수 있다.</p></div>
-    <div class="card"><h3><span class="ic">8</span>일부러 작게 만들기 (사진 축소)</h3><p>02절에서 설명한 이 프로젝트의 핵심 방법. 모든 실험의 기준이 되는 축이다.</p></div>
+    <div class="card"><h3><span class="ic">8</span>일부러 작게 만들기 (사진 축소)</h3><p>02절 데이터 이야기에서 설명한 이 프로젝트의 핵심 방법. 모든 실험의 기준이 되는 축이다.</p></div>
   </div>
 </div></section>
 
 <!-- 05 평가 -->
-<section id="s5"><div class="wrap">
-  <div class="shead"><span class="snum">05</span><h2>무엇으로 "잘 됐다"를 판단하나</h2></div>
+<section id="s4"><div class="wrap">
+  <div class="shead"><span class="snum">04</span><h2>무엇으로 "잘 됐다"를 판단하나</h2></div>
   <div class="grid g2">
     <div class="card"><h3><span class="ic">✓</span>정확도</h3><p>AI가 부품 위치를 얼마나 정확히 찾아내는지(mAP라는 표준 점수). 특히 사진을 얼마나 줄였을 때 이 점수가 얼마나 떨어지는지를 곡선으로 그린다.</p></div>
     <div class="card"><h3><span class="ic">⏱</span>속도·크기</h3><p>AI가 한 장의 사진을 얼마나 빨리 처리하는지(초당 프레임 수), AI 파일 자체의 용량은 얼마나 되는지 — "실제로 쓸 수 있는가"를 판단하는 근거다.</p></div>
-    <div class="card"><h3><span class="ic">⚠</span>믿을 수 있는 정도</h3><p>일부러 줄인 사진으로 측정한 성능이 "낙관적인 상한선"이라는 걸 인정하고, 03절에서 찾은 진짜 작게 찍힌 소량의 사진과 비교해 그 격차가 얼마나 되는지도 같이 보고한다.</p></div>
+    <div class="card"><h3><span class="ic">⚠</span>믿을 수 있는 정도</h3><p>일부러 줄인 사진으로 측정한 성능이 "낙관적인 상한선"이라는 걸 인정하고, 02절에서 찾은 진짜 작게 찍힌 소량의 사진과 비교해 그 격차가 얼마나 되는지도 같이 보고한다.</p></div>
   </div>
 </div></section>
 
 <!-- 06 로드맵 -->
-<section id="s6"><div class="wrap">
-  <div class="shead"><span class="snum">06</span><h2>진행 순서</h2></div>
+<section id="s5"><div class="wrap">
+  <div class="shead"><span class="snum">05</span><h2>진행 순서</h2></div>
   <p class="sdesc tight">데이터를 실제로 확인하는 단계부터 시작해서, 방법을 하나씩 더해가며 순서대로 실험한다.</p>
   <div class="wkgrid">
     <div class="wkcard done"><div class="wk">1단계 · 완료</div><h4>데이터 확인</h4><p>세 데이터를 받아서 실제로 열어보고, 계획을 다시 세움(02절 이야기)</p></div>
@@ -312,8 +295,8 @@
 </div></section>
 
 <!-- 07 왜 이렇게 -->
-<section id="s7"><div class="wrap">
-  <div class="shead"><span class="snum">07</span><h2>왜 이렇게 결정했나</h2></div>
+<section id="s6"><div class="wrap">
+  <div class="shead"><span class="snum">06</span><h2>왜 이렇게 결정했나</h2></div>
   <p class="sdesc tight">중요한 선택마다 무엇을 골랐고 왜 골랐는지 남긴다.</p>
   <div class="twrap">
     <table>
@@ -332,7 +315,7 @@
         <tr>
           <td><span class="dno">D3</span></td>
           <td><strong>사진 축소 방법으로 전환</strong></td>
-          <td><span class="pick">02절 참고</span> — 실제로 데이터를 받아보니 "작은 물체" 사진이 거의 없어서, 일부러 줄이는 방법으로 계획을 바꿨다.</td>
+          <td><span class="pick">02절 데이터 이야기 참고</span> — 실제로 데이터를 받아보니 "작은 물체" 사진이 거의 없어서, 일부러 줄이는 방법으로 계획을 바꿨다.</td>
         </tr>
         <tr>
           <td><span class="dno">D4</span></td>
@@ -351,8 +334,8 @@
 </div></section>
 
 <!-- 08 안 하는 것 -->
-<section id="s8"><div class="wrap">
-  <div class="shead"><span class="snum">08</span><h2>이 프로젝트가 다루지 않는 것</h2></div>
+<section id="s7"><div class="wrap">
+  <div class="shead"><span class="snum">07</span><h2>이 프로젝트가 다루지 않는 것</h2></div>
   <p class="sdesc tight">무엇을 안 하는지 미리 밝히는 것도 계획의 일부다.</p>
   <div class="grid g2">
     <div class="card"><h3><span class="ic">1</span>로봇 팔 · 3D 자세 추정</h3><p>부품을 실제로 "어떻게 집을지" 계산하려면 부품의 3D 방향(포즈)까지 알아내야 하는데, 이건 다루는 데이터·AI 모델·평가 방법이 전부 달라져서 별도 프로젝트급 작업이다.</p></div>
