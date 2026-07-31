@@ -363,6 +363,11 @@
           <td><strong>능동 학습은 시뮬레이션만</strong></td>
           <td><span class="pick">새 라벨링 없음</span> — 이미 가진 정답을 순서대로 "공개"하는 방식으로만 실험한다. 실제로 새 사진에 라벨을 다는 건 하지 않는다.</td>
         </tr>
+        <tr>
+          <td><span class="dno">D6</span></td>
+          <td><strong>탐지(bbox)를 유지, 분할(segmentation)로 안 바꿈</strong></td>
+          <td><span class="pick">현재 방식 유지</span> — YOLO 계열은 분할 버전이 있고 DETR 계열도 Mask2Former·MaskDINO 같은 대안이 있지만, 세 데이터셋을 직접 열어보니 셋 다 픽셀 단위 정답(마스크)이 없었다. 직접 라벨링해서 채우는 방법도 검토했지만, 안 그래도 작은 물체의 경계를 손으로 정밀하게 그리는 작업이라 시간 대비 얻는 게 적고, "새 라벨링 안 함" 원칙과도 맞지 않아 보류했다.</td>
+        </tr>
       </tbody>
     </table>
   </div>
