@@ -320,18 +320,13 @@
 <!-- 06 로드맵 -->
 <section id="s6"><div class="wrap">
   <div class="shead"><span class="snum">06</span><h2>진행 순서</h2></div>
-  <p class="sdesc tight">데이터를 실제로 확인하는 단계부터 시작해서, 방법을 하나씩 더해가며 순서대로 실험한다.</p>
+  <p class="sdesc tight">데이터를 실제로 확인하는 단계부터 시작해서, 성격이 비슷한 방법끼리 묶어 다섯 단계로 진행한다.</p>
   <div class="wkgrid">
     <div class="wkcard done"><div class="wk">1단계 · 완료</div><h4>데이터 확인</h4><p>세 데이터를 받아서 실제로 열어보고, 계획을 다시 세움(02절 이야기)</p></div>
-    <div class="wkcard"><div class="wk">2단계</div><h4>기본 AI로 시작</h4><p>사진 축소 실험 틀을 만들고 기본 YOLO로 첫 결과를 냄</p></div>
-    <div class="wkcard"><div class="wk">3단계</div><h4>작은 물체 특화 AI</h4><p>YOLO26으로 바꿔서 기본형과 비교</p></div>
-    <div class="wkcard"><div class="wk">4단계</div><h4>사진 잘라보기</h4><p>SAHI 적용해서 얼마나 나아지는지 확인</p></div>
-    <div class="wkcard"><div class="wk">5단계</div><h4>학습 자료 늘리기</h4><p>부품 오려붙이기로 데이터 증강</p></div>
-    <div class="wkcard"><div class="wk">6단계</div><h4>가볍게 만들기</h4><p>AI를 경량화해서 속도·크기 비교</p></div>
-    <div class="wkcard"><div class="wk">7단계</div><h4>여러 AI 합치기</h4><p>지금까지 만든 AI들의 판단을 합쳐봄</p></div>
-    <div class="wkcard"><div class="wk">8단계</div><h4>라벨 아껴보기</h4><p>능동 학습 시뮬레이션으로 효율 확인</p></div>
-    <div class="wkcard"><div class="wk">9단계</div><h4>이유 들여다보기</h4><p>Grad-CAM으로 실패 원인을 시각화</p></div>
-    <div class="wkcard"><div class="wk">10단계</div><h4>결과 정리</h4><p>모든 실험을 모아 결론 도출</p></div>
+    <div class="wkcard"><div class="wk">2단계</div><h4>기본 모델 만들기</h4><p>사진 축소 실험 틀을 만들고 기본 YOLO(YOLO11)로 첫 결과를 냄</p></div>
+    <div class="wkcard"><div class="wk">3단계</div><h4>작은 물체 탐지력 높이기</h4><p>YOLO26 · 사진 잘라보기(SAHI) · 학습 자료 늘리기(오려붙이기) · 여러 AI 합치기(앙상블), 정확도를 올리는 네 가지 방법을 하나씩 적용·비교</p></div>
+    <div class="wkcard"><div class="wk">4단계</div><h4>실전 준비와 원인 분석</h4><p>가볍게 만들기(경량화) · 라벨 아껴보기(능동 학습) · 이유 들여다보기(Grad-CAM), 정확도 외의 관점 세 가지 확인</p></div>
+    <div class="wkcard"><div class="wk">5단계</div><h4>결과 정리</h4><p>모든 실험을 모아 결론 도출</p></div>
   </div>
 </div></section>
 
