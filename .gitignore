@@ -1,0 +1,29 @@
+# ===== OS =====
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# ===== Data / weights / outputs (용량 크고 재생성 가능 — 추적 안 함) =====
+/data/
+/datasets/
+runs/
+outputs/
+*.pt
+*.pth
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
