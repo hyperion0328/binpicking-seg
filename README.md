@@ -1,7 +1,8 @@
 # SOD — 소형/얇은 산업 부품 정밀 탐지
 
 작고 얇은 산업 부품(나사·너트·볼트)을 공개 벤치마크에서 정밀 탐지하는 프로젝트.
-기획은 `docs/project-plan.md` 참고.
+기술 기획은 `docs/project-plan.md`, 쉬운 말로 쓴 기획서는 `docs/proposal.html`
+(<https://claude.ai/code/artifact/97ffcc62-6f16-4f06-b65b-0bd728714daf>) 참고.
 
 ## 진행 상태
 
