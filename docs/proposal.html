@@ -125,7 +125,9 @@
     border-radius:6px; background:rgba(43,87,255,.10); color:var(--accent-ink);
     font-weight:500; margin-bottom:11px; letter-spacing:.06em;
   }
-  .tag.amber{background:rgba(255,138,30,.15); color:var(--signal);}
+  .flow li.done{opacity:.72}
+.flow .chk{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;vertical-align:2px}
+.tag.amber{background:rgba(255,138,30,.15); color:var(--signal);}
   .tag.red{background:rgba(217,74,61,.11); color:var(--stop);}
   .tag.green{background:rgba(15,157,118,.12); color:var(--ok);}
 
@@ -550,6 +552,116 @@
       <b>무엇을 재고 있는지 알 수 없다.</b>
     </p>
   </div>
+
+  <h3>시험 결과 — 첫 표를 그대로 읽었으면 틀릴 뻔했다</h3>
+  <p>
+    윤곽이 이미 있는 <b>1,706개</b>에 대해 SAM에게 정답 네모만 알려주고 윤곽을 그리게 한 뒤,
+    사람이 그린 정답과 얼마나 겹치는지(<b>일치도</b>)를 쟀다. 전체 평균은 0.814였는데,
+    <mark>물체 크기와 정확도 사이에 아무 경향이 없었다.</mark>
+    작을수록 나빠질 줄 알았는데 오히려 가장 작은 구간이 제일 높았다. 이상해서 데이터 출처별로 갈랐다.
+  </p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>어느 데이터의 정답과 비교했나</th><th class="n">개수</th><th class="n">일치도</th><th class="n">0.7 넘음</th></tr></thead>
+      <tbody>
+        <tr><td>nuts-and-bolts</td><td class="n">168</td><td class="n">0.910</td><td class="n">98%</td></tr>
+        <tr><td>screw-nut-bolt</td><td class="n">1,215</td><td class="n">0.824</td><td class="n">86%</td></tr>
+        <tr><td><b>arg-fixings3</b></td><td class="n">323</td><td class="n"><b>0.700</b></td><td class="n"><b>50%</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    평균 0.814는 <b>쉬운 두 데이터가 끌어올린 값</b>이었다. 크기별 무경향도 마찬가지다 —
+    작은 구간은 screw-nut-bolt가, 큰 구간은 arg-fixings3가 채우고 있어서
+    <b>크기 축인 줄 알았던 것이 사실은 출처 축이었다.</b>
+  </p>
+
+  <h3>못한 쪽이 SAM이 아니었다</h3>
+  <p>
+    일치도 하나로는 <b>어느 방향으로 틀렸는지</b>를 모른다. 그래서 arg-fixings3의 윤곽 1,415개
+    전부에 대해 두 가지를 나눠 쟀다 — SAM이 정답 <b>밖으로 삐져나갔는지</b>,
+    아니면 정답을 <b>덜 덮었는지</b>.
+  </p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>측정 항목</th><th class="n">값</th><th>뜻</th></tr></thead>
+      <tbody>
+        <tr><td>밖으로 삐져나가지 않은 정도</td><td class="n"><b>0.97</b></td><td>SAM 윤곽이 거의 전부 정답 <b>안쪽</b>에 있다</td></tr>
+        <tr><td>정답을 덮은 정도</td><td class="n">0.70</td><td>정답보다 <b>좁게</b> 그린다</td></tr>
+        <tr><td>사람이 그린 정답의 꼭짓점 수</td><td class="n"><b>9개</b></td><td>손으로 대충 두른 <b>9각형</b>이다</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    겹쳐 그려 눈으로 확인했다. 사람이 그린 초록 윤곽은 볼트를 감싼 넓적한 덩어리인데,
+    SAM이 그린 빨간 윤곽은 <b>나사산 굴곡까지 따라간다.</b>
+    <mark>일치도가 낮았던 건 SAM이 틀려서가 아니라 정답이 거칠어서였다.</mark>
+  </p>
+
+  <div class="card">
+    <span class="tag amber">여기서 하나 더 알게 된 것</span>
+    <h4>사람이 그린 윤곽의 촘촘함이 데이터마다 다르다</h4>
+    <p>
+      꼭짓점 수로 재보니 arg-fixings3는 9개, nuts-and-bolts는 14개, fasteners는 29~93개,
+      screw-nut-bolt는 아예 픽셀 단위였다. 그래서
+      <b>윤곽 점수를 데이터 합쳐서 보고하면 안 된다</b> — 합산 점수의 상한을
+      가장 거친 정답이 정해버리기 때문이다. (결정 D18)
+    </p>
+  </div>
+
+  <h3>와셔의 구멍 — 관례가 어긋나 있었다</h3>
+  <p>
+    걱정했던 대로 구멍이 관건이었는데, 방향이 예상과 달랐다.
+    <b>사람이 그린 와셔 정답은 100%가 구멍까지 메운 원판</b>이고,
+    SAM은 39%를 <b>구멍이 뚫린 도넛</b>으로 그렸다. 물리적으로는 SAM이 맞다 —
+    와셔는 실제로 가운데가 뚫려 있으니까. 하지만 <mark>한 종류 안에 두 관례가 섞이면
+    AI가 무엇을 배워야 할지 갈린다.</mark> 그래서 SAM 쪽 구멍을 메워 자료의 관례에 맞췄다.
+  </p>
+  <div class="bars">
+    <div class="bar"><span class="nm">그대로</span><span class="track"><span class="fill" style="width:83.4%"></span></span><span class="v">일치도 0.834</span></div>
+    <div class="bar"><span class="nm">구멍 메움</span><span class="track"><span class="fill" style="width:90.3%"></span></span><span class="v">일치도 0.903 · 0.7 넘음 87%</span></div>
+  </div>
+
+  <h3>어느 SAM을 쓸까 — 점수가 높은 쪽이 정확한 쪽은 아니다</h3>
+  <p>
+    세 종류를 같은 117개에 돌렸다. <b>sam2.1_b</b>가 arg-fixings3에서 점수가 더 높았는데
+    (0.784 vs 0.719), <b>촘촘한 정답</b>에 대고 재보니 오히려 더 부풀어 있었다.
+    거친 정답에서 높았던 건 <b>정답처럼 헐거워서</b>였던 것이다.
+    가장 큰 <b>sam_l</b>은 같은 성적에 5배 느렸다.
+    <mark>점수가 높은 쪽이 아니라 정밀한 자에 대고 잰 쪽으로 골랐다</mark> — <b>sam_b</b>. (결정 D15)
+  </p>
+
+  <h3>그래서 채웠다 — 다만 학습용에만</h3>
+  <p>
+    완전히 실패한 경우는 <b>1%</b>뿐이었다. 채우기로 하고,
+    면적이 네모 대비 너무 작거나 크면 버리고 여러 덩어리로 흩어지면 버리는 관문을 통과시켰다.
+  </p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>종류</th><th class="n">채움</th><th class="n">시도</th><th class="n">통과율</th></tr></thead>
+      <tbody>
+        <tr><td>와셔</td><td class="n">850</td><td class="n">855</td><td class="n">99.4%</td></tr>
+        <tr><td>너트</td><td class="n">979</td><td class="n">991</td><td class="n">98.8%</td></tr>
+        <tr><td>볼트</td><td class="n">454</td><td class="n">474</td><td class="n">95.8%</td></tr>
+        <tr><td>나사</td><td class="n">253</td><td class="n">286</td><td class="n">88.5%</td></tr>
+        <tr><td><b>합계</b></td><td class="n"><b>2,536</b></td><td class="n"><b>2,606</b></td><td class="n"><b>97.3%</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    나사가 가장 낮다 — 가늘고 길어서 네모 안을 채우는 비율이 원래 낮기 때문이다.
+    그리고 재보니 <b>윤곽이 빠진 것은 와셔만이 아니었다.</b> 빠진 3,850개가 전부
+    arg-fixings3 한 데이터에 몰려 있었고 네 종류 모두에 걸쳐 있었다.
+  </p>
+
+  <div class="principle">
+    <div class="k mono">지킨 선</div>
+    <p>
+      채운 윤곽은 <b>학습용에만 넣었다.</b> 시험지와 대조군은 손대지 않았다 —
+      채점표를 채점 대상이 만들면 채점이 아니다(D14와 같은 이유).
+      채운 것마다 <b>표시를 달아</b> 언제든 되돌리거나, 없앤 조건으로 다시 실험할 수 있게 했다. (D16)
+    </p>
+  </div>
 </section>
 
 <section id="s6">
@@ -730,6 +842,11 @@
         잘 안 떨어진다. 먼저 무너지는 건 <b>"얼마나 정확히 감쌌는가"</b>이고, 그건 엄격한 기준에서만 보인다.</li>
     <li><b>대조군 성적을 반드시 함께 보고한다.</b> 줄여서 만든 곡선만 내놓으면
         "실제로는 안 통할 것을 통한다고 주장"하게 된다.</li>
+    <li><b>대조군은 네모 기준으로 잰다.</b> 대조군 472개 중 윤곽 정답이 33개(7%)뿐이라
+        윤곽 성적을 낼 표본이 안 된다. 대조군이 답해야 할 물음은 "작은 물체를 <b>찾아내는가</b>"이므로
+        네모로도 답이 되고, 윤곽 품질은 정답이 91~100% 확보된 test·교차 도메인에서 잰다.
+        SAM으로 채운 윤곽 성적은 <b>참고치로 병기</b>하되 주 지표로 쓰지 않는다 —
+        기준자의 정답이 모델이 만든 것이면 기준자 구실을 못 한다.</li>
     <li><b>종류를 구분하는 실력은 arg-fixings3에서만 잰다.</b> screw-nut-bolt는 사진 한 장에
         한 종류만 들어 있어(볼트 500장·너트 500장·나사 300장) 구분 실력을 잴 수 없다.</li>
     <li><b>원거리 배경에서의 오탐</b>도 잰다. 대조군에 부품 없는 배경 사진이 있어,
@@ -796,10 +913,12 @@
   <div class="shead"><span class="snum">10</span><h2>진행 순서</h2></div>
   <p class="sdesc">앞 단계의 결과가 뒷 단계의 전제가 되도록 배열했다.</p>
   <ol class="flow">
-    <li><b>자료 정리</b>
-      비율 보정(512×288 복원), 빈 종류 표시 제거, 종류 이름 통일, 대조군 분리.</li>
-    <li><b>SAM 시험</b>
-      기존 윤곽 121개로 SAM의 정확도를 물체 크기별로 측정 → 와셔를 채울지 결정.</li>
+    <li class="done"><b>자료 정리</b> <span class="chk">끝</span>
+      비율 보정(512×288 복원 — 너트 가로세로비 0.59 → 1.06 확인), 빈 종류 표시 제거,
+      종류 이름 통일, 중복 99장 제거, 촬영 세션 단위 분할, 대조군 분리.</li>
+    <li class="done"><b>SAM 시험</b> <span class="chk">끝</span>
+      윤곽 1,706개로 크기별·<b>출처별</b> 정확도 측정 → 채우기로 결정(05절).
+      학습용 2,536개를 채웠고 시험지와 대조군은 손대지 않았다.</li>
     <li><b>기본 성능</b>
       640에서 YOLO11 n·s를 학습하고, 크기를 640 → 320 → 160으로 줄이며 성능 곡선을 그린다.
       같은 자리에서 m(크기 효과)과 YOLO26(계열 효과)을 한 번씩 재 붙인다.</li>
@@ -835,6 +954,11 @@
         <tr><td class="n">D11</td><td><b>P2 헤드</b>를 실험 축에 포함</td><td>가장 촘촘한 격자가 8픽셀인데 160에서 부품이 3~14픽셀 — 격자보다 작아지는 구간이 생김</td></tr>
         <tr><td class="n">D12</td><td>회전·상하 뒤집기 <b>켜고</b>, 섞기 증강은 <b>끔</b></td><td>톱다운 장면이라 방향이 자유로움. 이미 겹친 장면에 인위적 겹침을 더하면 원인 구분이 안 됨</td></tr>
         <tr><td class="n">D13</td><td>오려붙이기를 <b>크기 변형·사진 비중 조절과 함께</b> 켬</td><td>원 논문들이 보고한 조건이 짝을 이룸 — 한쪽만 쓰면 방법의 절반만 적용한 것이 됨(하단 참고 문헌)</td></tr>
+        <tr><td class="n">D14</td><td>대조군은 <b>네모 기준</b> 평가, SAM 윤곽은 참고 병기</td><td>대조군 472개 중 윤곽 정답이 33개(7%)뿐. 기준자의 정답이 모델 생성물이면 기준자 구실을 못 함. <b>실측 확인</b> — 대조군 8장 전부가 일부만 그려진 사진이었다</td></tr>
+        <tr><td class="n">D15</td><td>SAM 채우기 <b>진행</b> — 모델은 <b>sam_b</b></td><td>정답 밖으로 새지 않음(정밀도 0.97)이고 완전 실패는 1%. 더 큰 sam_l은 같은 성적에 5배 느리고, sam2.1_b는 IoU가 높아 보이지만 <b>정밀한 정답</b>에 대면 더 부풀어 있음 — 높은 점수가 아니라 정밀한 자를 기준으로 골랐다</td></tr>
+        <tr><td class="n">D16</td><td>채우기는 <b>학습용에만</b>, 표시를 달아 남김</td><td>평가용을 모델이 만든 윤곽으로 채우면 채점표를 채점 대상이 만든 꼴(D14와 같은 이유). 채운 것은 <b>97.3% 통과 / 2,536개</b>이며 표시가 있어 언제든 되돌릴 수 있음</td></tr>
+        <tr><td class="n">D17</td><td>와셔 윤곽은 <b>가운데 구멍을 메워</b> 넣음</td><td>사람이 그린 와셔 정답은 <b>100%가 구멍까지 채운 원판</b>인데 SAM은 39%를 도넛으로 냄. 물리적으로는 SAM이 맞지만 한 클래스에 두 관례가 섞이면 학습 신호가 갈림. 메우니 일치도 0.834 → 0.903</td></tr>
+        <tr><td class="n">D18</td><td>윤곽 점수도 <b>출처별로 나눠</b> 보고</td><td>사람이 그린 윤곽의 촘촘함이 출처마다 다름(꼭짓점 9 / 14 / 29~93 / 화소 단위). 합산 점수의 상한을 <b>가장 거친 정답</b>이 정해버림</td></tr>
       </tbody>
     </table>
   </div>
