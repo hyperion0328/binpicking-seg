@@ -95,6 +95,11 @@ def diverged(csv_path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="yolo11n-seg.pt")
+    ap.add_argument("--cfg", default=None,
+                    help="모델 yaml(P2 등). 주면 이 구조로 만들고 --model 가중치를 옮겨 싣는다")
+    ap.add_argument("--mask-ratio", type=int, default=4,
+                    help="정답 마스크 해상도 = imgsz/이 값. P2 는 proto 가 imgsz/2 라 2 로 맞춰야 "
+                         "한다 - 안 맞추면 ultralytics 가 proto 를 정답 쪽으로 낮춰 P2 의 이득이 사라진다")
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--batch", type=int, default=16)      # 고정. -1 금지
@@ -106,7 +111,8 @@ def main():
     if args.batch <= 0:
         sys.exit("배치는 고정값이어야 한다. -1(AutoBatch)은 판정을 불가능하게 만든다.")
 
-    tag = args.name or "%s_%d" % (os.path.splitext(os.path.basename(args.model))[0], args.imgsz)
+    base = os.path.splitext(os.path.basename(args.cfg or args.model))[0]
+    tag = args.name or "%s_%d_mr%d" % (base, args.imgsz, args.mask_ratio)
     train_list = "train_box.txt"
     if args.oversample:
         # 목록은 **항상 640 기준으로** 만든다. imgsz 마다 다시 계산하면 축소 곡선에서
@@ -119,6 +125,7 @@ def main():
     common = dict(
         data=yml, imgsz=args.imgsz, epochs=args.epochs, batch=args.batch,
         seed=0, deterministic=True, device=args.device, workers=args.workers,
+        mask_ratio=args.mask_ratio,
         project=os.path.abspath("runs/seg"), exist_ok=True, patience=30, val=True, plots=True,
         # --- 증강 (D12 / D13) ---
         degrees=180.0, flipud=0.5, fliplr=0.5,
@@ -126,7 +133,8 @@ def main():
         copy_paste=0.5, copy_paste_mode="mixup",   # 다른 사진에서 오려 붙이기 = 원 논문 방식
         mixup=0.0, cutmix=0.0,                  # 이미 겹친 장면에 인위적 겹침을 더하지 않는다
     )
-    log("=== %s / imgsz %d / batch %d / epochs %d ===" % (args.model, args.imgsz, args.batch, args.epochs))
+    log("=== %s / imgsz %d / batch %d / epochs %d / mask_ratio %d ==="
+        % (args.cfg or args.model, args.imgsz, args.batch, args.epochs, args.mask_ratio))
     log("데이터 %s (train=%s)" % (yml, train_list))
 
     for amp in (True, False):
@@ -134,8 +142,18 @@ def main():
         d = os.path.join(os.path.abspath("runs/seg"), name)
         if os.path.isdir(d):
             shutil.rmtree(d)
-        y = YOLO(args.model)
-        y.train(name=name, amp=amp, **common)
+        trainer = None
+        if args.cfg:
+            # 구조는 yaml, 가중치는 COCO 사전학습본에서 겹치는 층만 옮겨 싣는다.
+            # 안 그러면 P2 만 맨바닥에서 시작해 "P2 가 나쁘다"가 아니라 "출발점이 다르다"를 재게 된다.
+            y = YOLO(args.cfg).load(args.model)
+            # ultralytics 검증기는 "proto 는 imgsz/4" 를 상수로 박아둬 P2 에서 죽는다.
+            # 상수를 stride 에서 계산하도록 바꾼 검증기를 쓴다(sodseg/p2_seg.py).
+            from sodseg.p2_seg import P2SegmentationTrainer
+            trainer = P2SegmentationTrainer
+        else:
+            y = YOLO(args.model)
+        y.train(name=name, amp=amp, **({"trainer": trainer} if trainer else {}), **common)
         # 저장 위치를 추측하지 않고 트레이너에게 묻는다.
         # 상대 경로 project 는 runs_dir 밑으로 다시 들어가 NaN 검사가 헛돈 적이 있다.
         d = str(getattr(y.trainer, "save_dir", d))
@@ -153,5 +171,7 @@ def main():
 
 
 if __name__ == "__main__":
-    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+    os.chdir(ROOT)
+    sys.path.insert(0, os.path.abspath(ROOT))     # sodseg 를 찾게 한다
     main()
