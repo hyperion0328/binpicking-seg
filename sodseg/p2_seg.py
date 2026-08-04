@@ -100,3 +100,25 @@ class P2SegmentationTrainer(SegmentationTrainer):
         from copy import copy
         return P2SegmentationValidator(self.test_loader, save_dir=self.save_dir,
                                        args=copy(self.args), _callbacks=self.callbacks)
+
+
+def make_trainer(base=None, degrade=False, flatten=False):
+    """P2 검증기 보정 + 화질 증강 주입을 함께 거는 트레이너를 만든다.
+
+    화질 증강은 **학습 데이터셋에만** 건다. 평가에 걸면 무엇을 재는지 알 수 없다.
+    """
+    from ultralytics.models.yolo.segment import SegmentationTrainer as _ST
+    from sodseg.degrade import attach
+    parent = base or P2SegmentationTrainer
+
+    class _T(parent):
+        def build_dataset(self, img_path, mode="train", batch=None):
+            ds = super().build_dataset(img_path, mode, batch)
+            if mode == "train" and (degrade or flatten):
+                from ultralytics.utils import LOGGER
+                ok = attach(ds, degrade=degrade, flatten=flatten)
+                LOGGER.info("[화질축] 학습 변환 주입 %s (degrade=%s flatten=%s)"
+                            % ("성공" if ok else "실패", degrade, flatten))
+            return ds
+
+    return _T

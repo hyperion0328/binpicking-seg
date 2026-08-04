@@ -102,6 +102,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", default="runs/seg")
     ap.add_argument("--out", default="outputs/d_eval.json")
+    ap.add_argument("--only", default="", help="쉼표 구분 런 이름. 주면 그것만 재고 기존 결과에 합친다")
     args = ap.parse_args()
 
     tmp = "data/yolo/bysrc"
@@ -113,8 +114,12 @@ def main():
         ("test_ref", "data/yolo/test_ref.txt", "ref"),      # 참고치
         ("control_ref", "data/yolo/control_ref.txt", "ref"),
     ]
-    res = {}
+    # 이미 잰 것을 지우지 않는다 - 한 런이 죽어도 나머지를 다시 재지 않아도 되게.
+    res = json.load(open(args.out, encoding="utf-8")) if os.path.exists(args.out) else {}
+    only = {x.strip() for x in args.only.split(",") if x.strip()}
     for run in sorted(glob.glob(os.path.join(args.runs, "*"))):
+        if only and os.path.basename(run) not in only:
+            continue
         w = os.path.join(run, "weights", "best.pt")
         if not os.path.exists(w):
             continue

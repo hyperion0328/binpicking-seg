@@ -97,6 +97,10 @@ def main():
     ap.add_argument("--model", default="yolo11n-seg.pt")
     ap.add_argument("--cfg", default=None,
                     help="모델 yaml(P2 등). 주면 이 구조로 만들고 --model 가중치를 옮겨 싣는다")
+    ap.add_argument("--degrade", action="store_true",
+                    help="노이즈·흐림·압축 열화 (기획서 원안)")
+    ap.add_argument("--flatten", action="store_true",
+                    help="대비 축소·옅은 안개 (E8 실측이 가리킨 격차)")
     ap.add_argument("--mask-ratio", type=int, default=4,
                     help="정답 마스크 해상도 = imgsz/이 값. P2 는 proto 가 imgsz/2 라 2 로 맞춰야 "
                          "한다 - 안 맞추면 ultralytics 가 proto 를 정답 쪽으로 낮춰 P2 의 이득이 사라진다")
@@ -105,6 +109,8 @@ def main():
     ap.add_argument("--batch", type=int, default=16)      # 고정. -1 금지
     ap.add_argument("--name", default=None)
     ap.add_argument("--oversample", type=int, default=1)  # 1=켬
+    ap.add_argument("--patience", type=int, default=30,
+                    help="0 이면 조기 종료 없음. 증강 런과 epoch 수를 맞출 때 쓴다")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--device", default="0")
     args = ap.parse_args()
@@ -112,7 +118,9 @@ def main():
         sys.exit("배치는 고정값이어야 한다. -1(AutoBatch)은 판정을 불가능하게 만든다.")
 
     base = os.path.splitext(os.path.basename(args.cfg or args.model))[0]
-    tag = args.name or "%s_%d_mr%d" % (base, args.imgsz, args.mask_ratio)
+    tag = args.name or "%s_%d_mr%d%s%s" % (base, args.imgsz, args.mask_ratio,
+                                           "_deg" if args.degrade else "",
+                                           "_flat" if args.flatten else "")
     train_list = "train_box.txt"
     if args.oversample:
         # 목록은 **항상 640 기준으로** 만든다. imgsz 마다 다시 계산하면 축소 곡선에서
@@ -126,7 +134,8 @@ def main():
         data=yml, imgsz=args.imgsz, epochs=args.epochs, batch=args.batch,
         seed=0, deterministic=True, device=args.device, workers=args.workers,
         mask_ratio=args.mask_ratio,
-        project=os.path.abspath("runs/seg"), exist_ok=True, patience=30, val=True, plots=True,
+        project=os.path.abspath("runs/seg"), exist_ok=True, patience=args.patience,
+        val=True, plots=True,
         # --- 증강 (D12 / D13) ---
         degrees=180.0, flipud=0.5, fliplr=0.5,
         scale=(0.1, 2.0),                       # Ghiasi LSJ. 기본 0.5 는 폭이 좁다
@@ -153,6 +162,12 @@ def main():
             trainer = P2SegmentationTrainer
         else:
             y = YOLO(args.model)
+        if args.degrade or args.flatten:
+            # 화질 축은 학습 변환에만 건다. P2 검증기 보정과 함께 걸 수 있다.
+            from sodseg.p2_seg import make_trainer
+            from ultralytics.models.yolo.segment import SegmentationTrainer
+            trainer = make_trainer(base=(trainer or SegmentationTrainer),
+                                   degrade=args.degrade, flatten=args.flatten)
         y.train(name=name, amp=amp, **({"trainer": trainer} if trainer else {}), **common)
         # 저장 위치를 추측하지 않고 트레이너에게 묻는다.
         # 상대 경로 project 는 runs_dir 밑으로 다시 들어가 NaN 검사가 헛돈 적이 있다.
