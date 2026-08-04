@@ -13,38 +13,9 @@
     --stop:#d94a3d; --stop-soft:#fdeceb;
     --signal:#c9640a; --signal-soft:#fff2e3;
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b0e15; --surface:#141a24; --surface-2:#111721;
-      --ink:#e8ecf3; --muted:#9aa4b4; --faint:#727d8f;
-      --line:#232c3a; --line-strong:#2e394a;
-      --accent:#7d99ff; --accent-ink:#a8bcff; --accent-soft:#161f36;
-      --accent-2:#3fd0e8;
-      --ok:#3ed3a3; --ok-soft:#0f2820;
-      --stop:#f2867a; --stop-soft:#2a1512;
-      --signal:#e8a95c; --signal-soft:#2a1f11;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#0b0e15; --surface:#141a24; --surface-2:#111721;
-    --ink:#e8ecf3; --muted:#9aa4b4; --faint:#727d8f;
-    --line:#232c3a; --line-strong:#2e394a;
-    --accent:#7d99ff; --accent-ink:#a8bcff; --accent-soft:#161f36;
-    --accent-2:#3fd0e8;
-    --ok:#3ed3a3; --ok-soft:#0f2820;
-    --stop:#f2867a; --stop-soft:#2a1512;
-    --signal:#e8a95c; --signal-soft:#2a1f11;
-  }
-  :root[data-theme="light"]{
-    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#fafbfc;
-    --ink:#0d111a; --muted:#586170; --faint:#8b93a1;
-    --line:#e4e8ee; --line-strong:#d3d9e2;
-    --accent:#2b57ff; --accent-ink:#1c3fd6; --accent-soft:#eef1fe;
-    --accent-2:#00b6d4;
-    --ok:#0f9d76; --ok-soft:#e4f7f1;
-    --stop:#d94a3d; --stop-soft:#fdeceb;
-    --signal:#c9640a; --signal-soft:#fff2e3;
-  }
+  /* 화이트+블루 한 가지 톤으로 고정한다 — 뷰어가 다크 모드여도 밝은 지면을 유지.
+     color-scheme 을 light 로 못박아 폼 컨트롤과 스크롤바까지 밝게 맞춘다. */
+  :root{color-scheme:light;}
 
   *{box-sizing:border-box;}
   body{
@@ -179,7 +150,7 @@
 
 <header>
   <div class="kicker mono">기획서</div>
-  <h1>상자 속 작은 부품을,<br><span>낱개로 오려낸다</span></h1>
+  <h1>작고 얇은 부품도<br><span>놓치지 않는 AI</span> 만들기</h1>
   <p class="lede">
     로봇이 부품 상자에서 나사 하나를 집으려면 "여기 나사가 있다"만으로는 부족하다.
     겹쳐 쌓인 더미에서 <b>어디부터 어디까지가 그 하나인지</b>를 알아야 한다.
