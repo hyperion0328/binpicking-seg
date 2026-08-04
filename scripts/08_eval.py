@@ -12,10 +12,16 @@ E2 에서 배운 것 — 합친 평균은 출처 섞임을 가린다. 같은 img
   - 대조군  : box AP 만(사람 윤곽 전량인 사진이 0장). 참고치를 병기.
 
 평가 imgsz 는 **학습 imgsz 와 같게** 맞춘다(고정 조건).
+
+**마스크 채점 해상도를 통일한다.** ultralytics 기본 경로는 마스크를 원형 해상도(imgsz/4)에서
+채점하는데, P2 는 원형이 imgsz/2 라 잣대가 달라진다. `save_txt=True` 를 주면
+`process_mask_native` 로 바뀌어 **입력 해상도 그대로** 채점하므로 두 구조가 같은 자를 쓴다.
+P2 모델은 검증기도 보정본을 써야 한다(sodseg/p2_seg.py).
 ASCII 로그.
 """
 import argparse
 import collections
+import sys
 import glob
 import json
 import os
@@ -74,8 +80,11 @@ def write_yaml(path, val_list):
 
 def run_val(weights, yml, imgsz, split_name):
     from ultralytics import YOLO
+    from sodseg.p2_seg import P2SegmentationValidator
     m = YOLO(weights)
-    r = m.val(data=yml, imgsz=imgsz, batch=16, device="0", verbose=False, plots=False,
+    r = m.val(validator=P2SegmentationValidator,      # 기본 헤드에서도 동작이 같다
+              data=yml, imgsz=imgsz, batch=16, device="0", verbose=False, plots=False,
+              save_txt=True,                          # -> process_mask_native: 잣대 통일
               project=os.path.abspath("runs/val"), name=split_name, exist_ok=True)
     out = {"box_mAP50_95": float(r.box.map), "box_mAP50": float(r.box.map50),
            "mask_mAP50_95": float(r.seg.map), "mask_mAP50": float(r.seg.map50),
@@ -139,5 +148,7 @@ def main():
 
 
 if __name__ == "__main__":
-    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+    os.chdir(ROOT)
+    sys.path.insert(0, os.path.abspath(ROOT))
     main()
