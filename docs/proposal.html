@@ -1,0 +1,648 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>작고 얇은 부품 찾기 AI — 기획서</title>
+<meta name="description" content="빈피킹용 소형 체결부품을 픽셀 단위로 오려내는 AI 기획서. 데이터 선정 과정과 배제 근거, 사람이 직접 확인한 선별 절차, 데이터 정규화 방침을 쉬운 말로 정리했다." />
+<style>
+  :root{
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#fafbfc;
+    --ink:#0d111a; --muted:#586170; --faint:#8b93a1;
+    --line:#e4e8ee; --line-strong:#d3d9e2;
+    --accent:#2b57ff; --accent-ink:#1c3fd6; --accent-soft:#eef1fe;
+    --accent-2:#00b6d4;
+    --ok:#0f9d76; --ok-soft:#e4f7f1;
+    --stop:#d94a3d; --stop-soft:#fdeceb;
+    --signal:#c9640a; --signal-soft:#fff2e3;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b0e15; --surface:#141a24; --surface-2:#111721;
+      --ink:#e8ecf3; --muted:#9aa4b4; --faint:#727d8f;
+      --line:#232c3a; --line-strong:#2e394a;
+      --accent:#7d99ff; --accent-ink:#a8bcff; --accent-soft:#161f36;
+      --accent-2:#3fd0e8;
+      --ok:#3ed3a3; --ok-soft:#0f2820;
+      --stop:#f2867a; --stop-soft:#2a1512;
+      --signal:#e8a95c; --signal-soft:#2a1f11;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b0e15; --surface:#141a24; --surface-2:#111721;
+    --ink:#e8ecf3; --muted:#9aa4b4; --faint:#727d8f;
+    --line:#232c3a; --line-strong:#2e394a;
+    --accent:#7d99ff; --accent-ink:#a8bcff; --accent-soft:#161f36;
+    --accent-2:#3fd0e8;
+    --ok:#3ed3a3; --ok-soft:#0f2820;
+    --stop:#f2867a; --stop-soft:#2a1512;
+    --signal:#e8a95c; --signal-soft:#2a1f11;
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#fafbfc;
+    --ink:#0d111a; --muted:#586170; --faint:#8b93a1;
+    --line:#e4e8ee; --line-strong:#d3d9e2;
+    --accent:#2b57ff; --accent-ink:#1c3fd6; --accent-soft:#eef1fe;
+    --accent-2:#00b6d4;
+    --ok:#0f9d76; --ok-soft:#e4f7f1;
+    --stop:#d94a3d; --stop-soft:#fdeceb;
+    --signal:#c9640a; --signal-soft:#fff2e3;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',
+                system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.78; word-break:keep-all;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{
+    font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  .wrap{max-width:1010px; margin:0 auto; padding:0 28px 120px;}
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  /* ── 머리 ── */
+  header{padding:78px 0 42px;}
+  .kicker{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; letter-spacing:.2em;
+    color:var(--accent-ink); background:var(--accent-soft); border-radius:999px;
+    padding:6px 14px; display:inline-block; margin-bottom:26px; font-weight:700;
+  }
+  h1{
+    font-size:clamp(30px,5.4vw,46px); line-height:1.24; margin:0 0 22px;
+    letter-spacing:-.03em; font-weight:800; text-wrap:balance; max-width:19ch;
+  }
+  h1 span{color:var(--accent);}
+  .lede{font-size:17.5px; color:var(--muted); margin:0; max-width:62ch;}
+  .lede b{color:var(--ink); font-weight:600;}
+
+  .specs{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(156px,1fr));
+    gap:1px; background:var(--line); border:1px solid var(--line);
+    border-radius:12px; overflow:hidden; margin-top:36px;
+  }
+  .specs div{background:var(--surface); padding:14px 16px;}
+  .specs dt{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px;
+    letter-spacing:.15em; color:var(--faint); margin-bottom:5px;
+  }
+  .specs dd{margin:0; font-size:14.5px; font-weight:650; font-variant-numeric:tabular-nums;}
+
+  /* ── 절 ── */
+  section{
+    display:grid; grid-template-columns:76px minmax(0,1fr); gap:0 30px;
+    padding:46px 0; border-top:1px solid var(--line);
+  }
+  .rail{position:sticky; top:24px; align-self:start;}
+  .rail .no{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; font-weight:700;
+    letter-spacing:.1em; color:var(--bg); background:var(--accent);
+    border-radius:6px; padding:4px 9px; display:inline-block;
+  }
+  .rail .tick{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px;
+    color:var(--faint); margin-top:10px; line-height:1.55;
+  }
+  .body{min-width:0;}
+  h2{font-size:clamp(21px,3.2vw,28px); margin:-2px 0 20px; letter-spacing:-.02em; line-height:1.34; font-weight:750; text-wrap:balance;}
+  h3{font-size:17px; margin:32px 0 12px; letter-spacing:-.01em; font-weight:700;}
+  p{margin:0 0 16px; max-width:64ch;}
+  ul,ol{margin:0 0 16px; padding-left:19px; max-width:64ch;}
+  li{margin-bottom:9px;}
+  mark{background:var(--accent-soft); color:var(--accent-ink); padding:1px 5px; border-radius:4px; font-weight:600;}
+  code{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.87em;
+    background:var(--surface-2); border:1px solid var(--line); padding:1px 5px; border-radius:5px;
+  }
+
+  /* ── 카드 ── */
+  .note{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:20px 22px; margin:22px 0; max-width:64ch;
+  }
+  .note h4{margin:0 0 9px; font-size:15.5px; font-weight:700;}
+  .note p:last-child,.note ul:last-child{margin-bottom:0;}
+  .label{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:.13em; padding:3px 9px; border-radius:999px; display:inline-block; margin-bottom:11px;
+  }
+  .label.ok{background:var(--ok-soft); color:var(--ok);}
+  .label.stop{background:var(--stop-soft); color:var(--stop);}
+  .label.sig{background:var(--signal-soft); color:var(--signal);}
+
+  /* ── 표 ── */
+  .sheet{overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:12px; background:var(--surface);}
+  table{border-collapse:collapse; width:100%; font-size:14px; min-width:500px;}
+  th,td{padding:11px 15px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:.1em; color:var(--faint); background:var(--surface-2);
+    border-bottom:1px solid var(--line-strong); white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.n,th.n{font-family:ui-monospace,Menlo,Consolas,monospace; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .yes{color:var(--ok); font-weight:700;}
+  .no{color:var(--stop); font-weight:700;}
+
+  /* ── 절차 ── */
+  .flow{list-style:none; padding:0; margin:24px 0; counter-reset:f; max-width:64ch;}
+  .flow li{counter-increment:f; position:relative; padding-left:42px; margin-bottom:19px;}
+  .flow li::before{
+    content:counter(f,decimal-leading-zero);
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; font-weight:700;
+    color:var(--accent); position:absolute; left:0; top:4px;
+    background:var(--accent-soft); border-radius:5px; padding:2px 7px;
+  }
+  .flow b{display:block; margin-bottom:1px;}
+
+  .pull{
+    border-left:3px solid var(--accent-2); padding:4px 0 4px 20px; margin:24px 0;
+    color:var(--muted); font-size:16px; max-width:60ch;
+  }
+  .pull b{color:var(--ink);}
+
+  footer{
+    border-top:1px solid var(--line); margin-top:46px; padding-top:28px;
+    color:var(--faint); font-size:13.5px;
+  }
+  footer p{max-width:64ch;}
+
+  @media (max-width:720px){
+    section{grid-template-columns:1fr; gap:0;}
+    .rail{position:static; margin-bottom:16px; display:flex; align-items:center; gap:12px;}
+    .rail .tick{margin-top:0;}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker mono">기획서</div>
+  <h1>상자 속 작은 부품을,<br><span>낱개로 오려낸다</span></h1>
+  <p class="lede">
+    로봇이 부품 상자에서 나사 하나를 집으려면 "여기 나사가 있다"만으로는 부족하다.
+    겹쳐 쌓인 더미에서 <b>어디부터 어디까지가 그 하나인지</b>를 알아야 한다.
+    이 프로젝트는 그 경계를 픽셀 단위로 그려내는 AI를 만들고,
+    물체가 작아질수록 그것이 어떻게 무너지는지를 잰다.
+  </p>
+  <dl class="specs">
+    <div><dt>대상</dt><dd>나사 · 볼트 · 너트 · 와셔</dd></div>
+    <div><dt>방식</dt><dd>인스턴스 분할 + SAM</dd></div>
+    <div><dt>사진</dt><dd>1,812장</dd></div>
+    <div><dt>부품</dt><dd>33,923개</dd></div>
+    <div><dt>기준 크기</dt><dd>640 px</dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="rail"><span class="no">01</span><div class="tick">배경과<br>방향</div></div>
+  <div class="body">
+    <h2>무엇을, 왜 만드는가</h2>
+    <p>
+      공장에서 로봇이 부품이 잔뜩 쌓인 상자에서 필요한 부품을 하나씩 집어 올리는 작업을
+      <b>"빈피킹"</b>이라고 부른다. 이때 로봇 팔에 달린 카메라가 먼저 "어디에 어떤 부품이 있는지"를
+      찾아내야 하는데, 나사나 와셔처럼 작은 부품은 사진 속에서 몇 개의 점(픽셀)으로만 보여서
+      AI가 놓치기 쉽다. 이 프로젝트는 로봇 팔이나 집는 동작은 만들지 않고,
+      <b>"작은 부품을 사진에서 정확히 찾아내는 AI"</b> 부분만 집중해서 만들고 실험한다.
+    </p>
+
+    <h3>네모 상자가 아니라 윤곽으로 간다</h3>
+    <p>
+      물체의 위치를 표시하는 방법은 크게 둘이다. 물체를 감싸는 <b>네모 상자</b>를 그리거나,
+      물체의 <b>윤곽을 픽셀 단위로 오려내는</b> 것이다. 이 프로젝트는 후자를 택한다.
+    </p>
+
+    <div class="note">
+      <span class="label sig mono">실측</span>
+      <h4>네모 상자로는 겹친 부품을 못 나눈다</h4>
+      <p>
+        상자에 부품을 쏟아부으면 서로 포개진다. 이때 각 부품을 감싸는 네모끼리도 크게 겹치는데,
+        탐지 AI는 "너무 많이 겹치는 네모는 같은 물체"라고 보고 하나를 지운다.
+        실제 빈피킹 데이터를 재보니 <mark>각 부품의 이웃 네모와의 겹침이 38%는 기준선을 넘었다</mark> —
+        그만큼이 이웃에 지워질 위험에 놓인다. 부품 종류가 전부 같으면 이 위험은 더 커진다.
+        윤곽으로 오려내면 포개져도 픽셀 단위로 갈라진다.
+      </p>
+    </div>
+
+    <p>
+      로봇이 실제로 필요한 것도 "이 상자에 뭐가 들었나"가 아니다. 그건 공정에서 이미 안다.
+      필요한 건 <b>"지금 집을 수 있는 개체가 어디에 있고, 어디까지가 그 개체인가"</b>이고,
+      그건 네모가 아니라 윤곽이 답한다.
+    </p>
+
+    <h3>SAM은 왜 같이 쓰나</h3>
+    <p>
+      윤곽으로 학습하려면 정답도 윤곽이어야 하는데, 공개 데이터에는 네모만 있고 윤곽이 없는 경우가 많다.
+      <b>SAM</b>은 위치만 알려주면 그 물체의 윤곽을 그려주는 범용 도구다.
+      네모만 있는 정답에 SAM을 씌우면 사람이 다시 그리지 않고도 학습 자료를 만들 수 있다.
+    </p>
+    <p>
+      단, <b>SAM은 작은 물체에 약하다고 알려져 있다.</b> 하필 이 프로젝트가 다루는 구간이다.
+      그래서 SAM을 도구로 쓰기 전에 <b>먼저 성능을 재는 대상으로 세운다</b>(05절).
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">02</span><div class="tick">데이터<br>선정</div></div>
+  <div class="body">
+    <h2>데이터 선정 과정</h2>
+    <p>
+      이번 기획의 절반은 데이터를 고른 과정이다. 후보로 본 것만 20종이 넘고,
+      그중 대부분을 <b>실제로 내려받아 라벨 파일을 열어보고</b> 걸러냈다.
+      설명글만 보고 채택한 것은 하나도 없다.
+    </p>
+
+    <h3>기준 세 가지</h3>
+    <div class="sheet">
+      <table>
+        <thead><tr><th>기준</th><th>왜 필요한가</th></tr></thead>
+        <tbody>
+          <tr><td><b>부품이 주인공</b></td><td>빈피킹은 부품 더미를 보는 작업이다. 부품이 배경의 일부로 찍힌 사진은 응용이 다르다</td></tr>
+          <tr><td><b>여러 종류가 섞임</b></td><td>사진 한 장에 한 종류만 있으면 AI가 "이 사진이면 이 종류"로 맞힐 수 있어 실력을 못 잰다</td></tr>
+          <tr><td><b>윤곽 정답이 있음</b></td><td>분할 학습에는 네모가 아니라 윤곽이 필요하다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>채택한 네 가지</h3>
+    <div class="sheet">
+      <table>
+        <thead><tr><th>데이터</th><th class="n">사진</th><th class="n">부품</th><th>종류</th><th>윤곽</th><th>맡은 역할</th></tr></thead>
+        <tbody>
+          <tr><td>screw-nut-bolt</td><td class="n">1,300</td><td class="n">27,265</td><td>볼트·너트·나사</td><td class="yes">전량</td><td>윤곽 정답의 주 공급원</td></tr>
+          <tr><td>arg-fixings3</td><td class="n">233</td><td class="n">5,541</td><td>볼트·너트·나사·<b>와셔</b></td><td>일부</td><td>평가 기준 · 대조군 보유</td></tr>
+          <tr><td>nuts-and-bolts</td><td class="n">100</td><td class="n">579</td><td>볼트·너트·와셔</td><td class="yes">전량</td><td>와셔 윤곽 확보</td></tr>
+          <tr><td>fasteners</td><td class="n">179</td><td class="n">538</td><td>볼트·너트</td><td class="yes">전량</td><td>다른 환경 시험용</td></tr>
+          <tr><td><b>합계</b></td><td class="n"><b>1,812</b></td><td class="n"><b>33,923</b></td><td>4종</td><td>89.3%</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>네 가지 모두 CC BY 4.0으로, 출처만 밝히면 자유롭게 쓸 수 있다.</p>
+
+    <h3>고르지 않은 것과 그 이유</h3>
+    <p>
+      버린 이유를 남기는 게 고른 이유만큼 중요하다. 같은 데이터를 다시 받는 일을 막고,
+      "왜 더 큰 데이터를 안 썼나"에 답이 되기 때문이다.
+    </p>
+
+    <div class="note">
+      <span class="label stop mono">제외</span>
+      <h4>XYZ-IBD — 장면은 완벽했지만</h4>
+      <p>
+        파란 상자에 볼트가 무더기로 쌓인, <b>이 프로젝트가 찾던 바로 그 장면</b>이었다.
+        750장에 부품 19,950개, 사진 한 장에 평균 26.6개, 윤곽 정답까지 전부 있었다.
+        그런데 라벨을 열어보니 <mark>15개 촬영 세트가 각각 한 종류만 담고 있었다</mark> —
+        두 종류가 같이 나온 사진이 <b>단 한 장도 없었다.</b>
+        종류가 15개라고 적혀 있어도 AI가 "이 상자면 이 부품"으로 맞힐 수 있어,
+        종류를 구분하는 실력을 잴 수 없다.
+      </p>
+    </div>
+
+    <div class="note">
+      <span class="label stop mono">제외</span>
+      <h4>IPD · ITODD — 정답 있는 사진이 수십 장</h4>
+      <p>
+        둘 다 여러 종류가 섞인 산업용 데이터인데, <b>부품이 빽빽한 장면의 정답은
+        대회 서버에만 있고 공개되지 않는다.</b> 압축 파일 목차를 직접 열어 확인했다.
+        공개된 정답은 IPD 34장, ITODD 54장뿐이라 학습은 물론 평가에도 부족하다.
+        IPD의 나머지는 40GB인데 정답이 없어 받아도 쓸 수 없다.
+      </p>
+    </div>
+
+    <div class="note">
+      <span class="label stop mono">제외</span>
+      <h4>전자폐기물 · 철도 · 송전탑 — 나사는 작지만 주인공이 아니다</h4>
+      <p>
+        PC를 분해하는 데이터는 나사가 실제로 <b>11픽셀</b>밖에 안 되는, 진짜 소형 데이터였다.
+        철도 체결구와 송전탑 볼트도 마찬가지다. 그런데 이들은 전부
+        <b>부품이 아니라 PC·선로·철탑이 주인공</b>인 사진이라 응용이 다르다.
+      </p>
+      <p>
+        찾는 과정에서 반복 확인된 구조가 있다 —
+        <mark>부품이 주인공이면 반드시 가까이 찍혀 있고, 부품이 작게 찍혔으면 반드시 다른 것이 주인공이다.</mark>
+        나사가 화면의 1%로 보이려면 화각에 나사보다 100배 큰 무언가가 들어와야 하기 때문이다.
+        촬영의 물리적 제약이지 검색을 덜 한 결과가 아니다.
+      </p>
+    </div>
+
+    <div class="note">
+      <span class="label stop mono">제외</span>
+      <h4>그 밖에</h4>
+      <ul>
+        <li><b>bolt-damage</b> — 15,783장이지만 정답 네모가 사진 전체 크기였다. 분류용이지 탐지용이 아니다</li>
+        <li><b>ScrewCount</b> — 사진 한 장에 나사 수백 개인데, 정답이 <b>점</b>이고 네모는 한 장에 6개뿐이다</li>
+        <li><b>arg-fixings2</b> — 사진 4장을 타일처럼 붙이고 색을 바꾼 <b>증강이 파일에 구워져</b> 있어 원본을 복원할 수 없다</li>
+        <li><b>SDOOD</b> — 논문에는 10,000장이라 적혀 있지만 저장소에 README 한 장뿐이고, 1년 반째 "곧 공개" 상태다</li>
+        <li><b>DoPose · T-LESS</b> — 여러 종류가 섞인 좋은 데이터지만 대상이 생활용품이거나 평면 배치라 부품 더미가 아니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">03</span><div class="tick">사람이<br>확인</div></div>
+  <div class="body">
+    <h2>눈으로 보고 바뀐 것들</h2>
+    <p>
+      라벨 파일의 숫자만으로는 걸러지지 않는 것들이 있었다. 아래는 전부
+      <b>사람이 사진을 직접 확인해서</b> 잡아낸 것이고, 그 결과로 방향이 바뀌었다.
+      순서대로 일어난 일이라 번호를 붙인다.
+    </p>
+
+    <ol class="flow">
+      <li>
+        <b>첫 후보군 전량 반려</b>
+        숫자상으로는 조건을 만족했지만 열어보니 부품 사진이 아니었다. 검색을 처음부터 다시 했다.
+      </li>
+      <li>
+        <b>"PC 전체 사진"이라는 지적</b>
+        전자폐기물 데이터는 소형 객체 비율 98%로 수치가 최고였지만, 사람이 보고 <b>응용이 다르다</b>고
+        판단해 뺐다. 숫자만 봤으면 채택했을 데이터다.
+      </li>
+      <li>
+        <b>arg-fixings3 안의 원거리 사진 발견</b>
+        "이 데이터에 멀리서 찍은 사진이 있다"는 지적에서 시작해 해상도별로 나눠 재보니,
+        <b>640×480 그룹</b>이 로봇 작업 셀을 통째로 찍은 원거리 사진이었다.
+        부품 크기 중앙값 <b>11.6픽셀</b> — 세 차례 검색 내내 찾지 못하던
+        <b>대조군이 이미 손안에 있었다.</b>
+      </li>
+      <li>
+        <b>"종류가 없으면 사진에도 없다"는 확인</b>
+        데이터마다 다루는 부품 종류가 달라서, 라벨에 없는 부품이 사진에는 찍혀 있으면
+        AI가 맞게 찾아도 틀렸다고 벌점을 받는다. 사람이 확인해
+        <b>와셔·너트가 물리적으로도 없다</b>는 것을 확인한 뒤에야 합치기로 했다.
+      </li>
+      <li>
+        <b>관련 없는 사진 35장 삭제</b>
+        부품이 아닌 장면이 섞여 있어 직접 골라 지웠고, 원본 폴더와 정답 파일에 그대로 반영했다.
+      </li>
+      <li>
+        <b>"정답 0개" 사진의 성격 구분</b>
+        정답이 하나도 없는 사진 24장이 남았는데, 확인해보니 <b>공구만 있거나 부품이 아예 없는 사진</b>이었다.
+        라벨 누락이 아니라 <b>배경 사진</b>이라는 뜻이라, 지우지 않고 오탐을 줄이는 재료로 쓴다.
+        드라이버·육각렌치는 볼트와 닮아 특히 값진 재료다.
+      </li>
+    </ol>
+
+    <div class="pull">
+      <b>여기서 얻은 원칙.</b> 데이터셋 설명글과 라벨 통계는 서로 다른 이야기를 하고,
+      사진은 또 다른 이야기를 한다. 셋 다 봐야 한다.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">04</span><div class="tick">크기<br>정규화</div></div>
+  <div class="body">
+    <h2>데이터 정규화 과정</h2>
+    <p>
+      모은 사진은 크기가 제각각이다. 가장 작은 것이 512×288, 가장 큰 것이 4080×3072로
+      한쪽 변 기준 8배 차이가 난다. AI는 정해진 크기로만 사진을 보므로 하나로 맞춰야 하는데,
+      <b>이걸 어떻게 맞추느냐가 실험 결과를 좌우한다.</b>
+    </p>
+
+    <h3>비율은 반드시 지킨다</h3>
+    <div class="note">
+      <span class="label sig mono">실측</span>
+      <h4>너트가 원이 아니었다</h4>
+      <p>
+        screw-nut-bolt의 너트를 감싼 네모의 가로세로비를 재보니 <mark>0.59</mark>였다.
+        너트는 둥근 물체라 1에 가까워야 한다. 원본 16:9 사진을 정사각형으로 늘리면서
+        세로로 1.7배 눌린 것이다. 볼트 0.64, 나사 0.62로 <b>세 종류 모두 같은 값</b>이었고,
+        사진 한 장 한 장의 값도 거의 흔들리지 않았다(0.575~0.611).
+        원본이 전부 같은 비율이었다는 뜻이다.
+      </p>
+      <p>
+        <b>해결</b> — 세로를 되돌려 512×288로 복원한다. 정답 좌표도 같은 비율로 줄이면 되므로
+        손실이 없다. 모양을 배우는 분할에서는 이 보정이 필수다.
+      </p>
+    </div>
+
+    <h3>남는 여백은 회색으로 채운다</h3>
+    <p>
+      비율을 지키면서 정사각형 화면에 넣으면 위아래(또는 좌우)에 빈 공간이 생긴다.
+      이걸 회색으로 채우는 방식을 <b>레터박스</b>라고 한다. 학습할 때와 실제로 쓸 때
+      <b>똑같이 적용되므로</b> 차이가 생기지 않고, 물체 크기도 달라지지 않는다.
+      널리 쓰이는 표준 방식이다.
+    </p>
+
+    <h3>기준 크기는 640으로 한다</h3>
+    <p>
+      후보는 1024, 640, 512였다. 결론은 640인데 <b>이유는 편의가 아니라 대조군이다.</b>
+      대조군의 가치는 "작은 물체가 실제 카메라 노이즈를 품은 채로 작다"는 데 있는데,
+      크기를 건드리면 그 성질이 훼손된다.
+    </p>
+    <div class="sheet">
+      <table>
+        <thead><tr><th class="n">기준 크기</th><th>대조군에 일어나는 일</th><th>판정</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1024</td><td>1.60배 <b>확대</b> — 보간으로 뭉개짐</td><td class="no">부적합</td></tr>
+          <tr><td class="n"><b>640</b></td><td><b>1.00배 — 손대지 않음</b></td><td class="yes">채택</td></tr>
+          <tr><td class="n">512</td><td>0.80배 <b>축소</b> — 매끈해짐</td><td class="no">부적합</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      640에서는 대조군과 다른 두 데이터 279장이 <b>크기 변경을 전혀 겪지 않는다.</b>
+      비용은 screw-nut-bolt 1,300장이 1.25배 확대되는 것뿐인데,
+      학습 자료의 확대는 <b>기준자에 해당하는 대조군의 훼손보다 훨씬 가벼운 문제</b>다.
+    </p>
+
+    <h3>작아질 때 무너지는 지점은 640 → 320 → 160으로 잰다</h3>
+    <p>
+      셋 다 AI 내부 계산 단위(32)의 배수라 배율이 정확히 맞아떨어진다.
+      그리고 <b>사진 파일을 크기별로 복사해 저장하지 않는다.</b> AI가 읽어 들이는 순간에만 줄이면
+      화질 손상이 한 번으로 끝나고, 단계마다 데이터를 복제할 필요도 없다.
+    </p>
+
+    <div class="note">
+      <span class="label sig mono">한계</span>
+      <h4>줄인 사진은 실제보다 깨끗하다</h4>
+      <p>
+        사진을 소프트웨어로 줄이면 이웃 픽셀이 평균되면서 카메라 노이즈가 지워진다.
+        그래서 <b>줄여서 만든 작은 물체는 진짜 멀리서 찍힌 작은 물체보다 부자연스럽게 깨끗하다.</b>
+        줄여서 그린 성능 곡선은 그 자체로 <b>낙관적인 상한선</b>이라는 뜻이고,
+        대조군이 필요한 이유도 여기에 있다.
+      </p>
+      <p>
+        이번 설계에서는 <b>640에서만 대조군이 원본 그대로</b>다. 320·160에서는 대조군도 함께 줄어들어
+        "줄인 것 vs 줄인 것" 비교로 성격이 바뀐다. 그래서 곡선의 점마다
+        <b>대조군이 몇 배로 변형됐는지를 함께 적고</b>, "진짜 작은 물체에서도 통한다"는 주장은
+        640에서만 한다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">05</span><div class="tick">SAM<br>검증</div></div>
+  <div class="body">
+    <h2>SAM을 쓰기 전에 먼저 시험한다</h2>
+    <p>
+      네 데이터를 합치면 볼트·너트·나사는 윤곽 정답이 90% 이상 확보된다. <b>와셔만 9.5%다.</b>
+    </p>
+    <div class="sheet">
+      <table>
+        <thead><tr><th>부품</th><th class="n">네모 정답</th><th class="n">윤곽 정답</th><th class="n">비율</th></tr></thead>
+        <tbody>
+          <tr><td>볼트</td><td class="n">11,828</td><td class="n">11,165</td><td class="n">94.4%</td></tr>
+          <tr><td>너트</td><td class="n">16,315</td><td class="n">14,962</td><td class="n">91.7%</td></tr>
+          <tr><td>나사</td><td class="n">4,017</td><td class="n">3,614</td><td class="n">90.0%</td></tr>
+          <tr><td><b>와셔</b></td><td class="n">1,275</td><td class="n"><b>121</b></td><td class="n no">9.5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      와셔를 빼는 선택지는 없다. 사진 <b>232장 중 138장(59%)</b>에 와셔가 실제로 찍혀 있어서,
+      종류만 지우면 그 물체들이 정답 없는 상태가 되어 오히려 학습을 망친다.
+    </p>
+    <p>
+      그래서 <b>SAM으로 나머지 1,154개의 윤곽을 채운다.</b> 다만 채우기 전에 시험을 먼저 한다 —
+      <mark>이미 윤곽이 있는 121개로 SAM의 결과를 정답과 맞대어 보고</mark>,
+      물체 크기별로 얼마나 정확한지 잰다. 와셔는 가운데가 뚫린 모양이라 SAM이 구멍을 어떻게
+      처리하는지가 관건인데, 121개면 바로 드러난다.
+    </p>
+    <p>
+      <b>결과가 나쁘면 채우지 않는다.</b> 그때는 "분할은 3종, 탐지는 4종"으로 범위를 좁히고
+      그 실측을 근거로 남긴다. <b>도구는 쓰기 전에 재는 순서</b>를 지킨다 —
+      검증 없이 얹은 도구는 결과가 좋아 보여도 무엇을 재고 있는지 알 수 없다.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">06</span><div class="tick">판단<br>기준</div></div>
+  <div class="body">
+    <h2>무엇으로 "잘 됐다"를 판단하나</h2>
+    <ul>
+      <li><b>주 지표는 엄격한 기준의 정확도</b>다. 느슨한 기준은 "찾았는가"만 보므로 물체가 작아져도
+          잘 안 떨어진다. 먼저 무너지는 건 <b>"얼마나 정확히 감쌌는가"</b>이고, 그건 엄격한 기준에서만 보인다.</li>
+      <li><b>대조군 성적을 반드시 함께 보고한다.</b> 줄여서 만든 곡선만 내놓으면
+          "실제로는 안 통할 것을 통한다고 주장"하게 된다.</li>
+      <li><b>종류를 구분하는 실력은 arg-fixings3에서만 잰다.</b> screw-nut-bolt는 사진 한 장에
+          한 종류만 들어 있어(볼트 500장·너트 500장·나사 300장) 구분 실력을 잴 수 없다.</li>
+      <li><b>원거리 배경에서의 오탐</b>도 잰다. 대조군에 부품 없는 배경 사진이 있어,
+          배경 무늬를 부품으로 착각하는 정도를 직접 확인할 수 있다.</li>
+      <li><b>데이터 출처별로 나눠 보고한다.</b> screw-nut-bolt가 전체 부품의 81%를 차지해
+          합친 평균만 보면 그쪽 성격에 가려진다.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">07</span><div class="tick">이번엔<br>안 함</div></div>
+  <div class="body">
+    <h2>지금 하지 않는 것과 그 이유</h2>
+    <p>
+      빈피킹을 완성하려면 아래가 다 필요하다. 다만 <b>이번 범위에 넣지 않는다</b> —
+      전제가 아직 안 갖춰졌거나, 지금 하면 재려는 것을 오염시키기 때문이다.
+      나중에 다시 열어볼 후보로 남겨둔다.
+    </p>
+
+    <div class="sheet">
+      <table>
+        <thead><tr><th>주제</th><th>무엇인가</th><th>왜 지금은 아닌가</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>물체 자세 추정</b><br><span class="mono" style="font-size:11px;color:var(--faint)">6D pose</span></td>
+            <td>부품이 어느 방향으로 놓였는지까지 알아내는 것. 로봇이 집게를 어떤 각도로 넣을지 정하려면 필요하다</td>
+            <td>자세 정답이 붙은 공개 데이터는 빈피킹용 몇 종뿐인데, 그것들이 <b>02절에서 제외한 바로 그 데이터</b>다(사진 한 장에 한 종류만, 또는 정답 비공개). 자세를 배우려고 그 데이터를 쓰면 종류 구분 실력을 못 재게 된다. <b>윤곽이 자세 추정의 입력</b>이므로 앞 단계를 먼저 확실히 한다</td>
+          </tr>
+          <tr>
+            <td><b>집는 지점 계산</b><br><span class="mono" style="font-size:11px;color:var(--faint)">grasp</span></td>
+            <td>"이 부품의 여기를 잡으면 안 미끄러진다"를 정하는 것</td>
+            <td>윤곽이 나오면 계산 자체는 이어갈 수 있지만, 맞는지 확인하려면 <b>실제 로봇으로 집어봐야 한다.</b> 사진만으로는 채점이 안 되므로 범위 밖</td>
+          </tr>
+          <tr>
+            <td><b>깊이 카메라 활용</b><br><span class="mono" style="font-size:11px;color:var(--faint)">RGB-D</span></td>
+            <td>색 사진에 더해 거리 정보를 같이 쓰는 것. 겹친 부품을 나누는 데 특히 유리하다</td>
+            <td>채택한 네 데이터가 <b>전부 일반 사진뿐</b>이라 쓸 거리 정보가 없다. 깊이가 있는 데이터는 종류가 하나뿐인 것들이라 02절에서 제외됐다</td>
+          </tr>
+          <tr>
+            <td><b>사진을 잘라 보는 추론</b><br><span class="mono" style="font-size:11px;color:var(--faint)">타일링</span></td>
+            <td>큰 사진을 조각내 각각 자세히 본 뒤 합치는 방법. 작은 물체 탐지에 흔히 쓴다</td>
+            <td>이 방법은 <b>"AI가 조각 크기로 학습돼 있다"는 전제</b> 위에 있다. 이번 실험은 반대로 사진을 줄여가며 학습하므로 전제가 충돌한다. 쓰려면 조각으로 다시 학습해야 해서 별도 실험이 된다</td>
+          </tr>
+          <tr>
+            <td><b>컴퓨터로 그린 학습 자료</b><br><span class="mono" style="font-size:11px;color:var(--faint)">3D 렌더 · 생성 AI</span></td>
+            <td>3D 모델을 렌더링하거나 생성 AI로 사진을 새로 만들어 학습 자료를 늘리는 것</td>
+            <td>이 프로젝트가 재려는 게 <b>"진짜 카메라 화질과 인공적으로 만든 화질의 차이"</b>인데, 렌더링·생성 사진은 그 차이를 새로 하나 더 만든다. 재려는 대상을 오염시키므로 쓰지 않는다</td>
+          </tr>
+          <tr>
+            <td><b>속도 최적화와 배포</b><br><span class="mono" style="font-size:11px;color:var(--faint)">경량화</span></td>
+            <td>모델을 가볍게 만들어 로봇 옆 장비에서 빠르게 돌리는 것</td>
+            <td>정확도가 어디서 무너지는지 아직 모르는 상태에서 가볍게 만들면, 성능이 떨어져도 <b>원인이 경량화인지 소형 물체인지 구분되지 않는다.</b> 곡선을 먼저 그린다</td>
+          </tr>
+          <tr>
+            <td><b>사진을 새로 찍거나 라벨을 새로 다는 것</b></td>
+            <td>필요한 장면을 직접 촬영하고 사람이 윤곽을 그리는 것</td>
+            <td>가장 확실한 해결책이지만 이 프로젝트의 전제를 벗어난다. <b>공개 데이터만으로 어디까지 되는가</b>가 질문이다. SAM으로 윤곽을 채우는 건 사람이 그리는 게 아니라서 이 원칙을 깨지 않는다</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull">
+      <b>공통 기준.</b> "해보면 좋을 것"이 아니라 <b>"지금 하면 무엇을 알 수 있나"</b>로 판단했다.
+      답이 흐려지는 항목은 뒤로 미룬다.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">08</span><div class="tick">진행<br>순서</div></div>
+  <div class="body">
+    <h2>진행 순서</h2>
+    <ol class="flow">
+      <li><b>자료 정리</b>
+        비율 보정(512×288 복원), 빈 종류 표시 제거, 종류 이름 통일, 대조군 분리.</li>
+      <li><b>SAM 시험</b>
+        기존 윤곽 121개로 SAM의 정확도를 물체 크기별로 측정 → 와셔를 채울지 결정.</li>
+      <li><b>기본 성능</b>
+        640에서 분할 모델을 학습하고, 크기를 640 → 320 → 160으로 줄이며 성능 곡선을 그린다.</li>
+      <li><b>대조군 대조</b>
+        같은 크기의 물체에서 "줄여 만든 것"과 "실제로 멀리서 찍힌 것"의 성적 차이를 잰다.</li>
+      <li><b>격차 줄이기</b>
+        학습 자료에 노이즈·흐림·압축을 걸어 인위적인 깨끗함을 되돌리면 격차가 줄어드는지 시험한다.
+        줄이면서 지워진 것이 카메라 화질이므로, 되돌릴 대상도 모양이 아니라 <b>화질</b>이다.</li>
+      <li><b>정리</b>
+        효과가 있었던 것과 없었던 것, 그리고 버린 시도까지 기록으로 남긴다.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="rail"><span class="no">09</span><div class="tick">결정<br>기록</div></div>
+  <div class="body">
+    <h2>이 기획에서 정한 것</h2>
+    <p>설계 판단이 바뀌면 이 표에 한 줄을 더한다. "왜 이렇게 했나"에 대한 단일 출처다.</p>
+    <div class="sheet">
+      <table>
+        <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+        <tbody>
+          <tr><td class="n">D1</td><td>네모가 아니라 <b>윤곽</b>으로 간다</td><td>겹친 부품의 38%가 네모 겹침 기준선을 넘어 이웃에 지워질 위험</td></tr>
+          <tr><td class="n">D2</td><td>부품 종류는 <b>4종 유지</b></td><td>와셔를 빼면 사진 59%에 정답 없는 물체가 생김</td></tr>
+          <tr><td class="n">D3</td><td>데이터 <b>4종 채택</b>, 역할 분담</td><td>한 세트가 부품의 81%라 같은 무게로 섞으면 나머지가 묻힘</td></tr>
+          <tr><td class="n">D4</td><td>XYZ-IBD <b>제외</b></td><td>사진 한 장에 한 종류만 — 종류 구분 실력을 못 잼</td></tr>
+          <tr><td class="n">D5</td><td>screw-nut-bolt <b>비율 복원</b></td><td>너트 가로세로비 0.59 — 정사각형 늘림으로 모양이 찌그러짐</td></tr>
+          <tr><td class="n">D6</td><td>기준 크기 <b>640</b></td><td>대조군이 유일하게 크기 변경을 겪지 않는 값</td></tr>
+          <tr><td class="n">D7</td><td>정답 0개 사진 <b>보존</b></td><td>공구만 있는 배경 사진 — 오탐을 줄이는 재료</td></tr>
+          <tr><td class="n">D8</td><td>SAM은 <b>쓰기 전에 잰다</b></td><td>작은 물체에 약하다고 알려짐. 검증용 정답 121개가 이미 있음</td></tr>
+          <tr><td class="n">D9</td><td>자세 추정·집는 지점 <b>보류</b></td><td>자세 정답이 있는 데이터가 02절에서 제외된 것들과 겹침. 윤곽이 선행 단계</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>
+    수치는 모두 라벨 파일을 직접 열어 실측한 값이다.
+    데이터별 상세 근거와 제외 사유는 <code>docs/data-notes/</code>에 있다.
+  </p>
+</footer>
+
+</div>
