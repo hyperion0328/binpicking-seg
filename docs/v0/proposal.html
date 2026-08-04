@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>작업 순서 검증 시스템 — 기획서</title>
+<style>
+  @font-face{
+    font-family:'Gmarket Sans';
+    src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.0/GmarketSansMedium.woff') format('woff');
+    font-weight:500; font-style:normal;
+  }
+  @font-face{
+    font-family:'Gmarket Sans';
+    src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.0/GmarketSansBold.woff') format('woff');
+    font-weight:700; font-style:normal;
+  }
+  :root{
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#fafbfc;
+    --ink:#0d111a; --muted:#586170; --faint:#8b93a1;
+    --line:#e4e8ee; --line-strong:#d3d9e2;
+    --accent:#2b57ff; --accent-2:#00b6d4; --accent-ink:#1c3fd6;
+    --signal:#ff8a1e; --signal-ink:#c9640a;
+    --ok:#12b886; --hero:#0b0e15;
+    --grad:linear-gradient(135deg,#2b57ff 0%,#00b6d4 100%);
+    --shadow:0 1px 2px rgba(13,17,26,.04),0 8px 28px rgba(13,17,26,.06);
+    --radius:16px;
+    --mono:"Gmarket Sans",ui-monospace,"JetBrains Mono","Cascadia Code",Consolas,"Courier New",monospace;
+    --sans:"Gmarket Sans",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);background:var(--bg);color:var(--ink);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    font-feature-settings:"tnum" 1;letter-spacing:-.01em;
+  }
+  ::selection{background:rgba(43,87,255,.18)}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  section{padding:76px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  /* ---------- progress + nav ---------- */
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad);z-index:60;transition:width .1s linear}
+  nav.top{
+    position:sticky;top:0;z-index:50;background:rgba(244,245,247,.82);
+    backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line);
+  }
+  nav.top .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav.top .brand{font-weight:700;letter-spacing:-.02em;font-size:15px;white-space:nowrap}
+  nav.top .brand b{color:var(--accent)}
+  nav.top .links{display:flex;gap:4px;margin-left:auto;overflow:auto}
+  nav.top a{
+    font-size:12.5px;color:var(--muted);text-decoration:none;padding:7px 11px;border-radius:9px;
+    white-space:nowrap;font-family:var(--mono);font-weight:500
+  }
+  nav.top a:hover{color:var(--ink);background:var(--surface)}
+
+  /* ---------- hero ---------- */
+  .hero{background:var(--hero);color:#eef1f6;border-top:0;position:relative;overflow:hidden;padding:96px 0 88px}
+  .hero::before{
+    content:"";position:absolute;inset:0;opacity:.5;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:38px 38px;mask-image:radial-gradient(120% 80% at 70% 0%,#000 30%,transparent 80%)
+  }
+  .hero::after{
+    content:"";position:absolute;right:-160px;top:-160px;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(43,87,255,.35),transparent 62%);filter:blur(6px)
+  }
+  .hero .wrap{position:relative}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8ea3ff;display:flex;align-items:center;gap:10px;margin-bottom:22px
+  }
+  .eyebrow::before{content:"";width:26px;height:1.5px;background:#8ea3ff;display:inline-block}
+  .detect{position:relative;display:inline-block;padding:6px 2px}
+  .detect::before,.detect::after{content:"";position:absolute;width:22px;height:22px;border:2px solid var(--accent);pointer-events:none}
+  .detect::before{left:-14px;top:-12px;border-right:0;border-bottom:0}
+  .detect::after{right:-14px;bottom:-12px;border-left:0;border-top:0}
+  h1.title{font-size:clamp(34px,6vw,60px);line-height:1.06;font-weight:700;letter-spacing:-.035em;max-width:16ch}
+  .title .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{margin-top:26px;font-size:clamp(16px,2.1vw,20px);color:#c3ccdb;max-width:60ch;line-height:1.62}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
+  .chip{
+    font-family:var(--mono);font-size:12px;color:#d7deea;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);padding:6px 11px;border-radius:999px
+  }
+  .chip.on{background:rgba(43,87,255,.16);border-color:rgba(120,150,255,.5);color:#cfd9ff}
+  .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:38px;padding-top:26px;border-top:1px solid rgba(255,255,255,.1)}
+  .meta div{display:flex;flex-direction:column;gap:3px}
+  .meta .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7c88a0}
+  .meta .v{font-size:14px;color:#e7ecf4;font-weight:500}
+
+  /* ---------- section headers ---------- */
+  .shead{display:flex;align-items:baseline;gap:16px;margin-bottom:30px}
+  .snum{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--accent);letter-spacing:.06em}
+  .shead h2{font-size:clamp(23px,3.4vw,32px);font-weight:700;letter-spacing:-.03em}
+  .sdesc{color:var(--muted);font-size:16px;max-width:70ch;margin:-14px 0 30px 0}
+  .sdesc.tight{margin-top:-8px}
+
+  p{color:#2b3240}
+  .lead{font-size:17px;color:#2b3240}
+  strong{font-weight:500;color:var(--ink)}
+  .hl{background:linear-gradient(transparent 62%,rgba(43,87,255,.16) 0);padding:0 1px}
+
+  /* ---------- generic cards ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px;box-shadow:var(--shadow)}
+  .card h3{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;display:flex;align-items:center;gap:9px}
+  .card p{font-size:14.5px;color:var(--muted);line-height:1.62}
+  .ic{width:26px;height:26px;border-radius:8px;background:rgba(43,87,255,.1);color:var(--accent);
+     display:grid;place-items:center;font-family:var(--mono);font-size:13px;font-weight:500;flex:none}
+
+  /* ---------- pipeline ---------- */
+  .pipe{display:flex;align-items:stretch;flex-wrap:wrap;column-gap:0;row-gap:14px;margin:6px 0 8px}
+  .pnode{
+    flex:1 1 118px;background:var(--surface);border:1px solid var(--line-strong);border-radius:13px;
+    padding:14px 11px;text-align:center;box-shadow:var(--shadow);position:relative;min-width:0
+  }
+  .pnode .t{font-weight:500;font-size:14px;letter-spacing:-.025em}
+  .pnode .s{font-size:11px;color:var(--faint);margin-top:5px;line-height:1.45;font-family:var(--mono)}
+  .pnode.key{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+  .parrow{align-self:center;color:var(--accent);font-size:17px;padding:0 4px;flex:none}
+  @media(max-width:760px){.parrow{transform:rotate(90deg);padding:4px 0;width:100%}}
+
+  /* ---------- tables ---------- */
+  .twrap{overflow:auto;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--surface-2);font-size:12px;letter-spacing:.03em;color:var(--muted);font-weight:500;text-transform:uppercase;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:var(--surface-2)}
+  td .mono,.mn{font-family:var(--mono);font-size:12.5px}
+  .pick{color:var(--accent);font-weight:500}
+  .star{color:var(--signal);letter-spacing:1px;font-size:12px}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(43,87,255,.1);color:var(--accent-ink);font-weight:500}
+  .tag.amber{background:rgba(255,138,30,.14);color:var(--signal-ink)}
+  .tag.gray{background:#eef1f5;color:var(--muted)}
+  .tag.ok{background:rgba(18,184,134,.14);color:#0b7a58}
+
+  /* ---------- callout ---------- */
+  .note{border-left:3px solid var(--signal);background:rgba(255,138,30,.07);border-radius:0 12px 12px 0;padding:14px 18px;margin-top:14px}
+  .note .lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--signal-ink);font-weight:500;margin-bottom:3px}
+  .note p{font-size:14px;color:#4a4234;color:#524a3c}
+  .principle{background:linear-gradient(180deg,#fff,#fafbff);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .principle .lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:6px}
+
+  /* ---------- state / event chips ---------- */
+  .evt{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .evt code{font-family:var(--mono);font-size:12.5px;background:#fff;color:#39414f;padding:6px 11px;border-radius:8px;border:1px solid var(--line-strong)}
+  .evt code b{color:var(--accent-ink);font-weight:500}
+
+  /* ---------- fsm step rail ---------- */
+  .stepbox{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:12px;padding:11px 16px}
+  .steps .sp{display:flex;align-items:center;gap:12px;position:relative;padding:6px 0}
+  .steps .sp::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--line-strong)}
+  .steps .sp:first-child::before{top:50%}
+  .steps .sp:last-child::before{bottom:50%}
+  .steps .dot{width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--line-strong);flex:none;z-index:1}
+  .steps .sp.end .dot{border-color:var(--accent);background:var(--accent)}
+  .steps .nm{font-size:13.5px;font-weight:500;letter-spacing:-.02em}
+  .steps .sp.end .nm{color:var(--accent-ink)}
+
+  /* ---------- decision cards ---------- */
+  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .dcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}
+  .dcard .dn{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+  .dcard h3{font-size:16.5px;font-weight:700;letter-spacing:-.02em;margin:4px 0 12px}
+  .drow{display:flex;gap:10px;font-size:13.5px;margin:7px 0;align-items:flex-start}
+  .drow .dk{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:500;flex:none;width:44px;padding-top:2px}
+  .drow .dv{color:#39414f}
+  .drow.alt .dv{color:var(--muted)}
+  .ip{margin-top:13px;border-top:1px dashed var(--line-strong);padding-top:11px;font-size:13px;color:#524a3c}
+  .ip b{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--signal-ink);display:block;margin-bottom:3px}
+
+  /* ---------- decision table ---------- */
+  .dno{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500;white-space:nowrap}
+
+  /* ---------- roadmap week cards ---------- */
+  .wkgrid{display:flex;flex-wrap:wrap;align-items:stretch;column-gap:0;row-gap:14px}
+  .wkcard{flex:1 1 168px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:17px 15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .wkcard::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--grad)}
+  .wkcard .wk{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:500}
+  .wkcard h4{font-size:14.5px;font-weight:700;letter-spacing:-.025em;margin:8px 0 7px;line-height:1.35}
+  .wkcard p{font-size:12.5px;color:var(--muted);line-height:1.55}
+  .optcard{margin-top:14px;border:1.5px dashed var(--line-strong);border-radius:14px;
+    padding:15px 18px;background:var(--surface-2);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+  .optcard h4{font-size:14.5px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+  .optcard p{font-size:12.5px;color:var(--muted)}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--hero);color:#aeb7c6;padding:56px 0 46px;border-top:0}
+  footer .wrap{display:grid;gap:26px}
+  footer h4{color:#eef1f6;font-size:14px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+  footer a{color:#9fb3ff;text-decoration:none;font-size:13.5px;word-break:break-all}
+  footer a:hover{text-decoration:underline}
+  .reflist{display:grid;gap:7px}
+  .fmeta{display:flex;flex-wrap:wrap;gap:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);font-size:12.5px;color:#7c88a0}
+
+  .disc{font-size:12.5px;color:var(--faint);margin-top:26px;font-style:italic}
+
+  @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.hero{padding:72px 0 60px}nav.top .links{display:none}}
+  @media print{
+    nav.top,.progress{display:none}
+    body{background:#fff}
+    .hero,footer{background:#0b0e15 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    section{padding:34px 0;break-inside:avoid}
+    .dcard,.card,.wkcard,.optcard,.twrap{break-inside:avoid}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<nav class="top">
+  <div class="wrap">
+    <div class="brand"><b>◧</b> 작업 순서 검증</div>
+    <div class="links">
+      <a href="#s1">01 문제</a>
+      <a href="#s2">02 접근</a>
+      <a href="#s3">03 파이프라인</a>
+      <a href="#s4">04 데이터</a>
+      <a href="#s5">05 모델</a>
+      <a href="#s6">06 순서검증</a>
+      <a href="#s7">07 판정</a>
+      <a href="#s8">08 2차검증</a>
+      <a href="#s9">09 로드맵</a>
+      <a href="#s10">10 설계근거</a>
+      <a href="#s11">11 확장설계</a>
+      <a href="#s12">12 한계</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Computer Vision · 산업 조립 품질 검사</div>
+    <div class="detect">
+      <h1 class="title">조립 <span class="g">작업 순서</span>를<br/>영상으로 검증하다</h1>
+    </div>
+    <p class="lede">제조·조립 라인에서 작업이 <strong style="color:#eef1f6">정의된 표준 순서대로</strong> 수행되는지, 카메라 영상만으로 자동 검출하는 시스템. 객체 탐지로 부품·도구를 인식하고, 그 결과를 시간축 이벤트로 만들어 규칙 기반으로 순서를 판정한다.</p>
+    <div class="chips">
+      <span class="chip on">Object Detection</span>
+      <span class="chip on">Action Recognition</span>
+      <span class="chip">YOLO11 / YOLO26</span>
+      <span class="chip">RT-DETR</span>
+      <span class="chip">ByteTrack</span>
+      <span class="chip">FSM · DTW</span>
+      <span class="chip">IndustReal</span>
+      <span class="chip">BlenderProc</span>
+    </div>
+    <div class="meta">
+      <div><span class="k">Type</span><span class="v">개인 프로젝트</span></div>
+      <div><span class="k">Domain</span><span class="v">제조 · 조립 라인</span></div>
+      <div><span class="k">Role</span><span class="v">기획 · 설계 · 구현 전 과정</span></div>
+      <div><span class="k">Stack</span><span class="v">Python · PyTorch · Ultralytics</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 문제 -->
+<section id="s1"><div class="wrap">
+  <div class="shead"><span class="snum">01</span><h2>문제 정의와 목표</h2></div>
+  <p class="lead" style="max-width:72ch">수작업 조립 공정에서 <strong>순서 누락·뒤바뀜·잘못된 부품 사용</strong>은 품질 불량의 주요 원인이다. 사람이 모든 라인을 실시간으로 감시하기는 어렵고, 사후 추적도 번거롭다. 이 프로젝트는 <span class="hl">추가 센서 없이 카메라 영상만으로</span> 조립 순서의 정상 여부를 자동 판정하는 것을 목표로 한다.</p>
+  <div class="grid g3" style="margin-top:26px">
+    <div class="card"><h3><span class="ic">?</span>무엇을</h3><p>부품·도구·손을 인식하고, 그 등장·이동·소실을 표준 작업 순서와 대조해 <strong>이상(오류) 여부와 발생 시점</strong>을 검출한다.</p></div>
+    <div class="card"><h3><span class="ic">!</span>왜</h3><p>센서 부착이 어려운 다품종·비정형 조립에서도 동작하고, 하나의 영상 스트림에서 <strong>부품 종류·위치·순서를 동시에</strong> 파악할 수 있다.</p></div>
+    <div class="card"><h3><span class="ic">◔</span>제약</h3><p>단기 개인 프로젝트. 그래서 <strong>MVP를 먼저 완성</strong>하고 단계적으로 확장하는 것을 대전제로 설계했다.</p></div>
+  </div>
+  <div class="principle" style="margin-top:16px">
+    <div class="lab">설계 원칙</div>
+    <p style="font-size:15px;color:#2b3240">무거운 딥러닝을 처음부터 쓰기보다, <strong>문제 구조를 분석해 규칙으로 풀리는 부분과 학습이 꼭 필요한 부분을 분리</strong>한다. 완성 가능한 최소 파이프라인을 먼저 세우고, 정확도·유연성은 단계적으로 얹는다.</p>
+  </div>
+</div></section>
+
+<!-- 02 접근 -->
+<section id="s2"><div class="wrap">
+  <div class="shead"><span class="snum">02</span><h2>접근 개요</h2></div>
+  <p class="sdesc tight">조립 순서 검증을 하나의 학습 모델로 한 번에 푸는 대신, <strong>판정의 성격</strong>에 따라 두 계층으로 나눈다. "무엇이 언제 일어났는가(순서)"는 관측만으로 결정되지만, "그 동작이 제대로 수행됐는가(품질)"는 학습이 필요하다. 성격이 다른 두 문제를 한 모델에 밀어넣으면 학습 데이터 비용이 커지고, 오류가 났을 때 <strong>원인이 순서인지 수행인지 분리되지 않는다.</strong></p>
+  <div class="grid g2">
+    <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px rgba(43,87,255,.25),var(--shadow)">
+      <h3><span class="ic">1</span>1차 · 규칙 기반 (핵심 MVP)</h3>
+      <p>YOLO 탐지 → 트래킹 → 객체 상대 관계 기반 이벤트화 → 상태머신(FSM)으로 순서 검증. 부품의 등장·소실과 조립체 접촉 여부가 시각적으로 명확해, <strong>탐지·트래킹만으로 규칙 기반 이벤트화가 가능한 구조</strong>다.</p>
+    </div>
+    <div class="card">
+      <h3><span class="ic">2</span>2차 · 학습 기반 (선택 확장)</h3>
+      <p>1차가 "순서는 정상"으로 판정한 구간에 한해, 학습 기반 행동 인식으로 <strong>세부 동작의 정확성</strong>(예: 나사를 제대로 체결했는지)을 검증한다. 문제를 잘게 잘라 학습 비용을 줄이는 계층적(cascade) 구조.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 03 파이프라인 -->
+<section id="s3"><div class="wrap">
+  <div class="shead"><span class="snum">03</span><h2>파이프라인 아키텍처</h2></div>
+  <p class="sdesc tight">한 단계가 한 가지 일만 하도록 끊어, <strong>어디서 틀렸는지 되짚을 수 있게</strong> 했다. 탐지는 <em>공간(spatial)</em> 문제를, 트래킹은 <em>시간(temporal)</em> 문제를 푼다.</p>
+  <div class="pipe">
+    <div class="pnode"><div class="t">영상 입력</div><div class="s">RGB frames</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode key"><div class="t">YOLO 탐지</div><div class="s">class·bbox·conf</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><div class="t">트래킹</div><div class="s">ByteTrack ID</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><div class="t">Zone·이벤트</div><div class="s">ENTER/EXIT…</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode key"><div class="t">FSM 순서 검증</div><div class="s">reference 비교</div></div>
+    <div class="parrow">→</div>
+    <div class="pnode"><div class="t">판정 결과</div><div class="s">정상 / 이상+시점</div></div>
+  </div>
+  <div class="twrap" style="margin-top:22px">
+    <table>
+      <thead><tr><th>단계</th><th>책임</th><th>기술</th></tr></thead>
+      <tbody>
+        <tr><td><strong>YOLO 탐지</strong></td><td>매 프레임 부품·도구·손 탐지 → (클래스, bbox, confidence)</td><td><span class="mono">YOLO11 · YOLO26</span></td></tr>
+        <tr><td><strong>트래킹</strong></td><td>프레임 간 동일 객체에 ID 부여, 깜빡임 노이즈 제거</td><td><span class="mono">ByteTrack / DeepSORT</span></td></tr>
+        <tr><td><strong>Zone·이벤트 판정</strong></td><td>부품과 조립체의 bbox 중첩(IoA)으로 이벤트 생성</td><td><span class="mono">규칙 기반</span></td></tr>
+        <tr><td><strong>FSM 순서 검증</strong></td><td>이벤트 시퀀스를 표준 순서와 비교</td><td><span class="mono">상태머신 · DTW</span></td></tr>
+        <tr><td><strong>결과 출력</strong></td><td>정상/이상 판정, 이상 발생 시점·원인 로그</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13.5px;color:var(--muted);margin-top:18px">Zone·이벤트 판정 단계는 트래킹 결과를 <strong>4가지 이벤트</strong>로 표준화한다. <strong>ENTER/EXIT</strong>는 부품이 조립체에 닿았는지, <strong>APPEAR/DISAPPEAR</strong>는 화면(카메라 시야) 자체에서의 등장·소실이다 — FSM은 이 이벤트 시퀀스만 보고 상태를 전이한다.</p>
+  <div class="evt" style="margin-top:10px">
+    <code><b>ENTER</b>(부품A, 조립체)</code>
+    <code><b>EXIT</b>(부품A, 조립체)</code>
+    <code><b>APPEAR</b>(도구, 화면)</code>
+    <code><b>DISAPPEAR</b>(도구, 화면)</code>
+  </div>
+  <div class="twrap" style="margin-top:12px">
+    <table>
+      <thead><tr><th>이벤트</th><th>기준</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">ENTER(대상, 조립체)</span></td><td>객체 상대 관계</td><td>대상 bbox가 조립체 bbox와 임계값 이상 겹침 (IoA)</td></tr>
+        <tr><td><span class="mono">EXIT(대상, 조립체)</span></td><td>객체 상대 관계</td><td>겹침이 임계값 아래로 떨어짐</td></tr>
+        <tr><td><span class="mono">APPEAR(대상, 화면)</span></td><td>화면 전체 기준</td><td>대상이 카메라 시야에 새로 나타남</td></tr>
+        <tr><td><span class="mono">DISAPPEAR(대상, 화면)</span></td><td>화면 전체 기준</td><td>대상이 카메라 시야에서 사라짐 (가려짐 포함)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="margin-top:14px">
+    <div class="lab">왜 화면 좌표 ROI를 쓰지 않는가</div>
+    <p>IndustReal은 머리 착용 장비로 찍은 <strong>1인칭 영상이라 카메라가 상시 움직인다.</strong> 화면에 고정 ROI를 그려두면 고개를 돌리는 순간 허위 <span class="mono">EXIT</span>가 발생한다. 그래서 조립체 자체를 탐지 클래스로 두고 <strong>부품과 조립체의 상대 관계</strong>로 판정한다 — 카메라가 어떻게 움직여도 두 객체의 관계는 보존된다. IndustReal의 <span class="mono">Assembly State Detection</span> 라벨이 이 조립체 클래스를 그대로 제공한다.</p>
+  </div>
+</div></section>
+
+<!-- 04 데이터 -->
+<section id="s4"><div class="wrap">
+  <div class="shead"><span class="snum">04</span><h2>데이터 전략</h2></div>
+  <p class="sdesc tight">실제 데이터(IndustReal)로 현실성을 확보하고, 합성 데이터(BlenderProc)로 부족한 이상(오류) 케이스를 대량 생성한다.</p>
+
+  <h3 style="font-size:15px;margin:2px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">후보 데이터셋 비교</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>데이터셋</th><th>도메인</th><th>적합도</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td><strong>IndustReal</strong></td><td>산업형 조립 (1인칭)</td><td><span class="star">★★★★★</span></td><td>절차 스텝 + 실행 오류 라벨. 문제 정의와 정확히 일치</td></tr>
+        <tr><td>MECCANO</td><td>장난감 오토바이 조립</td><td><span class="star">★★★★★</span></td><td>20 클래스, 가장 다루기 쉬움</td></tr>
+        <tr><td>HA-ViD</td><td>산업 조립 다시점</td><td><span class="star">★★★★</span></td><td>구조 유사하나 규모 큼(150만 프레임)</td></tr>
+        <tr><td>Assembly101</td><td>장난감 자동차 조립/분해</td><td><span class="star">★★★</span></td><td>실수 탐지 태스크 있으나 대용량</td></tr>
+        <tr><td>IKEA ASM</td><td>가구 조립 (3인칭)</td><td><span class="star">★★★</span></td><td>원자 행동 단위라 재해석 필요</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:32px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">선정 근거 — IndustReal 요구사항 대조</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>이 프로젝트가 필요로 하는 것</th><th>IndustReal이 이미 가진 것</th></tr></thead>
+      <tbody>
+        <tr><td>이상 판정 기준</td><td><strong>38종 실행 오류 라벨</strong> — 잘못된 종류의 너트 사용 등, 01장의 "잘못된 부품 사용"과 직결</td></tr>
+        <tr><td>FSM 상태의 정답</td><td><strong>PSR 스텝 라벨</strong> — 프레임 단위라 "이상 발생 시점"까지 평가 가능</td></tr>
+        <tr><td>정상 순서가 하나가 아니라는 문제</td><td><strong>48개 유효 실행 순서</strong>로 이미 명시 — 06장 부분순서 DAG 확장의 근거</td></tr>
+        <tr><td>1차 탐지 모델 학습</td><td><strong>COCO 형식 탐지 라벨</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:32px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">선정 결과 — 실제 + 합성 병행</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h3><span class="ic">R</span>실제 · IndustReal</h3>
+      <p style="margin-bottom:10px">STEMFIE 조립식 자동차 (조립 + 유지보수 절차). 부품 36종을 27명이 수행한 84개 영상으로, 탐지 라벨과 절차 라벨이 함께 제공된다.</p>
+      <div class="evt" style="gap:6px">
+        <span class="tag gray">부품 36종</span><span class="tag gray">영상 84 · 참가자 27</span>
+        <span class="tag">COCO 탐지 라벨</span><span class="tag">PSR · AR 라벨</span>
+        <span class="tag ok">3D 모델 공개(FBX/3MF)</span><span class="tag ok">Apache 2.0</span>
+      </div>
+      <p style="font-size:12px;color:var(--faint);margin-top:6px">PSR = Procedure Step Recognition(절차 스텝 인식) · AR = Action Recognition(행동 인식)</p>
+    </div>
+    <div class="card">
+      <h3><span class="ic">S</span>합성 · BlenderProc</h3>
+      <p>IndustReal이 공개한 <strong>실제 부품 3D 모델을 그대로 임포트</strong> → 실제 영상과 클래스가 형태까지 일치. 스크립트로 순서를 자유롭게 뒤바꿔 <span class="hl">이상 케이스를 원하는 만큼 생성</span>하고, 렌더링 시점에 라벨이 자동 생성된다.</p>
+      <div class="evt" style="gap:6px;margin-top:10px">
+        <span class="tag amber">이상 케이스 대량 생성</span><span class="tag amber">라벨 자동</span><span class="tag gray">Domain Randomization</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="principle"><div class="lab">역할 분담</div>
+      <p style="font-size:14.5px;color:#2b3240"><strong>실제 데이터 →</strong> 탐지 학습의 베이스라인 + "정상 시퀀스가 실제로 어떻게 보이는지" 정의.<br/><strong>합성 데이터 →</strong> 순서 검증 로직을 평가할 네거티브(이상) 샘플 대량 생성.</p>
+    </div>
+    <div class="principle"><div class="lab">필요한 가공 작업</div>
+      <p style="font-size:14.5px;color:#2b3240">데이터를 그대로 쓸 수는 없다. ① COCO→YOLO 포맷 변환 ② 세분화 라벨을 FSM 스텝으로 매핑 ③ 표준 순서 정의 ④ 서브셋 구성 — 이때 <strong>같은 참가자·같은 영상이 학습과 검증에 동시에 들어가지 않도록</strong> 영상/참가자 단위로 split한다.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 05 모델 -->
+<section id="s5"><div class="wrap">
+  <div class="shead"><span class="snum">05</span><h2>모델 선정</h2></div>
+  <p class="sdesc tight">공개 벤치마크 순위는 일상 사진 기준이라, 너트·와셔처럼 작고 자주 가려지는 부품에서는 순서가 뒤집힐 수 있다. 게다가 탐지 오차는 이벤트 → FSM 판정으로 그대로 전파된다. 문헌 비교로 끝내지 않고 <strong>동일 조건 벤치마크로 baseline을 수치로 못 박은 뒤</strong> 최종 선택을 확정한다.</p>
+  <h3 style="font-size:15px;margin:6px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">탐지 모델 후보</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>후보</th><th>구조적 특징</th><th>채택</th></tr></thead>
+      <tbody>
+        <tr><td><strong>YOLO11</strong></td><td>검증된 안정 버전, 생태계·자료 최다 → 짧은 기간에 안전</td><td><span class="tag ok">기준선</span></td></tr>
+        <tr><td><strong>YOLO26</strong></td><td>NMS-free, <span class="mono">STAL</span>(소형 객체 라벨 할당 특화), CPU 추론 향상</td><td><span class="tag ok">소형 부품 특화</span></td></tr>
+        <tr><td>YOLOv12</td><td>attention 중심 구조 (occlusion 강점 가능성)</td><td><span class="tag gray">보류 · 속도 리스크</span></td></tr>
+        <tr><td><strong>RT-DETR</strong></td><td>DETR 계열, set prediction(NMS 불필요), occlusion 강점 가능</td><td><span class="tag amber">벤치마크 대상</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><div class="lab">벤치마크 실험 계획</div><p>동일 데이터·조건에서 <span class="mono">mAP@0.5 · mAP@0.5:0.95 · FPS · 파라미터 수 · 학습 시간</span>을 측정해 표로 비교하고, 정확도 이득이 크면 무거운 모델도 채택 후보로 연다. <strong>잠정 목표</strong> — <span class="mono">mAP@0.5 ≥ 0.70</span>(소형 부품 다수 고려), <span class="mono">FPS ≥ 15</span>(사후 배치 처리 기준 최소 처리량). 벤치마크 실측 후 조정한다.</p></div>
+  <div class="card" style="margin-top:22px"><h3><span class="ic">◎</span>트래킹 · ByteTrack vs BoT-SORT vs OC-SORT</h3><p>YOLO는 프레임 단위 탐지만 하므로 시간적 연속성을 모른다. "부품A가 수 초 머물다 사라짐" 같은 이벤트를 만들려면 프레임 간 객체 ID 유지가 필수다. 트래커도 <strong>탐지와 같은 방식으로 실측 비교</strong>한다 — 1인칭 이동 카메라라 <span class="mono">BoT-SORT</span>의 카메라 움직임 보정(CMC)이 유효할 것으로 보지만, 동일 형상 부품이 많아 외형 기반 Re-ID는 오히려 오매칭을 부를 수 있어 끄고 쓴다. 손에 의한 가림에는 <span class="mono">OC-SORT</span>의 가림 재보정이 대안이다.</p></div>
+</div></section>
+
+<!-- 06 순서검증 -->
+<section id="s6"><div class="wrap">
+  <div class="shead"><span class="snum">06</span><h2>순서 검증 로직</h2></div>
+  <p class="sdesc tight">고정 순서 FSM으로 MVP를 완성한 뒤, 데이터셋의 부분순서 특성을 반영하는 방향으로 확장한다.</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3><span class="ic">1</span>MVP · 고정 선형 FSM</h3>
+      <div class="stepbox" style="margin:8px 0 12px">
+        <div class="steps">
+          <div class="sp"><span class="dot"></span><span class="nm">대기</span></div>
+          <div class="sp"><span class="dot"></span><span class="nm">부품A 장착</span></div>
+          <div class="sp"><span class="dot"></span><span class="nm">부품B 장착</span></div>
+          <div class="sp"><span class="dot"></span><span class="nm">나사 체결</span></div>
+          <div class="sp end"><span class="dot"></span><span class="nm">완료</span></div>
+        </div>
+      </div>
+      <p>각 상태 전이 조건 = 특정 이벤트 발생. 정의되지 않은 순서로 이벤트가 오면 <span style="color:var(--signal-ink);font-weight:500">비정상 전이</span>로 플래그. 48개 실행 순서 중 대표 1~2개를 정답으로 고정.</p>
+    </div>
+    <div class="card">
+      <h3><span class="ic">2</span>확장 · 부분순서 DAG</h3>
+      <p>IndustReal은 서브골(subgoal) 기반으로 <strong>여러 유효 순서를 허용</strong>한다. 상태를 "지금까지 완료된 스텝의 집합"으로 두고, 새 이벤트의 <strong>선행조건이 완료 집합에 포함되는지</strong>만 확인 — 위상 정렬 유효성 검사와 동일하다.</p>
+      <div class="note" style="margin-top:10px"><div class="lab">절충안</div><p>스텝을 5~6개로 단순화하고 "일부만 부분순서, 나머지는 고정 순서"로 설계해 구현 부담을 줄인다.</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="principle"><div class="lab">오류 기준 재사용</div><p style="font-size:14.5px;color:#2b3240">IndustReal에 이미 정의된 <strong>38종 실행 오류</strong>(예: 잘못된 종류의 너트 사용)를 그대로 "이상 판정 기준"으로 사용한다.</p></div>
+    <div class="principle"><div class="lab">시퀀스 비교</div><p style="font-size:14.5px;color:#2b3240"><strong>순서 오류</strong>는 편집거리(Levenshtein), <strong>타이밍·속도 변동</strong>은 DTW(Dynamic Time Warping)로 정렬 비교한다.</p></div>
+  </div>
+  <div class="note" style="margin-top:16px"><div class="lab">목표 정확도 (잠정)</div><p>held-out 검증셋 기준 <strong>정상/이상 이진 판정 정확도 ≥ 85%</strong>, 이상 발생 <strong>시점 오차 ±1~2프레임 이내</strong>를 잠정 목표로 둔다. 05장 탐지 벤치마크가 확정되기 전까지는 가늠치이며, 실측 후 조정한다.</p></div>
+</div></section>
+
+<!-- 07 판정 -->
+<section id="s7"><div class="wrap">
+  <div class="shead"><span class="snum">07</span><h2>판정 시점 — 사후(오프라인) 우선</h2></div>
+  <p class="sdesc tight">재현성 있는 정량 평가가 중요한 프로젝트 특성상, 사후 판정으로 먼저 완성하고 실시간은 확장 과제로 남긴다.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>관점</th><th>실시간(온라인)</th><th>사후(오프라인) <span class="tag ok">우선</span></th></tr></thead>
+      <tbody>
+        <tr><td>구현 난이도</td><td>높음 — 디바운싱 등 노이즈 처리 필요</td><td class="pick">낮음</td></tr>
+        <tr><td>평가 · 재현성</td><td>어려움</td><td class="pick">쉬움 — 지표화 용이</td></tr>
+        <tr><td>실용성</td><td class="pick">높음 — 즉각 대응</td><td>낮음 — 사후 확인</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><div class="lab">결정</div><p>전체 맥락을 보고 판단하므로 노이즈에 강하고, DTW·편집거리로 정량 지표 산출이 깔끔하다. 실시간은 "디바운싱만 추가하면 확장 가능"한 발전 방향으로 명시한다.</p></div>
+</div></section>
+
+<!-- 08 2차검증 -->
+<section id="s8"><div class="wrap">
+  <div class="shead"><span class="snum">08</span><h2>2차 검증 — 계층적(cascade) 구조</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3><span class="ic">↑</span>문제 축소</h3><p>2차 모델을 처음부터 전체 영상에 돌리면 "행동을 찾는" 어려운 문제가 된다. 1차가 이벤트 구간을 먼저 잘라주면, 2차는 <span class="hl">"이 짧은 클립이 스텝 X를 올바르게 수행했는가"</span>라는 축소된 분류 문제가 된다.</p></div>
+    <div class="card"><h3><span class="ic">↓</span>범위 한정</h3><p>기간이 짧으면 2차 검증 대상 스텝을 <strong>1~2개로 한정</strong>한다. 정확도를 높이려 무거운 모델을 처음부터 쓰지 않고, 가벼운 모델로 문제를 축소한 뒤 무거운 모델을 투입하는 설계.</p></div>
+  </div>
+</div></section>
+
+<!-- 09 로드맵 -->
+<section id="s9"><div class="wrap">
+  <div class="shead"><span class="snum">09</span><h2>로드맵</h2></div>
+  <p class="sdesc tight">총 개발 기간은 <strong>4주</strong>. 1~4단계가 MVP 필수 구현이고, 5단계는 일정에 여유가 있을 때만 착수한다.</p>
+  <div class="wkgrid">
+    <div class="wkcard">
+      <div class="wk">1주차</div>
+      <h4>데이터 확보 · 구조 탐색</h4>
+      <p>IndustReal 다운로드, 라벨 포맷·클래스·절차 구조 파악</p>
+    </div>
+    <div class="parrow">→</div>
+    <div class="wkcard">
+      <div class="wk">2주차</div>
+      <h4>탐지 모델 벤치마크</h4>
+      <p>YOLO11 · YOLO26 vs RT-DETR 동일 조건 비교 → 확정 및 본학습</p>
+    </div>
+    <div class="parrow">→</div>
+    <div class="wkcard">
+      <div class="wk">3주차</div>
+      <h4>트래킹 + 이벤트 추출</h4>
+      <p>트래커 3종 비교, 부품–조립체 중첩 기반 이벤트 규칙 구현</p>
+    </div>
+    <div class="parrow">→</div>
+    <div class="wkcard">
+      <div class="wk">4주차</div>
+      <h4>고정 순서 FSM 구현 (MVP)</h4>
+      <p>사후 판정 + DTW·편집거리 지표 산출, 결과 정리</p>
+    </div>
+  </div>
+  <div class="optcard">
+    <h4>확장 <span class="tag gray">여유 시</span></h4>
+    <p>부분순서 DAG · 2차 행동인식 · 합성 데이터 대량화</p>
+  </div>
+</div></section>
+
+<!-- 10 설계근거 -->
+<section id="s10"><div class="wrap">
+  <div class="shead"><span class="snum">10</span><h2>설계 결정과 근거</h2></div>
+  <p class="sdesc tight">선택마다 <strong>무엇을 택했고 왜 택했는지</strong>를 남기고, 그 아래에 결정들을 관통하는 <strong>판단 기준</strong>을 정리했다. "왜 이 방법인가"를 설명할 수 있는 것이 이 프로젝트의 핵심 역량이다. 기각한 후보의 상세 비교는 각 장(04 · 05 · 07)에 있다.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th style="width:52px"></th><th style="width:22%">결정</th><th>선택 · 근거</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="dno">D1</span></td>
+          <td><strong>탐지 모델</strong></td>
+          <td><span class="pick">YOLO (1-stage)</span> — 2-stage(Faster R-CNN)가 정확도에서 유리할 수 있으나, 순서 검증은 다수 프레임을 연속 처리하는 문제라 프레임당 속도가 전체 파이프라인을 좌우한다. 커스텀 파인튜닝도 쉽다.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D1-1</span></td>
+          <td><strong>YOLO 버전</strong><br/><span style="font-size:12px;color:var(--faint)">D1의 하위 결정</span></td>
+          <td><span class="pick">YOLO11(기준선) + YOLO26(STAL)</span> — YOLO26의 STAL은 너트·와셔·핀 같은 <strong>소형 부품</strong> 탐지에 특화. YOLO11은 자료가 많아 안정적 기준선. 후보 비교는 05장 참조.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D2</span></td>
+          <td><strong>탐지와 트래킹 분리</strong></td>
+          <td><span class="pick">탐지(YOLO) + 트래킹(ByteTrack) 2단</span> — 프레임별 탐지 결과만으로는 시간적 연속성을 알 수 없다. "부품A가 수 초 머물다 사라짐" 같은 지속성 기반 이벤트를 만들려면 객체 ID 유지가 필수다.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D3</span></td>
+          <td><strong>규칙 기반(FSM) 우선</strong></td>
+          <td><span class="pick">이벤트 시퀀스 + 상태머신(FSM)</span> — 부품의 등장·소실과 조립체 접촉 여부가 시각적으로 명확해, 학습 기반 행동인식 없이도 탐지+트래킹만으로 규칙 기반 이벤트화가 가능한 구조다.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D3-1</span></td>
+          <td><strong>이벤트 기준을 객체 상대 관계로</strong><br/><span style="font-size:12px;color:var(--faint)">D3의 하위 결정</span></td>
+          <td><span class="pick">부품–조립체 중첩(IoA)</span> — 화면 좌표에 ROI를 그리는 통상적 방식은 고정 카메라를 전제한다. IndustReal은 1인칭 이동 카메라라 그 전제가 성립하지 않아, 카메라 움직임과 무관한 객체 간 상대 관계로 기준을 바꿨다. 고정 앵글을 가정하는 대신 <strong>가정 자체가 필요 없는 기준</strong>을 택한 것이다.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D4</span></td>
+          <td><strong>사후(오프라인) 판정 우선</strong></td>
+          <td><span class="pick">사후 판정, 실시간은 확장 과제</span> — 전체 맥락으로 판단해 노이즈에 강하고, DTW·편집거리로 정량 지표 산출이 쉬워 재현성 있는 평가를 확보한다. 실시간과의 비교는 07장 참조.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D5</span></td>
+          <td><strong>1차+2차 계층(cascade) 구조</strong></td>
+          <td><span class="pick">1차 규칙 계층 + 2차 학습 계층</span> — 1차가 이벤트 구간을 잘라주면 2차는 "짧은 클립 분류"라는 축소된 문제가 되어 학습 데이터·계산 비용이 준다.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D6</span></td>
+          <td><strong>IndustReal 데이터셋</strong></td>
+          <td><span class="pick">IndustReal</span> — "절차 스텝 인식 + 실행 오류 라벨"이 문제 정의와 정확히 일치. 3D 모델 공개 + Apache 2.0으로 접근성도 좋다. 후보 비교는 04장 참조.</td>
+        </tr>
+        <tr>
+          <td><span class="dno">D7</span></td>
+          <td><strong>합성 데이터 병행</strong></td>
+          <td><span class="pick">IndustReal 실제 + BlenderProc 합성</span> — 실제 데이터는 정상 수행 위주라 합성으로 이상 케이스를 통제 생성한다. 동일 3D 모델을 재사용해 도메인 갭도 줄인다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:32px 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">판단 기준</h3>
+  <p style="font-size:13.5px;color:var(--muted);margin:-4px 0 14px">개별 결정을 관통하는 기준은 넷이다. 어떤 선택지가 유명한가가 아니라, 이 문제의 구조에 무엇이 맞는가로 판단했다.</p>
+  <div class="grid g2">
+    <div class="principle"><div class="lab">① 속도는 파이프라인 전체 처리량으로</div>
+      <p style="font-size:14px;color:#2b3240">단일 프레임 성능이 아니라 다수 프레임을 연속 처리하는 구조를 기준으로 속도–정확도를 판단했다. <span style="color:var(--faint)">D1</span></p>
+    </div>
+    <div class="principle"><div class="lab">② 규칙과 학습을 먼저 갈랐다</div>
+      <p style="font-size:14px;color:#2b3240">딥러닝을 기본값으로 두지 않고, 문제 구조를 분석해 규칙으로 풀리는 부분과 학습이 꼭 필요한 부분을 나눴다. <span style="color:var(--faint)">D3 · D5</span></p>
+    </div>
+    <div class="principle"><div class="lab">③ 유명세가 아니라 데이터 특성으로</div>
+      <p style="font-size:14px;color:#2b3240">소형 부품 탐지, 절차 스텝 라벨처럼 <strong>이 문제에만 해당하는 조건</strong>을 충족하는지로 모델과 데이터셋을 골랐다. <span style="color:var(--faint)">D1-1 · D6</span></p>
+    </div>
+    <div class="principle"><div class="lab">④ 측정 가능성을 실용성보다 앞에</div>
+      <p style="font-size:14px;color:#2b3240">즉각 대응보다 재현 가능한 정량 평가를 먼저 확보했다. 지표가 서야 이후 개선의 근거가 생기기 때문이다. <span style="color:var(--faint)">D4 · D7</span></p>
+    </div>
+  </div>
+  <p class="disc">본 문서는 기획(설계) 단계 산출물이며, 지표·구현 세부는 이후 실험을 통해 확정·보강된다.</p>
+</div></section>
+
+<!-- 11 확장설계 -->
+<section id="s11"><div class="wrap">
+  <div class="shead"><span class="snum">11</span><h2>확장 설계 <span class="tag amber" style="margin-left:8px;vertical-align:3px">설계만 · 미구현</span></h2></div>
+  <div class="note" style="margin:0 0 20px">
+    <div class="lab">이 장의 범위</div>
+    <p>아래 두 설계는 검토·설계까지만 진행했고, <strong>이번 스코프에서는 구현하지 않는다.</strong></p>
+  </div>
+  <p class="sdesc" style="margin-top:0">정확도를 더 올릴 여지는 남아 있다. 두 설계는 <strong>"추가 학습 데이터를 무엇으로 채울 것인가"라는 같은 문제에 대한 서로 다른 답</strong>이고, 미룬 이유도 각각 다르다 — E1은 오버피팅 위험 때문에, E2는 05장 벤치마크로 baseline이 확정된 뒤라야 의미가 있기 때문이다.</p>
+
+  <h3 style="font-size:15px;margin:0 0 12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">E1 vs E2 — 같은 목표, 다른 안전장치</h3>
+  <div class="twrap" style="margin-bottom:26px">
+    <table>
+      <thead><tr><th></th><th>E1 · 사람 재검토 루프</th><th>E2 · 혼동행렬 하드 네거티브</th></tr></thead>
+      <tbody>
+        <tr><td><strong>판단 주체</strong></td><td>사람이 그때그때 판단</td><td class="pick">검증셋 정답 라벨과 기계적 대조</td></tr>
+        <tr><td><strong>대상 범위</strong></td><td>사람 눈에 걸린 일부만</td><td class="pick">held-out 검증셋 전체, 누락 없음</td></tr>
+        <tr><td><strong>재현성</strong></td><td>리뷰어 성향에 따라 달라짐</td><td class="pick">같은 검증셋이면 항상 동일</td></tr>
+        <tr><td><strong>주 위험</strong></td><td>리뷰어의 판단 패턴까지 학습</td><td>검증셋에만 있는 우연한 약점</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dcard" style="margin-bottom:16px">
+    <div class="dn">E1 <span class="tag amber" style="margin-left:6px">미구현</span></div><h3>사람 재검토 피드백 루프 — 추가 학습(재학습) 파이프라인</h3>
+    <p style="font-size:14.5px;color:var(--muted);margin:2px 0 18px;max-width:74ch">디바운싱·dwell time·복합조건(CEP, Complex Event Processing — 여러 원시 이벤트를 조합해 상위 의미로 해석)으로 노이즈성 오판단을 줄여도, 규칙 자체의 경계값 근처에서 나는 오판단은 남는다. 이걸 이진 판정으로 강제하지 않고, 사람 개입 지점과 그 결과가 모델 추가 학습으로 이어지는 경로를 파이프라인 설계에 명시적으로 남긴다.</p>
+
+    <div class="pipe" style="margin-bottom:20px">
+      <div class="pnode"><div class="t">사후 판정 출력</div><div class="s">정상 / 이상 / 재검토</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode"><div class="t">재검토 케이스</div><div class="s">conf 낮음 · threshold 근접</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode"><div class="t">사람 검토</div><div class="s">정답 라벨 + 원인 태그</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode"><div class="t">재학습 데이터셋 편입</div><div class="s">태그별 라우팅</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode key"><div class="t">(주기적) 추가 학습</div><div class="s">최소 N건 누적 시</div></div>
+    </div>
+
+    <p style="font-size:13px;color:var(--faint);margin:0 0 8px;font-family:var(--mono);letter-spacing:.02em">판정 3단 확장 — 재검토 트리거 조건</p>
+    <div class="grid g3" style="margin-bottom:20px">
+      <div class="principle"><p style="font-size:13.5px;color:#2b3240">탐지 confidence가 낮은 채로 최종 판정에 반영된 경우</p></div>
+      <div class="principle"><p style="font-size:13.5px;color:#2b3240">dwell 카운터가 threshold 근처(예: 10 중 8~9)에서 시퀀스 종료</p></div>
+      <div class="principle"><p style="font-size:13.5px;color:#2b3240">디바운스 확정 직전에 시퀀스가 종료된 경우</p></div>
+    </div>
+
+    <div class="twrap" style="margin-bottom:18px">
+      <table>
+        <thead><tr><th>원인 태그</th><th>라우팅 대상</th></tr></thead>
+        <tbody>
+          <tr><td>탐지 confidence 문제</td><td>YOLO 재학습(파인튜닝) 후보 데이터셋</td></tr>
+          <tr><td>threshold 경계 문제 (dwell/debounce)</td><td>규칙 파라미터 보정 사례집 — 재학습이 아니라 <strong>사람이 threshold를 재튜닝</strong></td></tr>
+          <tr><td>새로운 오류 유형</td><td>FSM/이벤트 정의 확장 후보</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="margin-bottom:16px">
+      <div class="lab">왜 지금 추가 학습을 구현하지 않는가 — 오버피팅 리스크</div>
+      <p>① 재검토 표본은 정의상 "애매했던 경계 사례"라는 편향된 소수 표본 — 단기 프로젝트 특성상 개수도 적어, 그대로 파인튜닝하면 일반적인 탐지력이 아니라 그 몇 장의 특정 프레임을 암기하는 방향으로 갈 수 있다.<br>
+      ② IndustReal은 27명 참가자로 한정 — 재검토 표본이 일부 참가자에게 몰리면 "소형 부품 탐지"가 아니라 그 참가자들의 손 모양·작업 습관에 과적합될 위험이 있다.<br>
+      ③ 같은 사람이 계속 라벨링하면, 모델이 정답이 아니라 그 리뷰어의 판단 패턴(과 실수)을 학습하고, 다음 라운드의 "애매한 케이스" 선별에도 그 편향이 반영되는 순환이 생길 수 있다.</p>
+    </div>
+
+    <div class="ip">
+      <b>실제로 추가 학습을 구현한다면 필요한 안전장치 (참고용, 미구현)</b>
+      이 루프와 무관하게 손대지 않는 고정 held-out 검증셋을 유지해 재학습 전후 성능을 항상 비교 · 재학습 배치에 재검토 케이스만이 아니라 랜덤 정상 샘플을 섞어 분포 편향 완화 · 재학습 데이터도 영상/참가자 단위 split(04장) 원칙을 동일하게 적용 · 재학습 빈도를 제한(예: 최소 N건 누적 시에만)해 매 건마다 반응하지 않음
+    </div>
+  </div>
+
+  <div class="dcard">
+    <div class="dn">E2 <span class="tag amber" style="margin-left:6px">미구현</span></div><h3>혼동행렬 기반 합성 하드 네거티브</h3>
+    <p style="font-size:14.5px;color:var(--muted);margin:2px 0 18px;max-width:74ch">"어떤 클래스가 약한가"를 사람 판단이 아니라 <strong>held-out 검증셋의 지표로만</strong> 결정하고, 그 약점을 합성 데이터 생성 파라미터에 되먹인다. E1이 사람을 루프에 넣는 설계라면, E2는 사람을 루프에서 빼는 설계다.</p>
+
+    <div class="pipe" style="margin-bottom:20px">
+      <div class="pnode"><div class="t">held-out 평가</div><div class="s">클래스 쌍별 혼동행렬</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode"><div class="t">약점 클래스 식별</div><div class="s">혼동 빈도 상위</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode"><div class="t">랜덤화 파라미터 조정</div><div class="s">occlusion·각도·조명</div></div>
+      <div class="parrow">→</div>
+      <div class="pnode key"><div class="t">합성 샘플 생성 · 투입</div><div class="s">약점 비중 ↑ 재학습</div></div>
+    </div>
+
+    <div class="drow"><span class="dk">방법</span><span class="dv">held-out 검증셋의 클래스 쌍별 혼동행렬을 BlenderProc 도메인 랜덤화 파라미터(occlusion·각도·조명)에 비례 반영해 약점 클래스 합성 샘플 비중을 늘리고, 이를 <strong>추가 학습</strong>에 투입.</span></div>
+    <div class="drow"><span class="dk">교차검증</span><span class="dv">IndustReal의 38개 실제 실행 오류 유형과 대조해, 검증셋에서만 우연히 나온 약점인지 데이터셋 전반의 진짜 약점인지 구분.</span></div>
+    <div class="drow alt"><span class="dk">시점</span><span class="dv">05장 탐지 모델 벤치마크로 baseline 확정 이후, 여유 시 착수.</span></div>
+    <div class="ip"><b>판단 기준</b>"어떤 케이스가 어려운가"를 사람 재량이 아니라 held-out 지표로만 고정해, E1과 같은 오버피팅 함정(사람 직관에 과적합)을 원천적으로 피했다.</div>
+  </div>
+</div></section>
+
+<!-- 12 한계 -->
+<section id="s12"><div class="wrap">
+  <div class="shead"><span class="snum">12</span><h2>한계</h2></div>
+  <p class="sdesc tight">11장의 확장 설계가 "왜 아직 안 했는가"라면, 이 장은 <strong>지금 스코프가 애초에 다루지 않는 범위</strong>를 정리한 것이다. 한계를 명시하는 것 자체가 설계 완성도의 일부다.</p>
+  <div class="grid g2">
+    <div class="card"><h3><span class="ic">1</span>조립체 탐지가 단일 실패점</h3><p>실측(D1) 결과 부품 단위 bbox는 라벨에 없어, 이벤트 판정은 부품–조립체 상대 관계가 아니라 <strong>조립체 상태(24종) 분류 그 자체</strong>로 바뀌었다. 조립체 탐지·분류가 흔들리면(손·몸에 가려지거나 상태 자체가 애매한 구간) 그 프레임의 판정이 통째로 불가능해진다는 결론은 그대로다 — 오히려 실측(D3~D5)으로 구체적인 취약 구간까지 확인됐다(아래 참고).</p></div>
+    <div class="card"><h3><span class="ic">2</span>대표 순서 1개만 정답 (MVP) — <strong>실측 확인</strong></h3><p>IndustReal이 허용하는 48개 유효 순서 중 MVP는 대표 1개만 고정 순서로 처리한다. val 9개 영상 실측(2026-07-30)에서 이진 판정 정확도 <strong>44.4%</strong>(목표 85%)로 크게 미달했는데, 정상 영상 5개 중 재작업(이미 끝낸 서브골을 다시 여는 유효 경로) 1건이 이 한계로 직접 오탐됐다 — 예상이 아니라 실측으로 확인된 한계다. 나머지 4건은 별도 원인(중간 상태 분류 신뢰도)이라 이 한계만으로 정확도 저하 전부를 설명하진 못한다. 완화책은 06장 부분순서 DAG 확장.</p></div>
+    <div class="card"><h3><span class="ic">3</span>사후(오프라인) 판정</h3><p>이상 발생 즉시 개입이 필요한 안전사고성 오류에는 대응하지 못한다. 작업 종료 후 확인·기록 용도로 한정된다.</p></div>
+    <div class="card"><h3><span class="ic">4</span>합성-실제 도메인 갭 잔존</h3><p>IndustReal의 실제 3D 모델을 재사용해도, 조명·질감·occlusion 패턴 차이로 sim-to-real 갭이 완전히 사라지진 않는다.</p></div>
+    <div class="card"><h3><span class="ic">5</span>지속적 성능 개선 루프 미구현</h3><p>배포 이후 재검토·추가 학습 경로(11장)는 설계만 돼 있고 구현하지 않아, 최초 학습 시점 이후 성능은 자동으로 개선되지 않는다.</p></div>
+    <div class="card"><h3><span class="ic">6</span>일부 상태 분류가 구조적으로 불안정 — <strong>실측 확인</strong></h3><p>44.4% 정확도의 더 큰 원인(정상 오탐 5건 중 4건)은 재작업이 아니라 <strong>특정 상태 2종(중간 진행 단계) 자체의 분류 신뢰도</strong>였다. 벤치마크(D2)의 정적 mAP는 나쁘지 않았는데 실제 영상 시계열에서는 confidence 0.3~0.6대로 불안정했다 — 정적 벤치마크만으로는 실전 신뢰도를 보장할 수 없다는 방법론적 한계이기도 하다.</p></div>
+  </div>
+</div></section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div>
+      <h4>References</h4>
+      <div class="reflist">
+        <a href="https://timschoonbeek.github.io/industreal.html" target="_blank" rel="noopener">IndustReal — Project page · WACV 2024</a>
+        <a href="https://github.com/TimSchoonbeek/IndustReal" target="_blank" rel="noopener">github.com/TimSchoonbeek/IndustReal</a>
+        <a href="https://docs.ultralytics.com/models" target="_blank" rel="noopener">Ultralytics — Models (YOLO11 · YOLO26 · RT-DETR)</a>
+        <a href="https://ai.meta.com/blog/segment-anything-model-3/" target="_blank" rel="noopener">Meta — Segment Anything Model 3</a>
+        <a href="https://dlr-rm.github.io/BlenderProc/" target="_blank" rel="noopener">BlenderProc — Synthetic data toolkit</a>
+      </div>
+    </div>
+    <div class="fmeta">
+      <span>작업 순서 검증 시스템 · 기획서</span>
+      <span>Object Detection + Action Recognition</span>
+      <span>Assembly Process Order Verification</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // reading progress
+  const bar=document.getElementById('progress');
+  const onScroll=()=>{
+    const h=document.documentElement;
+    const p=(h.scrollTop)/(h.scrollHeight-h.clientHeight);
+    bar.style.width=(p*100).toFixed(1)+'%';
+  };
+  document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  // active nav link
+  const links=[...document.querySelectorAll('nav.top a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){
+      const id='#'+e.target.id;links.forEach(a=>a.style.color=a.getAttribute('href')===id?'var(--accent)':'');
+    }});
+  },{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(s=>s&&io.observe(s));
+</script>
+</body>
+</html>
