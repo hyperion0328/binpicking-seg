@@ -224,8 +224,10 @@ AP 는 8장에서만 나오고, 배경 16장은 **원거리 장면에서의 오�
 
 ## git
 
-- 원격 `origin` 이 로컬 경로(`/mnt/d/sod-project`)로 잡혀 있다. GitHub 원격이 아니므로
-  **push 전에 `git remote -v` 를 확인**한다.
+- 원격이 둘이다. **`origin` = `github.com:hyperion0328/binpicking-seg`(2차, push 대상)**,
+  `local` = `/mnt/d/sod-project`(옛 경로). 1차는 별도 저장소
+  `github.com:hyperion0328/sod-project` 이고 **거기엔 로컬에 없는 1차 마무리 커밋 32개가 있다** —
+  섞지 말 것. push 전에 `git remote -v` 확인.
 - `data/`, `runs/`, `outputs/`, `*.pt`, `*.pth`, `.env` 는 추적하지 않는다 — 커밋 전 `git status`.
 - 커밋 메시지에는 **무엇을 바꿨는지보다 왜 바꿨는지**를 남긴다.
 
