@@ -185,6 +185,27 @@
   footer{padding:44px 0 96px; color:var(--faint); font-size:13.5px;}
   footer p{max-width:66ch;}
 
+  /* ── 참고 문헌 ── */
+  .refs{border-top:1px solid var(--line); padding-top:40px; margin-top:8px;}
+  .refs h3{margin:0 0 6px; font-size:15px; letter-spacing:-.01em;}
+  .refs .rnote{color:var(--muted); font-size:13.5px; margin:0 0 20px; max-width:66ch;}
+  .refs h4{
+    font-family:var(--mono); font-size:10.5px; font-weight:500; letter-spacing:.14em;
+    color:var(--accent); margin:26px 0 10px;
+  }
+  .refs ol{list-style:none; padding:0; margin:0; counter-reset:r;}
+  .refs li{
+    counter-increment:r; position:relative; padding-left:32px;
+    margin-bottom:14px; font-size:13.5px; line-height:1.62; max-width:78ch;
+  }
+  .refs li::before{
+    content:"[" counter(r) "]"; font-family:var(--mono); font-size:11.5px;
+    color:var(--faint); position:absolute; left:0; top:1px;
+  }
+  .refs .t{color:var(--ink); font-weight:700;}
+  .refs .d{color:var(--muted);}
+  .refs a{font-family:var(--mono); font-size:11.5px; word-break:break-all;}
+
   @media (max-width:640px){
     .hero{padding:62px 0 56px;}
     section{padding:48px 0;}
@@ -209,7 +230,7 @@
       <a href="#s9">09 보류</a>
       <a href="#s10">10 순서</a>
       <a href="#s11">11 결정</a>
-      <a href="#s12">12 참고 문헌</a>
+      <a href="#refs">참고 문헌</a>
     </div>
   </div>
 </nav>
@@ -813,81 +834,103 @@
         <tr><td class="n">D10</td><td><b>YOLO11-seg</b> 주력, YOLO26은 비교 1회</td><td>학습 조건이 검증된 계열이고 n·s·m으로 크기 축을 뗄 수 있음. 설정이 YOLO11 기준이라 계열 우열은 선언하지 않음</td></tr>
         <tr><td class="n">D11</td><td><b>P2 헤드</b>를 실험 축에 포함</td><td>가장 촘촘한 격자가 8픽셀인데 160에서 부품이 3~14픽셀 — 격자보다 작아지는 구간이 생김</td></tr>
         <tr><td class="n">D12</td><td>회전·상하 뒤집기 <b>켜고</b>, 섞기 증강은 <b>끔</b></td><td>톱다운 장면이라 방향이 자유로움. 이미 겹친 장면에 인위적 겹침을 더하면 원인 구분이 안 됨</td></tr>
-        <tr><td class="n">D13</td><td>오려붙이기를 <b>크기 변형·사진 비중 조절과 함께</b> 켬</td><td>원 논문들이 보고한 조건이 짝을 이룸 — 한쪽만 쓰면 방법의 절반만 적용한 것이 됨(12절)</td></tr>
+        <tr><td class="n">D13</td><td>오려붙이기를 <b>크기 변형·사진 비중 조절과 함께</b> 켬</td><td>원 논문들이 보고한 조건이 짝을 이룸 — 한쪽만 쓰면 방법의 절반만 적용한 것이 됨(하단 참고 문헌)</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<section id="s12">
-  <div class="shead"><span class="snum">12</span><h2>참고 문헌</h2></div>
-  <p class="sdesc">기법을 고르고 버린 근거가 된 자료. 버린 쪽도 함께 적는 이유는, 무엇을 보고 안 쓰기로 했는지가 곧 판단의 일부이기 때문이다.</p>
+<div class="refs" id="refs">
+  <h3>참고 문헌</h3>
+  <p class="rnote">
+    기법을 고르고 버린 근거. 버린 쪽도 함께 적는다 — 무엇을 읽고 안 쓰기로 했는지가 판단의 일부다.
+  </p>
 
-  <h3>이번 학습에 반영한 것</h3>
-  <div class="twrap">
-    <table>
-      <thead><tr><th>자료</th><th>어디에 썼나</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><b>Small Object Detection: A Comprehensive Survey</b> (2025)<br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2503.20516">arxiv.org/abs/2503.20516</a></td>
-          <td>소형 객체 문제를 어떤 축으로 나눠 보는지의 틀. 격자 해상도(P2)와 증강을
-              같은 문제의 다른 대응으로 보는 관점이 여기서 왔다</td>
-        </tr>
-        <tr>
-          <td><b>Kisantal et al., Augmentation for Small Object Detection</b> (2019)<br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/1902.07296">arxiv.org/abs/1902.07296</a></td>
-          <td>오려붙이기의 근거이자, <b>작은 물체가 담긴 사진을 더 자주 뽑는</b> 두 번째 갈래의 근거.
-              07절에서 둘을 함께 켠다</td>
-        </tr>
-        <tr>
-          <td><b>Ghiasi et al., Simple Copy-Paste Is a Strong Data Augmentation Method</b> (CVPR 2021)<br>
-              <a class="mono" style="font-size:11.5px" href="https://openaccess.thecvf.com/content/CVPR2021/papers/Ghiasi_Simple_Copy-Paste_Is_a_Strong_Data_Augmentation_Method_for_Instance_CVPR_2021_paper.pdf">openaccess.thecvf.com</a></td>
-          <td>윤곽 단위 오려붙이기의 근거. <b>크기를 크게 흔드는 변형과 짝지어야</b> 효과가 크다는
-              조건도 여기서 가져왔다</td>
-        </tr>
-        <tr>
-          <td><b>Domain Randomization for Manufacturing Object Detection</b> (SIP15-OD)<br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2506.07539">arxiv.org/abs/2506.07539</a></td>
-          <td>컴퓨터로 그린 학습 자료가 실제 촬영본과 어긋나는 문제. 09절에서 렌더링·생성 자료를
-              쓰지 않기로 한 근거</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <h4>적용</h4>
+  <ol>
+    <li>
+      <span class="t">Small Object Detection: A Comprehensive Survey</span> (2025)<br>
+      <span class="d">소형 객체 탐지 기법의 분류 체계. 다중 스케일 특징 계층(FPN/P2 확장), 데이터 증강,
+      문맥 활용, 손실 설계를 같은 문제에 대한 서로 다른 대응으로 정리한다. 06절의 P2 헤드 도입과
+      07절 증강 설계가 이 축을 따른다.</span><br>
+      <a href="https://arxiv.org/abs/2503.20516">arxiv.org/abs/2503.20516</a>
+    </li>
+    <li>
+      <span class="t">Kisantal et al. — Augmentation for Small Object Detection</span> (2019)<br>
+      <span class="d">소형 객체 성능 저하를 두 축으로 완화한다 — (1) 소형 객체가 포함된 이미지의
+      <b>오버샘플링</b>, (2) 이미지 내 소형 객체 인스턴스 <b>복제·재배치</b>.
+      07절에서 둘을 함께 적용한다. 오버샘플링은 <code>rf-screw-nut-bolt</code>가 인스턴스의 81%를
+      차지하는 소스 쏠림 완화에도 동시에 작용한다.</span><br>
+      <a href="https://arxiv.org/abs/1902.07296">arxiv.org/abs/1902.07296</a>
+    </li>
+    <li>
+      <span class="t">Ghiasi et al. — Simple Copy-Paste Is a Strong Data Augmentation Method
+      for Instance Segmentation</span> (CVPR 2021)<br>
+      <span class="d">인스턴스 마스크 단위 copy-paste. 핵심 조건은 <b>large-scale jittering</b>과의
+      결합으로, 스케일 지터 폭이 좁으면 이득이 크게 줄어든다. ultralytics 기본값
+      <code>scale: 0.5</code>는 폭이 좁고 <code>(min, max)</code> 튜플을 받으므로 범위를 넓혀
+      <code>copy_paste</code>와 함께 켠다.</span><br>
+      <a href="https://openaccess.thecvf.com/content/CVPR2021/papers/Ghiasi_Simple_Copy-Paste_Is_a_Strong_Data_Augmentation_Method_for_Instance_CVPR_2021_paper.pdf">openaccess.thecvf.com — CVPR 2021</a>
+    </li>
+    <li>
+      <span class="t">Domain Randomization for Manufacturing Object Detection</span> (SIP15-OD)<br>
+      <span class="d">렌더링 기반 합성 데이터와 실촬영 사이의 도메인 갭. 09절에서 3D 렌더·생성
+      데이터를 배제한 근거 — 이 프로젝트의 측정 대상이 "실촬영 화질 대 인위적 화질"의 격차라,
+      합성 데이터는 측정 대상 자체를 오염시킨다.</span><br>
+      <a href="https://arxiv.org/abs/2506.07539">arxiv.org/abs/2506.07539</a>
+    </li>
+  </ol>
 
-  <h3>검토했으나 이번엔 쓰지 않는 것</h3>
-  <div class="twrap">
-    <table>
-      <thead><tr><th>자료</th><th>왜 안 쓰나</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><b>SAHI — Slicing Aided Hyper Inference</b><br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2202.06934">arxiv.org/abs/2202.06934</a></td>
-          <td>사진을 조각내 보는 방법. <b>"AI가 조각 크기로 학습돼 있다"는 전제</b>가 이번 실험과
-              충돌한다(09절)</td>
-        </tr>
-        <tr>
-          <td><b>Solovyev et al., Weighted Boxes Fusion</b><br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/1910.13302">arxiv.org/abs/1910.13302</a></td>
-          <td>여러 모델의 <b>네모</b>를 합치는 방법. 우리 출력은 윤곽이라 그대로 옮겨지지 않고,
-              합치는 규칙부터 새로 정해야 한다</td>
-        </tr>
-        <tr>
-          <td><b>Plug and Play Active Learning</b><br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2211.11612">arxiv.org/abs/2211.11612</a></td>
-          <td>정답을 달 사진을 고르는 순서 문제. 이번엔 정답이 이미 다 있어서 물음 자체가 성립하지 않는다</td>
-        </tr>
-        <tr>
-          <td><b>Explaining YOLO — Grad-CAM</b><br>
-              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2211.12108">arxiv.org/abs/2211.12108</a></td>
-          <td>AI가 어디를 보는지 그림으로 확인하는 도구. <b>지표로 삼기 전에 그 지표부터 검증해야</b>
-              한다는 교훈이 05절의 SAM 검증 순서로 이어졌다</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+  <h4>검토 후 배제</h4>
+  <ol start="5">
+    <li>
+      <span class="t">SAHI — Slicing Aided Hyper Inference</span> (Akyon et al., 2022)<br>
+      <span class="d">추론 시 이미지를 타일로 분할해 각각 추론 후 병합. <b>탐지기가 타일 해상도로
+      학습돼 있다</b>는 전제 위에 있어, 원본을 축소해 학습하는 이번 방법론과 전제가 충돌한다.
+      적용하려면 타일 단위 재학습이 필요해 별도 실험이 된다.</span><br>
+      <a href="https://arxiv.org/abs/2202.06934">arxiv.org/abs/2202.06934</a>
+    </li>
+    <li>
+      <span class="t">Solovyev et al. — Weighted Boxes Fusion</span> (2021)<br>
+      <span class="d">복수 모델의 박스를 신뢰도 가중 평균으로 병합. <b>박스 좌표 평균</b>이 전제라
+      마스크 출력에 그대로 옮겨지지 않고, 마스크 병합 규칙을 새로 정의해야 한다.</span><br>
+      <a href="https://arxiv.org/abs/1910.13302">arxiv.org/abs/1910.13302</a>
+    </li>
+    <li>
+      <span class="t">Chen et al. — Plug and Play Active Learning for Object Detection</span> (2022)<br>
+      <span class="d">불확실성에 다양성·대표성 신호를 결합해 라벨링 대상을 고르는 능동 학습.
+      이번 데이터는 정답이 이미 전량 확보돼 있어 "무엇을 먼저 라벨링할까"라는 물음이 성립하지 않는다.</span><br>
+      <a href="https://arxiv.org/abs/2211.11612">arxiv.org/abs/2211.11612</a>
+    </li>
+    <li>
+      <span class="t">Explaining YOLO — Grad-CAM</span><br>
+      <span class="d">활성 맵으로 모델의 근거 영역을 시각화. 정량 지표로 쓰려면
+      <b>지표 자체의 타당성을 먼저 검증</b>해야 한다는 점이 05절의 SAM 검증 순서
+      — 도구로 쓰기 전에 측정 대상으로 세우는 것 — 으로 이어졌다.</span><br>
+      <a href="https://arxiv.org/abs/2211.12108">arxiv.org/abs/2211.12108</a>
+    </li>
+  </ol>
+
+  <h4>데이터셋</h4>
+  <ol start="9">
+    <li>
+      <span class="t">screw-nut-bolt</span> · 1,300장 / 27,265 인스턴스 / RLE 마스크 전량 / CC BY 4.0<br>
+      <a href="https://universe.roboflow.com/logesh-s-workspace/screw-nut-bolt">universe.roboflow.com/logesh-s-workspace/screw-nut-bolt</a>
+    </li>
+    <li>
+      <span class="t">ARG_FIXINGS_3</span> · 233장 / 5,541 인스턴스 / 4클래스 / CC BY 4.0<br>
+      <a href="https://universe.roboflow.com/bolts/arg_fixings_3">universe.roboflow.com/bolts/arg_fixings_3</a>
+    </li>
+    <li>
+      <span class="t">Nuts and Bolts</span> · 100장 / 579 인스턴스 / 폴리곤 전량 / CC BY 4.0<br>
+      <a href="https://universe.roboflow.com/jente-kleinh/nuts-and-bolts">universe.roboflow.com/jente-kleinh/nuts-and-bolts</a>
+    </li>
+    <li>
+      <span class="t">fasteners</span> · 179장 / 538 인스턴스 / 폴리곤 전량 / CC BY 4.0<br>
+      <a href="https://universe.roboflow.com/obb-8ehdy/fasteners-vbqng">universe.roboflow.com/obb-8ehdy/fasteners-vbqng</a>
+    </li>
+  </ol>
+</div>
 
 <footer>
   <p>
