@@ -209,6 +209,7 @@
       <a href="#s9">09 보류</a>
       <a href="#s10">10 순서</a>
       <a href="#s11">11 결정</a>
+      <a href="#s12">12 참고 문헌</a>
     </div>
   </div>
 </nav>
@@ -613,9 +614,29 @@
       <h4>오려붙이기 (copy-paste)</h4>
       <p>
         다른 사진에서 부품을 오려 붙여 <b>작은 물체 사례 자체를 늘리는</b> 방법.
-        Kisantal 등(2019)이 소형 객체에 효과를 보고했고, Ghiasi 등(CVPR 2021)이 더 일반적인
-        형태로 강력한 증강임을 확인했다. <b>윤곽이 있어야 쓸 수 있는 기법</b>이라
+        Kisantal 등(2019)이 소형 객체에 효과를 보고했고, Ghiasi 등(CVPR 2021)이
+        <b>윤곽 단위 작업에서</b> 강력한 증강임을 확인했다. 윤곽이 있어야 쓸 수 있는 기법이라
         네모만 있던 시절엔 직접 구현해야 했지만, 분할로 오면서 도구의 표준 기능이 됐다.
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag green">같이 켠다</span>
+      <h4>크게 흔드는 크기 변형</h4>
+      <p>
+        Ghiasi 등의 방법은 오려붙이기를 <b>크기를 크게 흔드는 변형과 짝지어</b> 쓸 때
+        효과가 크다고 보고한다. 붙인 물체가 늘 같은 크기로 들어가면 새로 배울 게 적기 때문이다.
+        도구의 기본값은 흔드는 폭이 좁게 잡혀 있는데, <b>둘 중 하나만 켜면 방법의 절반만 쓰는 셈</b>이라
+        폭을 넓혀 함께 켠다.
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag green">켠다</span>
+      <h4>작은 부품이 많은 사진을 더 자주 보여주기</h4>
+      <p>
+        Kisantal 등의 방법은 두 갈래다 — 오려붙이기와, <b>작은 물체가 담긴 사진 자체를
+        더 자주 뽑아 학습시키는 것.</b> 앞엣것만 쓰고 뒤엣것을 빼면 절반만 적용한 것이 된다.
+        우리 자료는 부품 크기가 출처마다 크게 다르고 한 세트가 전체의 81%를 차지하므로,
+        <b>작은 부품이 많은 사진의 비중을 올려</b> 그 쏠림을 함께 완화한다.
       </p>
     </div>
     <div class="card">
@@ -670,11 +691,12 @@
   </p>
 
   <div class="principle">
-    <div class="k mono">참고한 것</div>
-    <p style="font-size:15px">
-      Small Object Detection: A Comprehensive Survey (2025) ·
-      Kisantal et al., Augmentation for Small Object Detection (2019) ·
-      Ghiasi et al., Simple Copy-Paste Is a Strong Data Augmentation Method (CVPR 2021)
+    <div class="k mono">되짚어 얻은 것</div>
+    <p>
+      참고 문헌을 다시 읽으면서 <b>이미 채택한 기법의 빠뜨린 절반</b>을 두 군데 찾았다.
+      오려붙이기는 크기 변형과 짝일 때 값을 하고, 소형 객체 증강은 오려붙이기와
+      사진 뽑는 비중 조절이 한 쌍이다. <b>기법 이름만 가져오고 조건을 안 가져오면
+      원 논문이 보고한 효과가 안 나온다.</b>
     </p>
   </div>
 </section>
@@ -791,6 +813,77 @@
         <tr><td class="n">D10</td><td><b>YOLO11-seg</b> 주력, YOLO26은 비교 1회</td><td>학습 조건이 검증된 계열이고 n·s·m으로 크기 축을 뗄 수 있음. 설정이 YOLO11 기준이라 계열 우열은 선언하지 않음</td></tr>
         <tr><td class="n">D11</td><td><b>P2 헤드</b>를 실험 축에 포함</td><td>가장 촘촘한 격자가 8픽셀인데 160에서 부품이 3~14픽셀 — 격자보다 작아지는 구간이 생김</td></tr>
         <tr><td class="n">D12</td><td>회전·상하 뒤집기 <b>켜고</b>, 섞기 증강은 <b>끔</b></td><td>톱다운 장면이라 방향이 자유로움. 이미 겹친 장면에 인위적 겹침을 더하면 원인 구분이 안 됨</td></tr>
+        <tr><td class="n">D13</td><td>오려붙이기를 <b>크기 변형·사진 비중 조절과 함께</b> 켬</td><td>원 논문들이 보고한 조건이 짝을 이룸 — 한쪽만 쓰면 방법의 절반만 적용한 것이 됨(12절)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s12">
+  <div class="shead"><span class="snum">12</span><h2>참고 문헌</h2></div>
+  <p class="sdesc">기법을 고르고 버린 근거가 된 자료. 버린 쪽도 함께 적는 이유는, 무엇을 보고 안 쓰기로 했는지가 곧 판단의 일부이기 때문이다.</p>
+
+  <h3>이번 학습에 반영한 것</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>자료</th><th>어디에 썼나</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Small Object Detection: A Comprehensive Survey</b> (2025)<br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2503.20516">arxiv.org/abs/2503.20516</a></td>
+          <td>소형 객체 문제를 어떤 축으로 나눠 보는지의 틀. 격자 해상도(P2)와 증강을
+              같은 문제의 다른 대응으로 보는 관점이 여기서 왔다</td>
+        </tr>
+        <tr>
+          <td><b>Kisantal et al., Augmentation for Small Object Detection</b> (2019)<br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/1902.07296">arxiv.org/abs/1902.07296</a></td>
+          <td>오려붙이기의 근거이자, <b>작은 물체가 담긴 사진을 더 자주 뽑는</b> 두 번째 갈래의 근거.
+              07절에서 둘을 함께 켠다</td>
+        </tr>
+        <tr>
+          <td><b>Ghiasi et al., Simple Copy-Paste Is a Strong Data Augmentation Method</b> (CVPR 2021)<br>
+              <a class="mono" style="font-size:11.5px" href="https://openaccess.thecvf.com/content/CVPR2021/papers/Ghiasi_Simple_Copy-Paste_Is_a_Strong_Data_Augmentation_Method_for_Instance_CVPR_2021_paper.pdf">openaccess.thecvf.com</a></td>
+          <td>윤곽 단위 오려붙이기의 근거. <b>크기를 크게 흔드는 변형과 짝지어야</b> 효과가 크다는
+              조건도 여기서 가져왔다</td>
+        </tr>
+        <tr>
+          <td><b>Domain Randomization for Manufacturing Object Detection</b> (SIP15-OD)<br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2506.07539">arxiv.org/abs/2506.07539</a></td>
+          <td>컴퓨터로 그린 학습 자료가 실제 촬영본과 어긋나는 문제. 09절에서 렌더링·생성 자료를
+              쓰지 않기로 한 근거</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>검토했으나 이번엔 쓰지 않는 것</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>자료</th><th>왜 안 쓰나</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>SAHI — Slicing Aided Hyper Inference</b><br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2202.06934">arxiv.org/abs/2202.06934</a></td>
+          <td>사진을 조각내 보는 방법. <b>"AI가 조각 크기로 학습돼 있다"는 전제</b>가 이번 실험과
+              충돌한다(09절)</td>
+        </tr>
+        <tr>
+          <td><b>Solovyev et al., Weighted Boxes Fusion</b><br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/1910.13302">arxiv.org/abs/1910.13302</a></td>
+          <td>여러 모델의 <b>네모</b>를 합치는 방법. 우리 출력은 윤곽이라 그대로 옮겨지지 않고,
+              합치는 규칙부터 새로 정해야 한다</td>
+        </tr>
+        <tr>
+          <td><b>Plug and Play Active Learning</b><br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2211.11612">arxiv.org/abs/2211.11612</a></td>
+          <td>정답을 달 사진을 고르는 순서 문제. 이번엔 정답이 이미 다 있어서 물음 자체가 성립하지 않는다</td>
+        </tr>
+        <tr>
+          <td><b>Explaining YOLO — Grad-CAM</b><br>
+              <a class="mono" style="font-size:11.5px" href="https://arxiv.org/abs/2211.12108">arxiv.org/abs/2211.12108</a></td>
+          <td>AI가 어디를 보는지 그림으로 확인하는 도구. <b>지표로 삼기 전에 그 지표부터 검증해야</b>
+              한다는 교훈이 05절의 SAM 검증 순서로 이어졌다</td>
+        </tr>
       </tbody>
     </table>
   </div>
