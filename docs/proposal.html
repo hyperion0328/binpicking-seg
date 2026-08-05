@@ -157,10 +157,10 @@
 
   /* ── 막대 ── */
   .bars{margin:22px 0; max-width:60ch;}
-  .bar{display:grid; grid-template-columns:64px 1fr 92px; align-items:center; gap:12px; margin-bottom:11px;}
-  .bar .nm{font-size:14px; font-weight:700;}
+  .bar{display:grid; grid-template-columns:minmax(64px,150px) 1fr 92px; align-items:center; gap:12px; margin-bottom:11px;}
+  .bar .nm{font-size:14px; font-weight:700; line-height:1.25; word-break:keep-all;}
   .bar .track{height:11px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; overflow:hidden;}
-  .bar .fill{height:100%; background:var(--grad); border-radius:999px;}
+  .bar .fill{display:block; height:100%; min-width:2px; background:var(--grad); border-radius:999px;}
   .bar.low .fill{background:linear-gradient(90deg,#d94a3d,#f08a5d);}
   .bar .v{font-family:var(--mono); font-size:12.5px; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums;}
 
