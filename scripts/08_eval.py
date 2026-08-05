@@ -83,7 +83,10 @@ def run_val(weights, yml, imgsz, split_name):
     from sodseg.p2_seg import P2SegmentationValidator
     m = YOLO(weights)
     r = m.val(validator=P2SegmentationValidator,      # 기본 헤드에서도 동작이 같다
-              data=yml, imgsz=imgsz, batch=16, device="0", verbose=False, plots=False,
+              # 평가 배치는 지표에 영향이 없다(전체 사진에 대해 AP 를 낸다).
+              # 통일 잣대는 마스크를 입력 해상도 그대로 만들어 batch 16 x 300검출 x 640^2 가
+              # m 모델에서 14GB 를 요구해 죽었다. 4 로 낮춘다.
+              data=yml, imgsz=imgsz, batch=4, device="0", verbose=False, plots=False,
               save_txt=True,                          # -> process_mask_native: 잣대 통일
               project=os.path.abspath("runs/val"), name=split_name, exist_ok=True)
     out = {"box_mAP50_95": float(r.box.map), "box_mAP50": float(r.box.map50),
