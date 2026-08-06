@@ -514,15 +514,15 @@
     <table>
       <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
       <tbody>
-        <tr><td><b>s · 열화증강</b></td><td class="n"><b>0.963</b></td><td class="n"><b>0.622</b></td><td class="n"><b>0.418</b></td><td class="n">0.897</td></tr>
-        <tr><td>s</td><td class="n">0.961</td><td class="n">0.613</td><td class="n">0.377</td><td class="n">0.736</td></tr>
-        <tr><td>s (64회에서 멈춤)</td><td class="n">0.952</td><td class="n">0.612</td><td class="n">0.323</td><td class="n">0.870</td></tr>
-        <tr><td>s · 대비축소</td><td class="n">0.949</td><td class="n">0.609</td><td class="n">0.329</td><td class="n">0.834</td></tr>
-        <tr><td>s · 둘 다</td><td class="n">0.956</td><td class="n">0.609</td><td class="n">0.328</td><td class="n"><b>0.920</b></td></tr>
+        <tr><td><b>YOLO11 s · 열화증강</b></td><td class="n"><b>0.963</b></td><td class="n"><b>0.622</b></td><td class="n"><b>0.418</b></td><td class="n">0.897</td></tr>
+        <tr><td>YOLO11 s</td><td class="n">0.961</td><td class="n">0.613</td><td class="n">0.377</td><td class="n">0.736</td></tr>
+        <tr><td>YOLO11 s (64회에서 멈춤)</td><td class="n">0.952</td><td class="n">0.612</td><td class="n">0.323</td><td class="n">0.870</td></tr>
+        <tr><td>YOLO11 s · 대비축소</td><td class="n">0.949</td><td class="n">0.609</td><td class="n">0.329</td><td class="n">0.834</td></tr>
+        <tr><td>YOLO11 s · 둘 다</td><td class="n">0.956</td><td class="n">0.609</td><td class="n">0.328</td><td class="n"><b>0.920</b></td></tr>
         <tr><td>YOLO26 s</td><td class="n">0.952</td><td class="n">0.608</td><td class="n">0.345</td><td class="n">0.688</td></tr>
-        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup></td><td class="n">0.945</td><td class="n">0.603</td><td class="n">0.355</td><td class="n">0.889</td></tr>
-        <tr><td>m (2배 큰 모델)</td><td class="n">0.937</td><td class="n">0.598</td><td class="n">0.321</td><td class="n">0.822</td></tr>
-        <tr><td>n (작은 모델)</td><td class="n">0.919</td><td class="n">0.577</td><td class="n">0.267</td><td class="n">0.853</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 열화증강 <sup>*</sup></td><td class="n">0.945</td><td class="n">0.603</td><td class="n">0.355</td><td class="n">0.889</td></tr>
+        <tr><td>YOLO11 m (2배 큰 모델)</td><td class="n">0.937</td><td class="n">0.598</td><td class="n">0.321</td><td class="n">0.822</td></tr>
+        <tr><td>YOLO11 n (작은 모델)</td><td class="n">0.919</td><td class="n">0.577</td><td class="n">0.267</td><td class="n">0.853</td></tr>
       </tbody>
     </table>
   </div>
@@ -531,13 +531,13 @@
     <table>
       <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
       <tbody>
-        <tr><td>s + 4픽셀격자 · 열화증강</td><td class="n">0.862</td><td class="n">0.406</td><td class="n">0.116</td><td class="n">0.811</td></tr>
-        <tr><td>s + 4픽셀격자</td><td class="n">0.831</td><td class="n">0.383</td><td class="n">0.137</td><td class="n">0.736</td></tr>
-        <tr><td>s · 윤곽해상도 2배</td><td class="n">0.842</td><td class="n">0.382</td><td class="n">0.167</td><td class="n">0.857</td></tr>
-        <tr><td>s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.834</td><td class="n">0.375</td><td class="n">0.060</td><td class="n">0.779</td></tr>
-        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup> (폐기)</td><td class="n">0.775</td><td class="n">0.339</td><td class="n">0.089</td><td class="n">0.784</td></tr>
-        <tr><td>s</td><td class="n">0.731</td><td class="n">0.320</td><td class="n">0.129</td><td class="n">0.753</td></tr>
-        <tr><td>n (작은 모델)</td><td class="n">0.675</td><td class="n">0.284</td><td class="n">0.037</td><td class="n">0.851</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 열화증강</td><td class="n">0.862</td><td class="n">0.406</td><td class="n">0.116</td><td class="n">0.811</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자</td><td class="n">0.831</td><td class="n">0.383</td><td class="n">0.137</td><td class="n">0.736</td></tr>
+        <tr><td>YOLO11 s · 윤곽해상도 2배</td><td class="n">0.842</td><td class="n">0.382</td><td class="n">0.167</td><td class="n">0.857</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.834</td><td class="n">0.375</td><td class="n">0.060</td><td class="n">0.779</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 열화증강 <sup>*</sup> (폐기)</td><td class="n">0.775</td><td class="n">0.339</td><td class="n">0.089</td><td class="n">0.784</td></tr>
+        <tr><td>YOLO11 s</td><td class="n">0.731</td><td class="n">0.320</td><td class="n">0.129</td><td class="n">0.753</td></tr>
+        <tr><td>YOLO11 n (작은 모델)</td><td class="n">0.675</td><td class="n">0.284</td><td class="n">0.037</td><td class="n">0.851</td></tr>
       </tbody>
     </table>
   </div>
@@ -546,15 +546,16 @@
     <table>
       <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
       <tbody>
-        <tr><td>s + 4픽셀격자</td><td class="n">0.451</td><td class="n">0.131</td><td class="n">0.033</td><td class="n">0.617</td></tr>
-        <tr><td>s</td><td class="n">0.404</td><td class="n">0.121</td><td class="n">0.009</td><td class="n">0.585</td></tr>
-        <tr><td>s · 윤곽해상도 2배</td><td class="n">0.381</td><td class="n">0.109</td><td class="n">0.044</td><td class="n">0.683</td></tr>
-        <tr><td>s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.395</td><td class="n">0.100</td><td class="n">0.010</td><td class="n">0.659</td></tr>
-        <tr><td>n (작은 모델)</td><td class="n">0.268</td><td class="n">0.072</td><td class="n">0.009</td><td class="n">0.577</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자</td><td class="n">0.451</td><td class="n">0.131</td><td class="n">0.033</td><td class="n">0.617</td></tr>
+        <tr><td>YOLO11 s</td><td class="n">0.404</td><td class="n">0.121</td><td class="n">0.009</td><td class="n">0.585</td></tr>
+        <tr><td>YOLO11 s · 윤곽해상도 2배</td><td class="n">0.381</td><td class="n">0.109</td><td class="n">0.044</td><td class="n">0.683</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.395</td><td class="n">0.100</td><td class="n">0.010</td><td class="n">0.659</td></tr>
+        <tr><td>YOLO11 n (작은 모델)</td><td class="n">0.268</td><td class="n">0.072</td><td class="n">0.009</td><td class="n">0.577</td></tr>
       </tbody>
     </table>
   </div>
   <p class="rnote" style="margin-top:14px">
+    <b>s · m · n</b> 은 같은 계열의 크기 등급이고, <b>YOLO26</b> 은 다른 계열이라 비교 삼아 한 번만 돌렸다.
     <sup>*</sup>표시한 두 줄은 사진 묶음을 절반 크기로 줄여서 학습했다 — 640 결합은 원래
     크기로도 되는지 재보지 않았고, 폐기된 320 은 나중에 원래 크기로 다시 돌려 그 결과를
     정본으로 썼다(같은 표 맨 윗줄). 두 줄 다 같은 표의 다른 줄과도 점수를 직접 비교할 수
