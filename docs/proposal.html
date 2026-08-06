@@ -188,22 +188,22 @@
   footer a{color:var(--accent-ink); text-decoration:none; font-size:13.5px; word-break:break-all;}
   footer a:hover{text-decoration:underline;}
   .tl{list-style:none; padding:0; margin:26px 0; counter-reset:t;}
-  .tl li{position:relative; padding-left:54px; padding-bottom:28px;}
+  .tl li{position:relative; padding-left:52px; padding-bottom:22px;}
   .tl li:last-child{padding-bottom:0;}
   .tl li::before{
     counter-increment:t; content:counter(t,decimal-leading-zero);
-    position:absolute; left:0; top:12px; width:32px; height:32px; border-radius:50%;
+    position:absolute; left:0; top:10px; width:30px; height:30px; border-radius:50%;
     background:var(--accent); color:#fff; font-family:var(--mono); font-size:12.5px;
     font-weight:700; display:flex; align-items:center; justify-content:center;
   }
-  .tl li::after{content:""; position:absolute; left:15px; top:50px; bottom:-4px; width:2px; background:var(--line-strong);}
+  .tl li::after{content:""; position:absolute; left:14px; top:46px; bottom:-4px; width:2px; background:var(--line-strong);}
   .tl li:last-child::after{display:none;}
   .tl-box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-    padding:18px 20px; box-shadow:var(--shadow);}
-  .tl-t{font-size:16.5px; font-weight:700; letter-spacing:-.02em; margin:0 0 7px;}
+    padding:16px 18px; box-shadow:var(--shadow); font-size:14.5px;}
+  .tl-t{font-size:15.5px; font-weight:700; letter-spacing:-.02em; margin:0 0 6px;}
   .tl-d{color:var(--muted); margin-bottom:6px;}
-  .tl-r{color:var(--ink);}
-  .tl-r::before{content:"↳ "; color:var(--accent); font-weight:700;}
+  .tl-r{border-top:1px solid var(--line); margin-top:11px; padding-top:10px;}
+  .rk{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; color:var(--accent); margin-bottom:5px;}
   .en{font-family:var(--mono); font-size:14.5px; letter-spacing:-.01em;}
   .ko{font-size:12.5px; color:var(--muted); font-weight:400;}
   .reflist{display:grid; gap:7px;}
@@ -941,49 +941,49 @@
       <div class="tl-box">
         <div class="tl-t">자료 정리</div>
       <div class="tl-d">비율 보정(512×288 복원) · 빈 종류 표시 제거 · 종류 이름 통일 ·<br>중복 99장 제거 · 촬영 세션 단위 분할 · 대조군 분리</div>
-      <div class="tl-r">너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</div>
+      <div class="tl-r"><div class="rk mono">결과</div>너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">SAM 시험</div>
       <div class="tl-d">마스크 1,706개로 크기별·<b>출처별</b> 정확도 측정.<br>못한 쪽이 SAM 인지 정답인지 정밀도·재현율로 가름</div>
-      <div class="tl-r">채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</div>
+      <div class="tl-r"><div class="rk mono">결과</div>채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">기본 성능</div>
       <div class="tl-d">YOLO11 n·s 를 640 → 320 → 160 으로 줄이며 곡선.<br>같은 자리에 m(크기)과 YOLO26(계열)을 한 번씩</div>
-      <div class="tl-r">s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</div>
+      <div class="tl-r"><div class="rk mono">결과</div>s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">P2 헤드 검증</div>
       <div class="tl-d">부품이 격자보다 작아지는 320·160 에서<br>4픽셀 격자를 더한 구성과 2×2 로 비교</div>
-      <div class="tl-r">박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</div>
+      <div class="tl-r"><div class="rk mono">결과</div>박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">대조군 대조</div>
       <div class="tl-d">같은 크기에서 "줄여 만든 것"과<br>"실제로 멀리서 찍힌 것"의 성적 차이</div>
-      <div class="tl-r">0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></div>
+      <div class="tl-r"><div class="rk mono">결과</div>0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">격차 줄이기</div>
       <div class="tl-d">학습 자료에 노이즈·흐림·압축을 걸어<br>인위적인 깨끗함을 되돌린다</div>
-      <div class="tl-r">낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</div>
+      <div class="tl-r"><div class="rk mono">결과</div>낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</div>
       </div>
     </li>
     <li>
       <div class="tl-box">
         <div class="tl-t">정리</div>
       <div class="tl-d">효과가 있던 것과 없던 것, 버린 시도까지 기록</div>
-      <div class="tl-r"><code>results.md</code> · <code>results.html</code><br><code>experiments.md</code> E1~E11 · 결정 D1~D24</div>
+      <div class="tl-r"><div class="rk mono">결과</div><code>results.md</code> · <code>results.html</code><br><code>experiments.md</code> E1~E11 · 결정 D1~D24</div>
       </div>
     </li>
   </ol>
