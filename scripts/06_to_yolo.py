@@ -7,15 +7,15 @@ ultralytics 는 이미지 경로의 마지막 `/images/` 를 `/labels/` 로 바�
 
 라벨 규칙 — 인스턴스마다 폴리곤 한 줄.
   - 마스크가 있으면 그 외곽선(RLE 는 화소에서 외곽선을 뽑는다).
-  - 마스크가 없으면 **박스 네모를 폴리곤으로** 넣는다. 윤곽은 부정확하지만 박스는 정답이고,
+  - 마스크가 없으면 **박스를 폴리곤으로** 넣는다. 마스크는 부정확하지만 박스는 정답이고,
     지우면 그 물체가 배경으로 학습되어 오탐 억제를 배운다. 대신 그 사진은
     mask AP 목록에서 뺀다.
 
 평가 목록을 셋으로 나눈다.
-  - `*_seg.txt` : **전 인스턴스에 사람이 그린 윤곽이 있는 사진만.** mask AP 주 지표는 여기서만.
-  - `*_box.txt` : 전량. box AP 는 네모 폴리곤에서도 정확히 복원되므로 문제없다.
-  - `*_ref.txt` : SAM 으로 채운 윤곽까지 정답으로 쓴 **참고용**(D14). washer 는 마스크의 96% 가
-    결측이라 사람 윤곽만 남기면 test 에 5개밖에 안 남아 mask AP 를 낼 수 없다. 이 목록의 성적은
+  - `*_seg.txt` : **전 인스턴스에 사람이 그린 마스크가 있는 사진만.** mask AP 주 지표는 여기서만.
+  - `*_box.txt` : 전량. box AP 는 박스 폴리곤에서도 정확히 복원되므로 문제없다.
+  - `*_ref.txt` : SAM 으로 채운 마스크까지 정답으로 쓴 **참고용**(D14). washer 는 마스크의 96% 가
+    결측이라 사람 마스크만 남기면 test 에 5개밖에 안 남아 mask AP 를 낼 수 없다. 이 목록의 성적은
     **참고치로만 병기**하고 주 지표로 쓰지 않는다 - 정답이 모델 생성물이면 기준자가 아니다.
     라벨은 `<역할>/labels_ref/` 에 두고 `<역할>_ref/` 심볼릭 링크로 가리킨다(사진 복제 없음).
 
@@ -51,7 +51,7 @@ def decode(seg, h, w):
 
 
 def to_points(seg, h, w):
-    """윤곽을 (N,2) 폴리곤 하나로. YOLO-seg 는 인스턴스당 폴리곤 하나만 받는다.
+    """마스크를 (N,2) 폴리곤 하나로. YOLO-seg 는 인스턴스당 폴리곤 하나만 받는다.
 
     가려져서 조각난 마스크에서 가장 큰 조각만 쓰면 물체가 잘린다 —
     실측으로 1.8% 가 조각나 있었고 심하면 박스 범위의 90% 가 날아갔다.
@@ -128,9 +128,9 @@ def main():
                     if a.get("pseudo"):
                         human = False              # SAM 이 만든 것은 사람 정답이 아니다
                 if pts is None:
-                    pts = box_points(a["bbox"])    # 관문 탈락 · 마스크 없음 -> 네모
+                    pts = box_points(a["bbox"])    # 관문 탈락 · 마스크 없음 -> 박스
                     human = False
-                    stat["%s:네모 대체" % role] += 1
+                    stat["%s:박스 대체" % role] += 1
                 p = pts.copy()
                 p[:, 0] = np.clip(p[:, 0] / w, 0, 1)
                 p[:, 1] = np.clip(p[:, 1] / h, 0, 1)
@@ -189,7 +189,7 @@ def main():
             lp = os.path.join(args.out, "%s_%s.txt" % (role, tag))
             open(lp, "w").write("\n".join(items) + "\n")
             lists["%s_%s" % (role, tag)] = (lp, len(items))
-        log("[%-11s] 사진 %4d · 인스턴스 %5d · 사람윤곽 전량인 사진 %4d"
+        log("[%-11s] 사진 %4d · 인스턴스 %5d · 사람마스크 전량인 사진 %4d"
             % (role, len(all_img), stat["%s:인스턴스" % role], len(seg_ok)))
 
     # data yaml - 학습용과 평가용을 나눠 쓴다
@@ -201,7 +201,7 @@ def main():
             "# scripts/06_to_yolo.py 생성. 이미지 복제 없음 - 목록 파일로 가리킨다.\n"
             "path: %s\ntrain: train_box.txt\nval: %s\nnames:\n%s\n" % (root, val_list, names))
         return p
-    made = [yml("seg.yaml", "val_seg.txt"),          # 학습·모델 선택. 사람 윤곽만
+    made = [yml("seg.yaml", "val_seg.txt"),          # 학습·모델 선택. 사람 마스크만
             yml("test_seg.yaml", "test_seg.txt"),    # mask AP
             yml("test_box.yaml", "test_box.txt"),    # box AP (전량)
             yml("control.yaml", "control_box.txt"),  # 대조군 - box AP 만 (D14)
@@ -218,8 +218,8 @@ def main():
     if stat["사진 없음"]:
         log("\n주의: 사진 없음 %d건" % stat["사진 없음"])
     for k in sorted(stat):
-        if k.endswith("네모 대체"):
-            log("네모로 대체한 인스턴스 - %s %d" % (k.split(":")[0], stat[k]))
+        if k.endswith("박스 대체"):
+            log("박스로 대체한 인스턴스 - %s %d" % (k.split(":")[0], stat[k]))
 
 
 if __name__ == "__main__":

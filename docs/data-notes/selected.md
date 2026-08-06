@@ -8,7 +8,7 @@
 
 | 폴더 | 이미지 | 인스턴스 | 클래스 | seg 라벨 | 객체 변대비 | 출처 |
 |---|---|---|---|---|---|---|
-| `rf-screw-nut-bolt` | 1,300 | 27,265 | bolt 9,819 / nut 14,372 / screw 3,074 | **RLE 전량** (마스크/박스 면적비 중앙값 0.538 → 진짜 윤곽) | 5.3% (512×512) | [Roboflow](https://universe.roboflow.com/logesh-s-workspace/screw-nut-bolt) |
+| `rf-screw-nut-bolt` | 1,300 | 27,265 | bolt 9,819 / nut 14,372 / screw 3,074 | **RLE 전량** (마스크/박스 면적비 중앙값 0.538 → 진짜 마스크) | 5.3% (512×512) | [Roboflow](https://universe.roboflow.com/logesh-s-workspace/screw-nut-bolt) |
 | `rf-arg-fixings3` | 274 | 5,557 | Bolt/Nut/Screw/Washer | **불완전** — 폴리곤 1,375 / 박스만 2,188 | 4.3% (1920×1080·4080×3072 혼재) | [Roboflow](https://universe.roboflow.com/bolts/arg_fixings_3) |
 | `rf-nuts-and-bolts` | 100 | 579 | Bolt 252 / Nut 256 / washer 71 | **폴리곤 전량** (4점 초과) | 8.4% (640×640) | [Roboflow](https://universe.roboflow.com/jente-kleinh/nuts-and-bolts) |
 | `rf-fasteners` | 179 | 538 | bolt 297 / nut 241 | **폴리곤 전량** | 8.6% (640×640) | [Roboflow](https://universe.roboflow.com/obb-8ehdy/fasteners-vbqng) |
