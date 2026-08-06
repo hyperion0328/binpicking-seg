@@ -187,6 +187,7 @@
   footer h4{color:var(--ink); font-size:14px; font-family:var(--mono); letter-spacing:.06em; margin:0 0 12px;}
   footer a{color:var(--accent-ink); text-decoration:none; font-size:13.5px; word-break:break-all;}
   footer a:hover{text-decoration:underline;}
+  .down{color:var(--accent); font-size:15px; line-height:1; margin-top:7px; opacity:.5;}
   .reflist{display:grid; gap:7px;}
   .fmeta{display:flex; flex-wrap:wrap; gap:24px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted);}
 </style>
@@ -921,12 +922,12 @@
     <table>
       <thead><tr><th>단계</th><th>한 일</th><th>결과</th></tr></thead>
       <tbody>
-        <tr><td><b>1 · 자료 정리</b></td><td>비율 보정(512×288 복원) · 빈 종류 표시 제거 · 종류 이름 통일 ·<br>중복 99장 제거 · 촬영 세션 단위 분할 · 대조군 분리</td><td>너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</td></tr>
-        <tr><td><b>2 · SAM 시험</b></td><td>마스크 1,706개로 크기별·<b>출처별</b> 정확도 측정.<br>못한 쪽이 SAM 인지 정답인지 정밀도·재현율로 가름</td><td>채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</td></tr>
-        <tr><td><b>3 · 기본 성능</b></td><td>YOLO11 n·s 를 640 → 320 → 160 으로 줄이며 곡선.<br>같은 자리에 m(크기)과 YOLO26(계열)을 한 번씩</td><td>s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</td></tr>
-        <tr><td><b>4 · P2 헤드 검증</b></td><td>부품이 격자보다 작아지는 320·160 에서<br>4픽셀 격자를 더한 구성과 2×2 로 비교</td><td>박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</td></tr>
-        <tr><td><b>5 · 대조군 대조</b></td><td>같은 크기에서 "줄여 만든 것"과<br>"실제로 멀리서 찍힌 것"의 성적 차이</td><td>0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></td></tr>
-        <tr><td><b>6 · 격차 줄이기</b></td><td>학습 자료에 노이즈·흐림·압축을 걸어<br>인위적인 깨끗함을 되돌린다</td><td>낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</td></tr>
+        <tr><td><b>1 · 자료 정리</b><div class="down">↓</div></td><td>비율 보정(512×288 복원) · 빈 종류 표시 제거 · 종류 이름 통일 ·<br>중복 99장 제거 · 촬영 세션 단위 분할 · 대조군 분리</td><td>너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</td></tr>
+        <tr><td><b>2 · SAM 시험</b><div class="down">↓</div></td><td>마스크 1,706개로 크기별·<b>출처별</b> 정확도 측정.<br>못한 쪽이 SAM 인지 정답인지 정밀도·재현율로 가름</td><td>채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</td></tr>
+        <tr><td><b>3 · 기본 성능</b><div class="down">↓</div></td><td>YOLO11 n·s 를 640 → 320 → 160 으로 줄이며 곡선.<br>같은 자리에 m(크기)과 YOLO26(계열)을 한 번씩</td><td>s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</td></tr>
+        <tr><td><b>4 · P2 헤드 검증</b><div class="down">↓</div></td><td>부품이 격자보다 작아지는 320·160 에서<br>4픽셀 격자를 더한 구성과 2×2 로 비교</td><td>박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</td></tr>
+        <tr><td><b>5 · 대조군 대조</b><div class="down">↓</div></td><td>같은 크기에서 "줄여 만든 것"과<br>"실제로 멀리서 찍힌 것"의 성적 차이</td><td>0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></td></tr>
+        <tr><td><b>6 · 격차 줄이기</b><div class="down">↓</div></td><td>학습 자료에 노이즈·흐림·압축을 걸어<br>인위적인 깨끗함을 되돌린다</td><td>낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</td></tr>
         <tr><td><b>7 · 정리</b></td><td>효과가 있던 것과 없던 것, 버린 시도까지 기록</td><td><code>results.md</code> · <code>results.html</code><br><code>experiments.md</code> E1~E11 · 결정 D1~D24</td></tr>
       </tbody>
     </table>
@@ -936,29 +937,70 @@
 <section id="s11">
   <div class="shead"><span class="snum">11</span><h2>이 기획에서 정한 것</h2></div>
   <p class="sdesc">설계 판단이 바뀌면 이 표에 한 줄을 더한다. "왜 이렇게 했나"에 대한 단일 출처다.</p>
+  <h3>과제와 범위</h3>
   <div class="twrap">
     <table>
       <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
       <tbody>
         <tr><td class="n">D1</td><td>박스가 아니라 <b>마스크</b>로 간다</td><td>겹친 부품의 38%가 박스 겹침 기준선을 넘어 이웃에 지워질 위험</td></tr>
         <tr><td class="n">D2</td><td>부품 종류는 <b>4종 유지</b></td><td>와셔를 빼면 사진 59%에 정답 없는 물체가 생김</td></tr>
+        <tr><td class="n">D9</td><td>자세 추정·집는 지점 <b>보류</b></td><td>자세 정답이 있는 데이터가 02절에서 제외된 것들과 겹침. 마스크가 선행 단계</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>데이터 고르기</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+      <tbody>
         <tr><td class="n">D3</td><td>데이터 <b>4종 채택</b>, 역할 분담</td><td>한 세트가 부품의 81%라 같은 무게로 섞으면 나머지가 묻힘</td></tr>
         <tr><td class="n">D4</td><td>XYZ-IBD <b>제외</b></td><td>사진 한 장에 한 종류만 — 종류 구분 실력을 못 잼</td></tr>
         <tr><td class="n">D5</td><td>screw-nut-bolt <b>비율 복원</b></td><td>너트 가로세로비 0.59 — 정사각형 늘림으로 모양이 찌그러짐</td></tr>
-        <tr><td class="n">D6</td><td>기준 크기 <b>640</b></td><td>대조군이 유일하게 크기 변경을 겪지 않는 값</td></tr>
         <tr><td class="n">D7</td><td>정답 0개 사진 <b>보존</b></td><td>공구만 있는 배경 사진 — 오탐을 줄이는 재료</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>SAM</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+      <tbody>
         <tr><td class="n">D8</td><td>SAM은 <b>쓰기 전에 잰다</b></td><td>작은 물체에 약하다고 알려짐. 검증용 정답 121개가 이미 있음</td></tr>
-        <tr><td class="n">D9</td><td>자세 추정·집는 지점 <b>보류</b></td><td>자세 정답이 있는 데이터가 02절에서 제외된 것들과 겹침. 마스크가 선행 단계</td></tr>
+        <tr><td class="n">D15</td><td>SAM 채우기 <b>진행</b> — 모델은 <b>sam_b</b></td><td>정답 밖으로 새지 않음(정밀도 0.97)이고 완전 실패는 1%. 더 큰 sam_l은 같은 성적에 5배 느리고, sam2.1_b는 IoU가 높아 보이지만 <b>정밀한 정답</b>에 대면 더 부풀어 있음 — 높은 점수가 아니라 정밀한 자를 기준으로 골랐다</td></tr>
+        <tr><td class="n">D16</td><td>채우기는 <b>학습용에만</b>, 표시를 달아 남김</td><td>평가용을 모델이 만든 마스크로 채우면 채점표를 채점 대상이 만든 꼴(D14와 같은 이유). 채운 것은 <b>97.3% 통과 / 2,536개</b>이며 표시가 있어 언제든 되돌릴 수 있음</td></tr>
+        <tr><td class="n">D17</td><td>와셔 마스크는 <b>가운데 구멍을 메워</b> 넣음</td><td>사람이 그린 와셔 정답은 <b>100%가 구멍까지 채운 원판</b>인데 SAM은 39%를 도넛으로 냄. 물리적으로는 SAM이 맞지만 한 클래스에 두 관례가 섞이면 학습 신호가 갈림. 메우니 일치도 0.834 → 0.903</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>모델과 학습</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+      <tbody>
+        <tr><td class="n">D6</td><td>기준 크기 <b>640</b></td><td>대조군이 유일하게 크기 변경을 겪지 않는 값</td></tr>
         <tr><td class="n">D10</td><td><b>YOLO11-seg</b> 주력, YOLO26은 비교 1회</td><td>학습 조건이 검증된 계열이고 n·s·m으로 크기 축을 뗄 수 있음. 설정이 YOLO11 기준이라 계열 우열은 선언하지 않음</td></tr>
         <tr><td class="n">D11</td><td><b>P2 헤드</b>를 실험 축에 포함</td><td>가장 촘촘한 격자가 8픽셀인데 160에서 부품이 3~14픽셀 — 격자보다 작아지는 구간이 생김</td></tr>
         <tr><td class="n">D12</td><td>회전·상하 뒤집기 <b>켜고</b>, 섞기 증강은 <b>끔</b></td><td>톱다운 장면이라 방향이 자유로움. 이미 겹친 장면에 인위적 겹침을 더하면 원인 구분이 안 됨</td></tr>
         <tr><td class="n">D13</td><td>오려붙이기를 <b>크기 변형·사진 비중 조절과 함께</b> 켬</td><td>원 논문들이 보고한 조건이 짝을 이룸 — 한쪽만 쓰면 방법의 절반만 적용한 것이 됨(하단 참고 문헌)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>평가 잣대</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+      <tbody>
         <tr><td class="n">D14</td><td>대조군은 <b>박스 기준</b> 평가, SAM 마스크는 참고 병기</td><td>대조군 472개 중 마스크 정답이 33개(7%)뿐. 기준자의 정답이 모델 생성물이면 기준자 구실을 못 함. <b>실측 확인</b> — 대조군 8장 전부가 일부만 그려진 사진이었다</td></tr>
-        <tr><td class="n">D15</td><td>SAM 채우기 <b>진행</b> — 모델은 <b>sam_b</b></td><td>정답 밖으로 새지 않음(정밀도 0.97)이고 완전 실패는 1%. 더 큰 sam_l은 같은 성적에 5배 느리고, sam2.1_b는 IoU가 높아 보이지만 <b>정밀한 정답</b>에 대면 더 부풀어 있음 — 높은 점수가 아니라 정밀한 자를 기준으로 골랐다</td></tr>
-        <tr><td class="n">D16</td><td>채우기는 <b>학습용에만</b>, 표시를 달아 남김</td><td>평가용을 모델이 만든 마스크로 채우면 채점표를 채점 대상이 만든 꼴(D14와 같은 이유). 채운 것은 <b>97.3% 통과 / 2,536개</b>이며 표시가 있어 언제든 되돌릴 수 있음</td></tr>
-        <tr><td class="n">D17</td><td>와셔 마스크는 <b>가운데 구멍을 메워</b> 넣음</td><td>사람이 그린 와셔 정답은 <b>100%가 구멍까지 채운 원판</b>인데 SAM은 39%를 도넛으로 냄. 물리적으로는 SAM이 맞지만 한 클래스에 두 관례가 섞이면 학습 신호가 갈림. 메우니 일치도 0.834 → 0.903</td></tr>
         <tr><td class="n">D18</td><td>마스크 점수도 <b>출처별로 나눠</b> 보고</td><td>사람이 그린 마스크의 촘촘함이 출처마다 다름(꼭짓점 9 / 14 / 29~93 / 화소 단위). 합산 점수의 상한을 <b>가장 거친 정답</b>이 정해버림</td></tr>
         <tr><td class="n">D19</td><td>마스크 채점은 <b>입력 해상도 그대로</b></td><td>도구 기본값은 마스크 원형 해상도에서 채점하는데, 4픽셀 격자를 붙이면 그 해상도가 달라져 <b>두 구조가 서로 다른 자</b>를 쓰게 됨. 실측 확인 - 잣대를 바꿔도 박스 점수는 소수점까지 동일하고 마스크만 3~6% 내려감</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>실험이 정한 것</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th class="n">번호</th><th>결정</th><th>근거</th></tr></thead>
+      <tbody>
         <tr><td class="n">D20</td><td>4픽셀 격자와 마스크 해상도는 <b>둘 중 하나만</b></td><td>각각 +20%인데 같이 켜면 오히려 내려감(0.383 → 0.375). 보완이 아니라 <b>같은 병목에 대한 대체</b>였음</td></tr>
         <tr><td class="n">D21</td><td>모델 크기는 <b>중간(s)</b>에서 멈춤</td><td>n → s 는 오르고 s → m 은 개선 없음(대조군 0.101 → 0.139 → 0.128). "키우면 되는 문제"가 아님</td></tr>
         <tr><td class="n">D22</td><td><b>화질 열화 증강을 켠다</b>, 대비 조작은 <b>안 함</b></td><td>열화는 낯선 환경 성적을 0.553 → 0.795 로 지킴(과적합 억제). 대비 축소는 대조군 이득이 잡음 범위인데 낯선 환경을 잃음. <b>전제(줄인 사진이 깨끗하다)는 실측으로 틀렸지만 처방은 통했다</b></td></tr>
