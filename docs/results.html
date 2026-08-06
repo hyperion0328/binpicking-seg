@@ -125,9 +125,7 @@
     border-radius:6px; background:rgba(43,87,255,.10); color:var(--accent-ink);
     font-weight:500; margin-bottom:11px; letter-spacing:.06em;
   }
-  .flow li.done{opacity:.72}
-.flow .chk{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;vertical-align:2px}
-.tag.amber{background:rgba(255,138,30,.15); color:var(--signal);}
+  .tag.amber{background:rgba(255,138,30,.15); color:var(--signal);}
   .tag.red{background:rgba(217,74,61,.11); color:var(--stop);}
   .tag.green{background:rgba(15,157,118,.12); color:var(--ok);}
 
@@ -174,16 +172,6 @@
   .pnode .pt{font-size:14px; font-weight:700; letter-spacing:-.02em; margin-bottom:4px;}
   .pnode .pd{font-size:12.5px; color:var(--muted); line-height:1.6;}
 
-  /* ── 절차 ── */
-  .flow{list-style:none; padding:0; margin:24px 0; counter-reset:f; max-width:66ch;}
-  .flow li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:20px;}
-  .flow li::before{
-    content:counter(f,decimal-leading-zero); font-family:var(--mono); font-size:11.5px;
-    font-weight:500; color:var(--accent); position:absolute; left:0; top:4px;
-    background:rgba(43,87,255,.10); border-radius:7px; padding:3px 8px;
-  }
-  .flow b{display:block; margin-bottom:2px;}
-
   footer{padding:44px 0 96px; color:var(--faint); font-size:13.5px;}
   footer p{max-width:66ch;}
 
@@ -222,15 +210,15 @@
     <div class="brand">작고 얇은 부품 찾기 AI · 결과</div>
     <div class="links">
       <a href="#r1">01 만든 것</a>
-      <a href="#r2">02 성능</a>
-      <a href="#r3">03 카메라 조건</a>
-      <a href="#r4">04 무엇이 통했나</a>
-      <a href="#r5">05 함정</a>
-      <a href="#r6">06 뒤집힌 판단</a>
+      <a href="#r2">02 테스트 결과</a>
+      <a href="#r4">03 무엇이 통했나</a>
+      <a href="#r5">04 함정</a>
+      <a href="#r6">05 예측과 판단</a>
+      <a href="#r3">06 카메라 조건</a>
       <a href="#r7">07 권고</a>
-      <a href="#r9">09 크기별</a>
-      <a href="#r10">10 모델별</a>
-      <a href="#r8">11 남은 것</a>
+      <a href="#r9">08 크기별</a>
+      <a href="#r10">09 모델별</a>
+      <a href="#r8">10 한계</a>
     </div>
   </div>
 </nav>
@@ -257,7 +245,7 @@
       <div><dt>처음 보는 환경</dt><dd>0.70<small>점</small></dd></div>
       <div><dt>필요한 크기</dt><dd>24<small>px+</small></dd></div>
       <div><dt>학습</dt><dd>21<small>회</small></dd></div>
-      <div><dt>뒤집힌 판단</dt><dd>5<small>건</small></dd></div>
+      <div><dt>바뀐 판단</dt><dd>5<small>건</small></dd></div>
     </dl>
   </div>
 </header>
@@ -293,7 +281,7 @@
 </section>
 
 <section id="r2">
-  <div class="shead"><span class="snum">02</span><h2>얼마나 잘하나</h2></div>
+  <div class="shead"><span class="snum">02</span><h2>실제 테스트 결과</h2></div>
   <p class="sdesc">학습에 쓰지 않은 사진으로만 채점했다.</p>
   <div class="bars">
     <div class="bar"><span class="nm">윤곽 정확도</span><span class="track"><span class="fill" style="width:62.2%"></span></span><span class="v">0.622</span></div>
@@ -315,40 +303,8 @@
   </div>
 </section>
 
-<section id="r3">
-  <div class="shead"><span class="snum">03</span><h2>쓰려면 카메라를 어떻게 두어야 하나</h2></div>
-  <p class="sdesc">이 프로젝트에서 <b>가장 실무적인 결과</b>다. 성능을 정하는 것은 모델이 아니라 촬영 조건이었다.</p>
-  <p>
-    부품이 화면에서 몇 픽셀로 찍히는지에 따라 검출률이 갈린다.
-    멀리서 찍은 실제 작업셀 사진 472개를 크기별로 갈라 "찾았는가"만 셌다.
-  </p>
-  <div class="twrap">
-    <table>
-      <thead><tr><th>화면에서의 부품 크기</th><th class="n">정답</th><th class="n">찾음</th><th class="n">찾은 비율</th><th>판정</th></tr></thead>
-      <tbody>
-        <tr><td><b>24픽셀 이상</b></td><td class="n">57</td><td class="n">52</td><td class="n"><b>91%</b></td><td class="yes">쓸 수 있다</td></tr>
-        <tr><td>16-24픽셀</td><td class="n">44</td><td class="n">27</td><td class="n">61%</td><td>아슬아슬</td></tr>
-        <tr><td>12-16픽셀</td><td class="n">114</td><td class="n">75</td><td class="n">66%</td><td>아슬아슬</td></tr>
-        <tr><td>10-12픽셀</td><td class="n">72</td><td class="n">35</td><td class="n">49%</td><td class="no">절반을 놓친다</td></tr>
-        <tr><td>8-10픽셀</td><td class="n">74</td><td class="n">23</td><td class="n">31%</td><td class="no">못 쓴다</td></tr>
-        <tr><td><b>8픽셀 미만</b></td><td class="n">111</td><td class="n">13</td><td class="n"><b>12%</b></td><td class="no">못 쓴다</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="principle">
-    <div class="k mono">설치 조건</div>
-    <p>
-      <b>부품이 화면에서 24픽셀 이상으로 찍히게 두면 91%를 찾는다.</b>
-      12픽셀이면 절반을 놓치고, 8픽셀 아래는 사실상 못 쓴다.
-      카메라를 더 가까이 두거나 해상도를 올리면 되고,
-      <mark>이 조건을 맞추는 것이 모델을 바꾸는 것보다 훨씬 효과가 크다.</mark>
-      실제로 모델을 2배 키워도 개선이 없었다(05절).
-    </p>
-  </div>
-</section>
-
 <section id="r4">
-  <div class="shead"><span class="snum">04</span><h2>무엇이 통했나</h2></div>
+  <div class="shead"><span class="snum">03</span><h2>무엇이 통했나</h2></div>
   <p class="sdesc">세 가지를 시험해 둘이 통했다.</p>
 
   <div class="grid2">
@@ -400,7 +356,7 @@
 </section>
 
 <section id="r5">
-  <div class="shead"><span class="snum">05</span><h2>피해야 할 함정</h2></div>
+  <div class="shead"><span class="snum">04</span><h2>피해야 할 함정</h2></div>
   <p class="sdesc">같은 과제를 하는 사람이 <b>가장 빠지기 쉬운</b> 것.</p>
   <p>
     공개 데이터의 부품 사진은 거의 전부 가까이서 찍은 것이다. 20종 넘게 뒤진 끝에
@@ -437,8 +393,8 @@
 </section>
 
 <section id="r6">
-  <div class="shead"><span class="snum">06</span><h2>판단이 뒤집힌 기록</h2></div>
-  <p class="sdesc">숫자보다 이쪽이 오래 간다. 다섯 번 뒤집혔다.</p>
+  <div class="shead"><span class="snum">05</span><h2>예측과 판단과정</h2></div>
+  <p class="sdesc">다섯 번 예측이 빗나갔다. 무엇을 보고 판단을 바꿨는지 그대로 남긴다.</p>
   <div class="twrap">
     <table>
       <thead><tr><th class="n">#</th><th>처음 생각</th><th>실제로 재보니</th><th>배운 것</th></tr></thead>
@@ -463,6 +419,38 @@
   </div>
 </section>
 
+<section id="r3">
+  <div class="shead"><span class="snum">06</span><h2>쓰려면 카메라를 어떻게 두어야 하나</h2></div>
+  <p class="sdesc">이 프로젝트에서 <b>가장 실무적인 결과</b>다. 성능을 정하는 것은 모델이 아니라 촬영 조건이었다.</p>
+  <p>
+    부품이 화면에서 몇 픽셀로 찍히는지에 따라 검출률이 갈린다.
+    멀리서 찍은 실제 작업셀 사진 472개를 크기별로 갈라 "찾았는가"만 셌다.
+  </p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>화면에서의 부품 크기</th><th class="n">정답</th><th class="n">찾음</th><th class="n">찾은 비율</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td><b>24픽셀 이상</b></td><td class="n">57</td><td class="n">52</td><td class="n"><b>91%</b></td><td class="yes">쓸 수 있다</td></tr>
+        <tr><td>16-24픽셀</td><td class="n">44</td><td class="n">27</td><td class="n">61%</td><td>아슬아슬</td></tr>
+        <tr><td>12-16픽셀</td><td class="n">114</td><td class="n">75</td><td class="n">66%</td><td>아슬아슬</td></tr>
+        <tr><td>10-12픽셀</td><td class="n">72</td><td class="n">35</td><td class="n">49%</td><td class="no">절반을 놓친다</td></tr>
+        <tr><td>8-10픽셀</td><td class="n">74</td><td class="n">23</td><td class="n">31%</td><td class="no">못 쓴다</td></tr>
+        <tr><td><b>8픽셀 미만</b></td><td class="n">111</td><td class="n">13</td><td class="n"><b>12%</b></td><td class="no">못 쓴다</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="principle">
+    <div class="k mono">설치 조건</div>
+    <p>
+      <b>부품이 화면에서 24픽셀 이상으로 찍히게 두면 91%를 찾는다.</b>
+      12픽셀이면 절반을 놓치고, 8픽셀 아래는 사실상 못 쓴다.
+      카메라를 더 가까이 두거나 해상도를 올리면 되고,
+      <mark>이 조건을 맞추는 것이 모델을 바꾸는 것보다 훨씬 효과가 크다.</mark>
+      실제로 모델을 2배 키워도 개선이 없었다(03절).
+    </p>
+  </div>
+</section>
+
 <section id="r7">
   <div class="shead"><span class="snum">07</span><h2>지금 시점의 권고</h2></div>
   <p class="sdesc">이 모델을 실제로 쓰거나 같은 과제를 시작하는 사람에게.</p>
@@ -477,14 +465,14 @@
         <tr><td>증강</td><td><b>노이즈·흐림·압축을 켠다.</b> 낯선 작업장 성적을 지킨다</td></tr>
         <tr><td>대비 조작</td><td><b>하지 않는다.</b> 이득은 잡음 범위인데 낯선 환경을 잃는다</td></tr>
         <tr><td>채점표</td><td><b>줄이지 않은 진짜 소형 데이터를 따로 두고 학습에 절대 넣지 않는다</b></td></tr>
-        <tr><td><b>기대치</b></td><td>16픽셀 이상이면 93~95% 찾고 윤곽도 쓸 만하다. <b>12픽셀 미만은 못 한다</b>(09절)</td></tr>
+        <tr><td><b>기대치</b></td><td>16픽셀 이상이면 93~95% 찾고 윤곽도 쓸 만하다. <b>12픽셀 미만은 못 한다</b>(08절)</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
 <section id="r9">
-  <div class="shead"><span class="snum">09</span><h2>크기별로 갈라 보면</h2></div>
+  <div class="shead"><span class="snum">08</span><h2>크기별로 갈라 보면</h2></div>
   <p class="sdesc">"소형 부품을 잘 잡는가"에 <b>직접 답하는 자리</b>다. 전체 평균으로는 답이 안 나온다.</p>
   <p>
     전체 점수 0.96은 <mark>주로 16픽셀 이상 물체에서 얻은 것</mark>이다.
@@ -540,68 +528,127 @@
 </section>
 
 <section id="r10">
-  <div class="shead"><span class="snum">10</span><h2>모델별 전체 수치</h2></div>
+  <div class="shead"><span class="snum">09</span><h2>모델별 전체 수치</h2></div>
   <p class="sdesc">21회 전부. 같은 잣대로 다시 잰 값이다.</p>
+  <p>
+    <b>입력 크기가 다르면 서로 비교되지 않는다.</b> 같은 모델이라도 사진을 얼마나 크게 넣어
+    학습했는지에 따라 성적이 통째로 달라진다. 그래서 아래를 크기별로 갈라 놓았다 —
+    <mark>표를 넘나들며 견주지 않는다.</mark>
+  </p>
   <p>
     <b>두 지표를 함께 봐야 한다.</b> 640으로 학습한 모델은 전부 <code>mAP50</code>이 0.92~0.96인데
     더 엄격한 <code>mAP50-95</code>는 0.58~0.62다. 앞엣것만 보면 거의 완벽해 보이고
     뒤엣것만 보면 실제보다 나빠 보인다.
   </p>
+  <h3>입력 640으로 학습한 9회</h3>
   <div class="twrap">
     <table>
-      <thead><tr><th>모델</th><th class="n">입력</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
+      <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
       <tbody>
-        <tr><td><b>s · 열화증강</b></td><td class="n">640</td><td class="n"><b>0.963</b></td><td class="n"><b>0.622</b></td><td class="n"><b>0.418</b></td><td class="n">0.897</td></tr>
-        <tr><td>s</td><td class="n">640</td><td class="n">0.961</td><td class="n">0.613</td><td class="n">0.377</td><td class="n">0.736</td></tr>
-        <tr><td>s · 대비축소</td><td class="n">640</td><td class="n">0.949</td><td class="n">0.609</td><td class="n">0.329</td><td class="n">0.834</td></tr>
-        <tr><td>s · 둘 다</td><td class="n">640</td><td class="n">0.956</td><td class="n">0.609</td><td class="n">0.328</td><td class="n"><b>0.920</b></td></tr>
-        <tr><td>YOLO26 s</td><td class="n">640</td><td class="n">0.952</td><td class="n">0.608</td><td class="n">0.345</td><td class="n">0.688</td></tr>
-        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup></td><td class="n">640</td><td class="n">0.945</td><td class="n">0.603</td><td class="n">0.355</td><td class="n">0.889</td></tr>
-        <tr><td>m (2배 큰 모델)</td><td class="n">640</td><td class="n">0.937</td><td class="n">0.598</td><td class="n">0.321</td><td class="n">0.822</td></tr>
-        <tr><td>n (작은 모델)</td><td class="n">640</td><td class="n">0.919</td><td class="n">0.577</td><td class="n">0.267</td><td class="n">0.853</td></tr>
-        <tr><td>s + 4픽셀격자 · 열화증강</td><td class="n">320</td><td class="n">0.862</td><td class="n">0.406</td><td class="n">0.116</td><td class="n">0.811</td></tr>
-        <tr><td>s + 4픽셀격자</td><td class="n">320</td><td class="n">0.831</td><td class="n">0.383</td><td class="n">0.137</td><td class="n">0.736</td></tr>
-        <tr><td>s · 윤곽해상도 2배</td><td class="n">320</td><td class="n">0.842</td><td class="n">0.382</td><td class="n">0.167</td><td class="n">0.857</td></tr>
-        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup> (폐기)</td><td class="n">320</td><td class="n">0.775</td><td class="n">0.339</td><td class="n">0.089</td><td class="n">0.784</td></tr>
-        <tr><td>s</td><td class="n">320</td><td class="n">0.731</td><td class="n">0.320</td><td class="n">0.129</td><td class="n">0.753</td></tr>
-        <tr><td>s + 4픽셀격자</td><td class="n">160</td><td class="n">0.451</td><td class="n">0.131</td><td class="n">0.033</td><td class="n">0.617</td></tr>
-        <tr><td>s</td><td class="n">160</td><td class="n">0.404</td><td class="n">0.121</td><td class="n">0.009</td><td class="n">0.585</td></tr>
-        <tr><td>n</td><td class="n">160</td><td class="n">0.268</td><td class="n">0.072</td><td class="n">0.009</td><td class="n">0.577</td></tr>
+        <tr><td><b>s · 열화증강</b></td><td class="n"><b>0.963</b></td><td class="n"><b>0.622</b></td><td class="n"><b>0.418</b></td><td class="n">0.897</td></tr>
+        <tr><td>s</td><td class="n">0.961</td><td class="n">0.613</td><td class="n">0.377</td><td class="n">0.736</td></tr>
+        <tr><td>s (64회에서 멈춤)</td><td class="n">0.952</td><td class="n">0.612</td><td class="n">0.323</td><td class="n">0.870</td></tr>
+        <tr><td>s · 대비축소</td><td class="n">0.949</td><td class="n">0.609</td><td class="n">0.329</td><td class="n">0.834</td></tr>
+        <tr><td>s · 둘 다</td><td class="n">0.956</td><td class="n">0.609</td><td class="n">0.328</td><td class="n"><b>0.920</b></td></tr>
+        <tr><td>YOLO26 s</td><td class="n">0.952</td><td class="n">0.608</td><td class="n">0.345</td><td class="n">0.688</td></tr>
+        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup></td><td class="n">0.945</td><td class="n">0.603</td><td class="n">0.355</td><td class="n">0.889</td></tr>
+        <tr><td>m (2배 큰 모델)</td><td class="n">0.937</td><td class="n">0.598</td><td class="n">0.321</td><td class="n">0.822</td></tr>
+        <tr><td>n (작은 모델)</td><td class="n">0.919</td><td class="n">0.577</td><td class="n">0.267</td><td class="n">0.853</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>입력 320으로 학습한 7회</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
+      <tbody>
+        <tr><td>s + 4픽셀격자 · 열화증강</td><td class="n">0.862</td><td class="n">0.406</td><td class="n">0.116</td><td class="n">0.811</td></tr>
+        <tr><td>s + 4픽셀격자</td><td class="n">0.831</td><td class="n">0.383</td><td class="n">0.137</td><td class="n">0.736</td></tr>
+        <tr><td>s · 윤곽해상도 2배</td><td class="n">0.842</td><td class="n">0.382</td><td class="n">0.167</td><td class="n">0.857</td></tr>
+        <tr><td>s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.834</td><td class="n">0.375</td><td class="n">0.060</td><td class="n">0.779</td></tr>
+        <tr><td>s + 4픽셀격자 · 열화증강 <sup>*</sup> (폐기)</td><td class="n">0.775</td><td class="n">0.339</td><td class="n">0.089</td><td class="n">0.784</td></tr>
+        <tr><td>s</td><td class="n">0.731</td><td class="n">0.320</td><td class="n">0.129</td><td class="n">0.753</td></tr>
+        <tr><td>n (작은 모델)</td><td class="n">0.675</td><td class="n">0.284</td><td class="n">0.037</td><td class="n">0.851</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>입력 160으로 학습한 5회</h3>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>모델</th><th class="n">mask50</th><th class="n">mask50-95</th><th class="n">멀리서 box50</th><th class="n">처음 보는 환경</th></tr></thead>
+      <tbody>
+        <tr><td>s + 4픽셀격자</td><td class="n">0.451</td><td class="n">0.131</td><td class="n">0.033</td><td class="n">0.617</td></tr>
+        <tr><td>s</td><td class="n">0.404</td><td class="n">0.121</td><td class="n">0.009</td><td class="n">0.585</td></tr>
+        <tr><td>s · 윤곽해상도 2배</td><td class="n">0.381</td><td class="n">0.109</td><td class="n">0.044</td><td class="n">0.683</td></tr>
+        <tr><td>s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n">0.395</td><td class="n">0.100</td><td class="n">0.010</td><td class="n">0.659</td></tr>
+        <tr><td>n (작은 모델)</td><td class="n">0.268</td><td class="n">0.072</td><td class="n">0.009</td><td class="n">0.577</td></tr>
       </tbody>
     </table>
   </div>
   <p class="rnote" style="margin-top:14px">
-    입력 크기가 같은 것끼리만 비교한다. <sup>*</sup>표시한 두 줄은 사진 묶음을 절반 크기로
-    줄여서 학습했다 — 640 결합은 원래 크기로도 되는지 재보지 않았고, 폐기된 320 은 나중에
-    원래 크기로 다시 돌려 그 결과를 정본으로 썼다(바로 위 표의 다른 한 줄). 두 줄 다 다른
-    줄과 점수를 직접 비교할 수 없다는 뜻이다. 전체 21회는 저장소의 <code>docs/results.md</code>
-    7절에 있다.
+    <sup>*</sup>표시한 두 줄은 사진 묶음을 절반 크기로 줄여서 학습했다 — 640 결합은 원래
+    크기로도 되는지 재보지 않았고, 폐기된 320 은 나중에 원래 크기로 다시 돌려 그 결과를
+    정본으로 썼다(같은 표 맨 윗줄). 두 줄 다 같은 표의 다른 줄과도 점수를 직접 비교할 수
+    없다는 뜻이다. 네모 점수와 학습 횟수까지 담긴 전체 표는 저장소의
+    <code>docs/results.md</code> 7절에 있다.
   </p>
 </section>
 
 <section id="r8">
-  <div class="shead"><span class="snum">11</span><h2>남은 것</h2></div>
-  <p class="sdesc">답을 못 낸 것과, 이번 결과가 새로 만든 질문.</p>
-  <ol class="flow">
-    <li><b>가늘고 긴 나사</b>
-      격자를 촘촘하게 하는 것과 사진을 거칠게 하는 것을 함께 켰더니, <b>학습에 쓴 사진에서는
-      나사 찾기 점수가 3.4배로 올랐다</b>(0.057→0.191). 그런데 <b>한 번도 보여주지 않은 멀리서
-      찍은 사진에서는 여전히 0</b>이다. 배운 환경 안에서는 반응하지만 낯선 환경으로는
-      넘어오지 않는다는 뜻이라, 이 모양 전용 처방은 여전히 필요하다.</li>
-    <li><b>너트의 어긋남</b>
-      42%를 찾는데 점수는 낮다. 위치는 잡되 정확도나 잘못 찾은 것에서 잃는다는 뜻이다.</li>
-    <li><b>학습 중단 기준</b>
-      네모 성적의 정점보다 윤곽 성적의 정점이 21~42회 먼저 온다. 도구는 네모가 섞인 기준으로
-      저장 시점을 고르므로, 윤곽 과제에서는 최고보다 5~13% 낮은 것을 저장하고 있다.</li>
-    <li><b>학습 설정 탐색</b>
-      학습률·손실 가중치 같은 값은 <b>전부 기본값 그대로</b> 두었다. 축을 하나씩만 움직이려는
-      의도였지만, 조정하면 절대 성적이 더 오를 여지가 있다.</li>
-    <li><b>640에서 다시 한 번</b>
-      겹쳐 켠 조건을 큰 사진에서도 재려면 사진 묶음을 원래 크기로 되돌려 한 번만 더 돌리면
-      된다. 이겼는지 졌는지 그때 결판난다 — <b>아직 안 해봤다.</b></li>
-    <li><b>채점표가 24장뿐이다</b>
-      같은 성격의 원거리 데이터를 더 얻으면 결론이 단단해진다.</li>
-  </ol>
+  <div class="shead"><span class="snum">10</span><h2>한계</h2></div>
+  <p class="sdesc">여기까지가 이 결과로 말할 수 있는 범위다.</p>
+<div class="grid2">
+    <div class="card">
+      <span class="tag red">못 한다</span>
+      <h4>가늘고 긴 나사</h4>
+      <p>
+        격자를 촘촘하게 하는 것과 사진을 거칠게 하는 것을 함께 켰더니 <b>학습에 쓴 사진에서는
+        나사 찾기가 3.4배로 올랐다</b>(0.057→0.191). 그런데 <b>한 번도 보여주지 않은
+        멀리서 찍은 사진에서는 여전히 0</b>이다. 배운 환경 안에서만 반응한다.
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag red">못 한다</span>
+      <h4>너트의 어긋남</h4>
+      <p>
+        42%를 찾는데 점수는 낮다. 위치는 잡되 <b>정확도나 잘못 찾은 것에서 잃는다.</b>
+        찾기와 맞히기가 따로 노는 셈이라, 지금 상태로는 집을 지점을 믿기 어렵다.
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag amber">판정 못 했다</span>
+      <h4>640에서의 결합</h4>
+      <p>
+        겹쳐 켠 조건을 큰 사진에서도 재려 했지만, <b>사진 묶음 크기를 맞추지 못해 비교 조건
+        자체가 달라졌다.</b> 이겼는지 졌는지 <b>이 결과로는 말할 수 없다</b> — 원래 크기로
+        한 번 더 돌려야 답이 나온다.
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag amber">읽을 때 주의</span>
+      <h4>저장 시점이 어긋나 있다</h4>
+      <p>
+        네모 성적의 정점보다 윤곽 성적의 정점이 21~42회 먼저 온다. 도구는 네모가 섞인 기준으로
+        저장 시점을 고르므로, <b>여기 적힌 윤곽 점수는 실제 도달했던 최고보다 5~13% 낮다.</b>
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag amber">읽을 때 주의</span>
+      <h4>기본 설정에서의 값이다</h4>
+      <p>
+        학습률·손실 가중치는 <b>전부 기본값 그대로</b> 두었다. 축을 하나씩만 움직여 원인을 가르려는
+        설계였으므로, <b>여기 나온 절대 성적은 이 모델의 상한이 아니다.</b>
+      </p>
+    </div>
+    <div class="card">
+      <span class="tag amber">읽을 때 주의</span>
+      <h4>채점표가 24장이다</h4>
+      <p>
+        멀리서 찍은 채점표가 24장뿐이라 표본이 작다. <b>결론의 방향은 분명하지만</b> 소수점까지
+        단단하다고 보기는 어렵다. 같은 성격의 원거리 자료를 더 얻으면 굳어진다.
+      </p>
+    </div>
+  </div>
 </section>
 
 </div>
