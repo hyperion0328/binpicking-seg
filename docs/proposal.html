@@ -187,7 +187,23 @@
   footer h4{color:var(--ink); font-size:14px; font-family:var(--mono); letter-spacing:.06em; margin:0 0 12px;}
   footer a{color:var(--accent-ink); text-decoration:none; font-size:13.5px; word-break:break-all;}
   footer a:hover{text-decoration:underline;}
-  .down{color:var(--accent); font-size:15px; line-height:1; margin-top:7px; opacity:.5;}
+  .tl{list-style:none; padding:0; margin:26px 0; counter-reset:t;}
+  .tl li{position:relative; padding-left:54px; padding-bottom:28px;}
+  .tl li:last-child{padding-bottom:0;}
+  .tl li::before{
+    counter-increment:t; content:counter(t,decimal-leading-zero);
+    position:absolute; left:0; top:0; width:32px; height:32px; border-radius:50%;
+    background:var(--accent); color:#fff; font-family:var(--mono); font-size:12.5px;
+    font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  .tl li::after{content:""; position:absolute; left:15px; top:38px; bottom:-2px; width:2px; background:var(--line-strong);}
+  .tl li:last-child::after{display:none;}
+  .tl-t{font-size:16.5px; font-weight:700; letter-spacing:-.02em; margin:5px 0 7px;}
+  .tl-d{color:var(--muted); margin-bottom:6px;}
+  .tl-r{color:var(--ink);}
+  .tl-r::before{content:"↳ "; color:var(--accent); font-weight:700;}
+  .en{font-family:var(--mono); font-size:14.5px; letter-spacing:-.01em;}
+  .ko{font-size:12.5px; color:var(--muted); font-weight:400;}
   .reflist{display:grid; gap:7px;}
   .fmeta{display:flex; flex-wrap:wrap; gap:24px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted);}
 </style>
@@ -871,37 +887,37 @@
       <thead><tr><th>주제</th><th>무엇인가</th><th>왜 지금은 아닌가</th></tr></thead>
       <tbody>
         <tr>
-          <td><b>물체 자세 추정</b><br><span class="mono" style="font-size:11px;color:var(--faint)">6D pose</span></td>
+          <td><b class="en">6D Pose Estimation</b><br><span class="ko">물체 자세 추정</span></td>
           <td>부품이 어느 방향으로 놓였는지까지 알아내는 것. 로봇이 집게를 어떤 각도로 넣을지 정하려면 필요하다</td>
           <td>자세 정답이 붙은 공개 데이터는 빈피킹용 몇 종뿐인데, 그것들이 <b>02절에서 제외한 바로 그 데이터</b>다. 자세를 배우려고 쓰면 종류 구분 실력을 못 재게 된다. <b>마스크가 자세 추정의 입력</b>이므로 앞 단계를 먼저 확실히 한다</td>
         </tr>
         <tr>
-          <td><b>집는 지점 계산</b><br><span class="mono" style="font-size:11px;color:var(--faint)">grasp planning · 그립 계획</span></td>
+          <td><b class="en">Grasp Planning</b><br><span class="ko">집는 지점 계산 · 그립 계획</span></td>
           <td>"이 부품의 여기를 잡으면 안 미끄러진다"를 정하는 것</td>
           <td>마스크가 나오면 계산은 이어갈 수 있지만, 맞는지 확인하려면 <b>실제 로봇으로 집어봐야 한다.</b> 사진만으로는 채점이 안 되므로 범위 밖</td>
         </tr>
         <tr>
-          <td><b>깊이 카메라 활용</b><br><span class="mono" style="font-size:11px;color:var(--faint)">RGB-D</span></td>
+          <td><b class="en">RGB-D</b><br><span class="ko">깊이 카메라 활용</span></td>
           <td>색 사진에 더해 거리 정보를 같이 쓰는 것. 겹친 부품을 나누는 데 특히 유리하다</td>
           <td>채택한 네 데이터가 <b>전부 일반 사진뿐</b>이라 쓸 거리 정보가 없다. 깊이가 있는 데이터는 종류가 하나뿐인 것들이라 02절에서 제외됐다</td>
         </tr>
         <tr>
-          <td><b>사진을 잘라 보는 추론</b><br><span class="mono" style="font-size:11px;color:var(--faint)">SAHI · 타일링 추론</span></td>
+          <td><b class="en">Tiled Inference · SAHI</b><br><span class="ko">사진을 잘라 보는 추론</span></td>
           <td>큰 사진을 조각내 각각 자세히 본 뒤 합치는 방법. 작은 물체 탐지에 흔히 쓴다</td>
           <td>이 방법은 <b>"AI가 조각 크기로 학습돼 있다"는 전제</b> 위에 있다. 이번 실험은 반대로 사진을 줄여가며 학습하므로 전제가 충돌한다. 쓰려면 조각으로 다시 학습해야 해서 별도 실험이 된다</td>
         </tr>
         <tr>
-          <td><b>컴퓨터로 그린 학습 자료</b><br><span class="mono" style="font-size:11px;color:var(--faint)">합성 데이터 · synthetic data</span></td>
+          <td><b class="en">Synthetic Data</b><br><span class="ko">컴퓨터로 그린 학습 자료 · 합성 데이터</span></td>
           <td>3D 모델을 렌더링하거나 생성 AI로 사진을 새로 만들어 학습 자료를 늘리는 것</td>
           <td>이 프로젝트가 재려는 게 <b>"진짜 카메라 화질과 인공적으로 만든 화질의 차이"</b>인데, 렌더링·생성 사진은 그 차이를 새로 하나 더 만든다. 재려는 대상을 오염시키므로 쓰지 않는다</td>
         </tr>
         <tr>
-          <td><b>속도 최적화와 배포</b><br><span class="mono" style="font-size:11px;color:var(--faint)">경량화 · 실시간 처리</span></td>
+          <td><b class="en">Model Compression</b><br><span class="ko">속도 최적화와 배포 · 경량화</span></td>
           <td>모델을 가볍게 만들어 로봇 옆 장비에서 빠르게 돌리는 것</td>
           <td>정확도가 어디서 무너지는지 모르는 상태에서 가볍게 만들면, 성능이 떨어져도 <b>원인이 경량화인지 소형 물체인지 구분되지 않는다.</b> 곡선을 먼저 그린다</td>
         </tr>
         <tr>
-          <td><b>새로 찍거나 새로 라벨 다는 것</b><br><span class="mono" style="font-size:11px;color:var(--faint)">데이터 수집 · 어노테이션</span></td>
+          <td><b class="en">Data Collection · Annotation</b><br><span class="ko">새로 찍고 사람이 라벨 다는 것</span></td>
           <td>필요한 장면을 직접 촬영하고 사람이 마스크를 그리는 것</td>
           <td>가장 확실한 해결책이지만 이 프로젝트의 전제를 벗어난다. <b>공개 데이터만으로 어디까지 되는가</b>가 질문이다. SAM으로 마스크를 채우는 건 사람이 그리는 게 아니라서 이 원칙을 깨지 않는다</td>
         </tr>
@@ -918,20 +934,43 @@
 <section id="s10">
   <div class="shead"><span class="snum">10</span><h2>진행 순서</h2></div>
   <p class="sdesc">앞 단계의 결과가 뒷 단계의 전제가 되도록 배열했다. <b>일곱 단계 모두 끝났다.</b></p>
-  <div class="twrap">
-    <table>
-      <thead><tr><th>단계</th><th>한 일</th><th>결과</th></tr></thead>
-      <tbody>
-        <tr><td><b>1 · 자료 정리</b><div class="down">↓</div></td><td>비율 보정(512×288 복원) · 빈 종류 표시 제거 · 종류 이름 통일 ·<br>중복 99장 제거 · 촬영 세션 단위 분할 · 대조군 분리</td><td>너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</td></tr>
-        <tr><td><b>2 · SAM 시험</b><div class="down">↓</div></td><td>마스크 1,706개로 크기별·<b>출처별</b> 정확도 측정.<br>못한 쪽이 SAM 인지 정답인지 정밀도·재현율로 가름</td><td>채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</td></tr>
-        <tr><td><b>3 · 기본 성능</b><div class="down">↓</div></td><td>YOLO11 n·s 를 640 → 320 → 160 으로 줄이며 곡선.<br>같은 자리에 m(크기)과 YOLO26(계열)을 한 번씩</td><td>s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</td></tr>
-        <tr><td><b>4 · P2 헤드 검증</b><div class="down">↓</div></td><td>부품이 격자보다 작아지는 320·160 에서<br>4픽셀 격자를 더한 구성과 2×2 로 비교</td><td>박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</td></tr>
-        <tr><td><b>5 · 대조군 대조</b><div class="down">↓</div></td><td>같은 크기에서 "줄여 만든 것"과<br>"실제로 멀리서 찍힌 것"의 성적 차이</td><td>0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></td></tr>
-        <tr><td><b>6 · 격차 줄이기</b><div class="down">↓</div></td><td>학습 자료에 노이즈·흐림·압축을 걸어<br>인위적인 깨끗함을 되돌린다</td><td>낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</td></tr>
-        <tr><td><b>7 · 정리</b></td><td>효과가 있던 것과 없던 것, 버린 시도까지 기록</td><td><code>results.md</code> · <code>results.html</code><br><code>experiments.md</code> E1~E11 · 결정 D1~D24</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <ol class="tl">
+    <li>
+      <div class="tl-t">자료 정리</div>
+      <div class="tl-d">비율 보정(512×288 복원) · 빈 종류 표시 제거 · 종류 이름 통일 ·<br>중복 99장 제거 · 촬영 세션 단위 분할 · 대조군 분리</div>
+      <div class="tl-r">너트 가로세로비 <b>0.59 → 1.06</b><br>1,812장 / 33,923개</div>
+    </li>
+    <li>
+      <div class="tl-t">SAM 시험</div>
+      <div class="tl-d">마스크 1,706개로 크기별·<b>출처별</b> 정확도 측정.<br>못한 쪽이 SAM 인지 정답인지 정밀도·재현율로 가름</div>
+      <div class="tl-r">채우기로 결정 · 학습용 <b>2,536개</b>(97.3% 통과)<br>시험지와 대조군은 손대지 않음 (05절)</div>
+    </li>
+    <li>
+      <div class="tl-t">기본 성능</div>
+      <div class="tl-d">YOLO11 n·s 를 640 → 320 → 160 으로 줄이며 곡선.<br>같은 자리에 m(크기)과 YOLO26(계열)을 한 번씩</div>
+      <div class="tl-r">s 마스크 점수 <b>0.613 → 0.320 → 0.121</b><br>키워도 개선 없음 (결과 09절)</div>
+    </li>
+    <li>
+      <div class="tl-t">P2 헤드 검증</div>
+      <div class="tl-d">부품이 격자보다 작아지는 320·160 에서<br>4픽셀 격자를 더한 구성과 2×2 로 비교</div>
+      <div class="tl-r">박스 <b>+9~18%</b>. 마스크는 해상도와 <b>같은 병목</b>이라<br>둘 중 하나만 켠다 (D20)</div>
+    </li>
+    <li>
+      <div class="tl-t">대조군 대조</div>
+      <div class="tl-d">같은 크기에서 "줄여 만든 것"과<br>"실제로 멀리서 찍힌 것"의 성적 차이</div>
+      <div class="tl-r">0.814 대 <b>0.139~0.162</b> — 약 <b>6배</b><br>무너지는 문턱 <b>12픽셀</b></div>
+    </li>
+    <li>
+      <div class="tl-t">격차 줄이기</div>
+      <div class="tl-d">학습 자료에 노이즈·흐림·압축을 걸어<br>인위적인 깨끗함을 되돌린다</div>
+      <div class="tl-r">낯선 환경 <b>0.553 → 0.795</b><br>대조군 이득은 +6.5% 로 작다</div>
+    </li>
+    <li>
+      <div class="tl-t">정리</div>
+      <div class="tl-d">효과가 있던 것과 없던 것, 버린 시도까지 기록</div>
+      <div class="tl-r"><code>results.md</code> · <code>results.html</code><br><code>experiments.md</code> E1~E11 · 결정 D1~D24</div>
+    </li>
+  </ol>
 </section>
 
 <section id="s11">
