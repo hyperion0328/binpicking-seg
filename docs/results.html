@@ -217,7 +217,7 @@
       <span class="chip">판단 정정 5건</span>
     </div>
     <dl class="stats">
-      <div><dt>윤곽 정확도</dt><dd>0.61<small>점</small></dd></div>
+      <div><dt>마스크 정확도</dt><dd>0.61<small>점</small></dd></div>
       <div><dt>처음 보는 환경</dt><dd>0.70<small>점</small></dd></div>
       <div><dt>필요한 크기</dt><dd>24<small>px+</small></dd></div>
       <div><dt>학습</dt><dd>21<small>회</small></dd></div>
@@ -233,23 +233,23 @@
   <p class="sdesc">부품 4종의 <b>경계를 픽셀 단위로</b> 그리는 모델. 빈피킹의 앞 단계다.</p>
   <p>
     로봇이 집으려면 <b>어디를 집을지</b>를 알아야 하고, 그러려면 겹친 더미에서 개체 하나의
-    윤곽이 필요하다. 네모만으로는 부족하다 — 실측해 보니 겹쳐 쌓인 부품의 <b>38%</b>가
-    네모 겹침 기준을 넘어 이웃에 지워질 위험이 있었다. 그래서 처음부터 <b>윤곽</b>으로 갔다.
+    마스크가 필요하다. 박스만으로는 부족하다 — 실측해 보니 겹쳐 쌓인 부품의 <b>38%</b>가
+    박스 겹침 기준을 넘어 이웃에 지워질 위험이 있었다. 그래서 처음부터 <b>마스크</b>로 갔다.
   </p>
   <div class="grid2">
     <div class="card">
       <span class="tag green">완성</span>
       <h4>4종 인스턴스 분할 모델</h4>
       <p>
-        나사 · 볼트 · 너트 · 와셔를 종류까지 구분해 윤곽을 그린다.
+        나사 · 볼트 · 너트 · 와셔를 종류까지 구분해 마스크를 그린다.
         공개 데이터 4종 1,812장 / 부품 33,923개로 학습했고, 전부 CC BY 4.0이다.
       </p>
     </div>
     <div class="card">
       <span class="tag green">부수 산출물</span>
-      <h4>윤곽 정답을 채우는 절차</h4>
+      <h4>마스크 정답을 채우는 절차</h4>
       <p>
-        정답 윤곽이 빠진 3,850개를 보조 도구(SAM)로 채웠다.
+        정답 마스크가 빠진 3,850개를 보조 도구(SAM)로 채웠다.
         <b>쓰기 전에 정확도를 먼저 재고</b>, 학습용에만 넣고, 되돌릴 수 있게 표시를 달았다.
       </p>
     </div>
@@ -260,8 +260,8 @@
   <div class="shead"><span class="snum">02</span><h2>실제 테스트 결과</h2></div>
   <p class="sdesc">학습에 쓰지 않은 사진으로만 채점했다.</p>
   <div class="bars">
-    <div class="bar"><span class="nm">윤곽 정확도</span><span class="track"><span class="fill" style="width:62.2%"></span></span><span class="v">0.622</span></div>
-    <div class="bar"><span class="nm">네모 정확도</span><span class="track"><span class="fill" style="width:81.3%"></span></span><span class="v">0.813</span></div>
+    <div class="bar"><span class="nm">마스크 정확도</span><span class="track"><span class="fill" style="width:62.2%"></span></span><span class="v">0.622</span></div>
+    <div class="bar"><span class="nm">박스 정확도</span><span class="track"><span class="fill" style="width:81.3%"></span></span><span class="v">0.813</span></div>
     <div class="bar"><span class="nm">처음 보는 환경</span><span class="track"><span class="fill" style="width:70.0%"></span></span><span class="v">0.700</span></div>
   </div>
   <p>
@@ -274,7 +274,7 @@
     <h4>가늘고 긴 나사가 가장 어렵다</h4>
     <p>
       볼트 · 너트는 잘 잡히고 와셔도 무난한데, <b>나사</b>는 어느 조건에서도 성적이 낮다.
-      가늘고 길어서 윤곽을 그릴 화소 자체가 적기 때문이다.
+      가늘고 길어서 마스크를 그릴 화소 자체가 적기 때문이다.
     </p>
   </div>
 </section>
@@ -289,7 +289,7 @@
       <h4>격자를 촘촘하게 (4픽셀 간격)</h4>
       <p>
         AI가 화면을 훑는 격자가 기본 8픽셀인데, 부품이 그보다 작아지면 놓친다.
-        4픽셀 격자를 더하니 <b>네모 찾기가 9~18% 올랐다.</b> 부품이 작을수록 이득이 크다.
+        4픽셀 격자를 더하니 <b>박스 찾기가 9~18% 올랐다.</b> 부품이 작을수록 이득이 크다.
       </p>
     </div>
     <div class="card">
@@ -312,7 +312,7 @@
       <span class="tag red">안 통했다</span>
       <h4>두 처방 겹쳐 쓰기</h4>
       <p>
-        격자를 촘촘히 하는 것과 윤곽 해상도를 올리는 것이 각각 +20%인데
+        격자를 촘촘히 하는 것과 마스크 해상도를 올리는 것이 각각 +20%인데
         <b>같이 켜면 오히려 내려간다.</b> 보완이 아니라 대체였다 — 둘 중 하나만 쓴다.
       </p>
     </div>
@@ -361,8 +361,8 @@
     <span class="tag amber">이 숫자도 단독으로 인용하면 안 된다</span>
     <h4>채점표 쪽 정답도 헐거웠다</h4>
     <p>
-      멀리서 찍은 사진의 정답 네모가 실제 물체보다 <b>면적 1.5배로 크게</b> 그려져 있었다.
-      더 정확한 윤곽으로 다시 재면 0.162다. <b>참값은 0.139~0.162 사이</b>이고,
+      멀리서 찍은 사진의 정답 박스가 실제 물체보다 <b>면적 1.5배로 크게</b> 그려져 있었다.
+      더 정확한 마스크로 다시 재면 0.162다. <b>참값은 0.139~0.162 사이</b>이고,
       어느 쪽이든 6분의 1 안팎이라는 결론은 바뀌지 않는다.
     </p>
   </div>
@@ -437,11 +437,11 @@
         <tr><td><b>카메라 설치</b></td><td><b>부품이 24픽셀 이상으로 찍히게.</b> 그 아래로 내려가면 검출률이 급격히 떨어진다(06절)</td></tr>
         <tr><td>어떤 모델</td><td><b>중간 크기</b>(1000만 파라미터급). 작은 것은 부족하고 큰 것은 개선이 없다</td></tr>
         <tr><td>격자 간격</td><td>부품이 격자보다 작아지는 구간에서 <b>4픽셀 격자를 추가</b></td></tr>
-        <tr><td>윤곽 해상도</td><td>격자를 촘촘히 했으면 그대로. <b>둘을 같이 올리지 않는다</b></td></tr>
+        <tr><td>마스크 해상도</td><td>격자를 촘촘히 했으면 그대로. <b>둘을 같이 올리지 않는다</b></td></tr>
         <tr><td>증강</td><td><b>노이즈·흐림·압축을 켠다.</b> 낯선 작업장 성적을 지킨다</td></tr>
         <tr><td>대비 조작</td><td><b>하지 않는다.</b> 이득은 잡음 범위인데 낯선 환경을 잃는다</td></tr>
         <tr><td>채점표</td><td><b>줄이지 않은 진짜 소형 데이터를 따로 두고 학습에 절대 넣지 않는다</b></td></tr>
-        <tr><td><b>기대치</b></td><td>16픽셀 이상이면 93~95% 찾고 윤곽도 쓸 만하다. <b>12픽셀 미만은 못 한다</b>(08절)</td></tr>
+        <tr><td><b>기대치</b></td><td>16픽셀 이상이면 93~95% 찾고 마스크도 쓸 만하다. <b>12픽셀 미만은 못 한다</b>(08절)</td></tr>
       </tbody>
     </table>
   </div>
@@ -457,7 +457,7 @@
   </p>
   <div class="twrap">
     <table>
-      <thead><tr><th>부품 크기</th><th class="n">가까이서 · 찾은 비율</th><th class="n">가까이서 · 윤곽 정확도</th><th class="n">멀리서 · 찾은 비율</th></tr></thead>
+      <thead><tr><th>부품 크기</th><th class="n">가까이서 · 찾은 비율</th><th class="n">가까이서 · 마스크 정확도</th><th class="n">멀리서 · 찾은 비율</th></tr></thead>
       <tbody>
         <tr><td>32픽셀 이상</td><td class="n yes">94%</td><td class="n">0.572</td><td class="n yes">100%</td></tr>
         <tr><td>24-32픽셀</td><td class="n yes">93%</td><td class="n">0.564</td><td class="n yes">94%</td></tr>
@@ -472,12 +472,12 @@
     <div class="card">
       <span class="tag green">16픽셀 이상</span>
       <h4>쓸 만하다</h4>
-      <p>찾는 비율 93~95%, 윤곽도 쓸 만하다. 로봇이 집을 지점을 정할 수 있다.</p>
+      <p>찾는 비율 93~95%, 마스크도 쓸 만하다. 로봇이 집을 지점을 정할 수 있다.</p>
     </div>
     <div class="card">
       <span class="tag amber">12-16픽셀</span>
       <h4>찾긴 하는데 경계가 안 맞는다</h4>
-      <p>84%를 찾지만 <b>윤곽 정확도가 0.254</b>다. 어디가 부품인지 절반도 못 맞춘다 - 집을 지점을 못 정한다.</p>
+      <p>84%를 찾지만 <b>마스크 정확도가 0.254</b>다. 어디가 부품인지 절반도 못 맞춘다 - 집을 지점을 못 정한다.</p>
     </div>
     <div class="card">
       <span class="tag red">12픽셀 미만</span>
@@ -547,8 +547,8 @@
       <tbody>
         <tr><td>YOLO11 s + 4픽셀격자 · 열화증강</td><td class="n v-hi"><b>0.862</b></td><td class="n v-lo"><b>0.406</b></td><td class="n v-vlo">0.116</td><td class="n v-hi">0.811</td></tr>
         <tr><td>YOLO11 s + 4픽셀격자</td><td class="n v-hi">0.831</td><td class="n v-lo">0.383</td><td class="n v-vlo">0.137</td><td class="n">0.736</td></tr>
-        <tr><td>YOLO11 s · 윤곽해상도 2배</td><td class="n v-hi">0.842</td><td class="n v-lo">0.382</td><td class="n v-vlo"><b>0.167</b></td><td class="n v-hi"><b>0.857</b></td></tr>
-        <tr><td>YOLO11 s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n v-hi">0.834</td><td class="n v-lo">0.375</td><td class="n v-vlo">0.060</td><td class="n">0.779</td></tr>
+        <tr><td>YOLO11 s · 마스크해상도 2배</td><td class="n v-hi">0.842</td><td class="n v-lo">0.382</td><td class="n v-vlo"><b>0.167</b></td><td class="n v-hi"><b>0.857</b></td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 마스크해상도 2배</td><td class="n v-hi">0.834</td><td class="n v-lo">0.375</td><td class="n v-vlo">0.060</td><td class="n">0.779</td></tr>
         <tr><td>YOLO11 s + 4픽셀격자 · 열화증강 <sup>*</sup> (폐기)</td><td class="n">0.775</td><td class="n v-lo">0.339</td><td class="n v-vlo">0.089</td><td class="n">0.784</td></tr>
         <tr><td>YOLO11 s</td><td class="n">0.731</td><td class="n v-lo">0.320</td><td class="n v-vlo">0.129</td><td class="n">0.753</td></tr>
         <tr><td>YOLO11 n (작은 모델)</td><td class="n">0.675</td><td class="n v-lo">0.284</td><td class="n v-vlo">0.037</td><td class="n v-hi">0.851</td></tr>
@@ -562,8 +562,8 @@
       <tbody>
         <tr><td>YOLO11 s + 4픽셀격자</td><td class="n v-lo"><b>0.451</b></td><td class="n v-vlo"><b>0.131</b></td><td class="n v-vlo">0.033</td><td class="n">0.617</td></tr>
         <tr><td>YOLO11 s</td><td class="n v-lo">0.404</td><td class="n v-vlo">0.121</td><td class="n v-vlo">0.009</td><td class="n">0.585</td></tr>
-        <tr><td>YOLO11 s · 윤곽해상도 2배</td><td class="n v-lo">0.381</td><td class="n v-vlo">0.109</td><td class="n v-vlo"><b>0.044</b></td><td class="n"><b>0.683</b></td></tr>
-        <tr><td>YOLO11 s + 4픽셀격자 · 윤곽해상도 2배</td><td class="n v-lo">0.395</td><td class="n v-vlo">0.100</td><td class="n v-vlo">0.010</td><td class="n">0.659</td></tr>
+        <tr><td>YOLO11 s · 마스크해상도 2배</td><td class="n v-lo">0.381</td><td class="n v-vlo">0.109</td><td class="n v-vlo"><b>0.044</b></td><td class="n"><b>0.683</b></td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 · 마스크해상도 2배</td><td class="n v-lo">0.395</td><td class="n v-vlo">0.100</td><td class="n v-vlo">0.010</td><td class="n">0.659</td></tr>
         <tr><td>YOLO11 n (작은 모델)</td><td class="n v-lo">0.268</td><td class="n v-vlo">0.072</td><td class="n v-vlo">0.009</td><td class="n">0.577</td></tr>
       </tbody>
     </table>
@@ -573,7 +573,7 @@
     <sup>*</sup>표시한 두 줄은 사진 묶음을 절반 크기로 줄여서 학습했다 — 640 결합은 원래
     크기로도 되는지 재보지 않았고, 폐기된 320 은 나중에 원래 크기로 다시 돌려 그 결과를
     정본으로 썼다(같은 표 맨 윗줄). 두 줄 다 같은 표의 다른 줄과도 점수를 직접 비교할 수
-    없다는 뜻이다. 네모 점수와 학습 횟수까지 담긴 전체 표는 저장소의
+    없다는 뜻이다. 박스 점수와 학습 횟수까지 담긴 전체 표는 저장소의
     <code>docs/results.md</code> 7절에 있다.
   </p>
 </section>
@@ -612,8 +612,8 @@
       <span class="tag amber">읽을 때 주의</span>
       <h4>저장 시점이 어긋나 있다</h4>
       <p>
-        네모 성적의 정점보다 윤곽 성적의 정점이 21~42회 먼저 온다. 도구는 네모가 섞인 기준으로
-        저장 시점을 고르므로, <b>여기 적힌 윤곽 점수는 실제 도달했던 최고보다 5~13% 낮다.</b>
+        박스 성적의 정점보다 마스크 성적의 정점이 21~42회 먼저 온다. 도구는 박스가 섞인 기준으로
+        저장 시점을 고르므로, <b>여기 적힌 마스크 점수는 실제 도달했던 최고보다 5~13% 낮다.</b>
       </p>
     </div>
     <div class="card">
