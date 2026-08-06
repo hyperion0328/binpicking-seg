@@ -235,7 +235,8 @@ AP 는 8장에서만 나오고, 배경 16장은 **원거리 장면에서의 오�
 
 - 수치를 얻으면 `docs/experiments.md` 에 누적한다 — 버린 시도와 **정정까지** 남긴다.
 - 설계 판단을 바꾸면 `docs/proposal.html` 11절 결정 표(D1~D24)에 한 줄 추가한다.
-  기법을 새로 들일 때는 **원 논문이 건 조건까지 옮겼는지** 하단 참고 문헌에서 확인한다.
+  기법을 새로 들일 때는 **원 논문이 건 조건까지 옮겼는지** `docs/data-notes/references.md` 에서
+  확인한다(대외용 `proposal.html` 하단은 v1 형식대로 링크만 싣는다).
   이 표가 "왜 이렇게 했냐"에 대한 단일 출처다.
 - `docs/proposal.html` 을 수정하면 아티팩트를 **같은 URL로** 재게시한다:
   <https://claude.ai/code/artifact/8a45abca-5353-4abb-84e3-a05071ef6ccf>
