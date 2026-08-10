@@ -258,7 +258,8 @@ AP 는 8장에서만 나오고, 배경 16장은 **원거리 장면에서의 오�
   P2@640 은 batch 16 을 **시도하지 않았다**(격자가 무거워 보여 사다리를 8부터 시작했을
   뿐, 실제로 들어가는지는 재지 않았다). batch 16 으로 재실행하면 판정할 수 있다.
 - 문서: `docs/results.md`(기술) · `docs/results.html`(대외용) · `docs/experiments.md`(E1~E11) ·
-  `docs/proposal.html`(결정 D1~D24).
+  `docs/proposal.html`(결정 D1~D24) · `docs/interview.html`(면접 예상 질문 20 — **대외 공개 안 함**,
+  약점을 적어 둔 문서다).
 
 **다음에 손댈 것** (`docs/results.md` 6절)
 - `screw` 는 결합(P2+열화) 조건에서 test 안 mask AP 가 0.057 → 0.191 로 반응했지만
