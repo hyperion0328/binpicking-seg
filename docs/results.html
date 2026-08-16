@@ -453,7 +453,7 @@
         <tr><td>격자 간격</td><td><b>기본 8픽셀 그대로 둔다.</b> 4픽셀 격자는 줄여 만든 사진에서만 이기고, 멀리서 찍은 진짜 소형에서는 오히려 −13~15% 다</td></tr>
         <tr><td>마스크 해상도</td><td><b>2배로 올린다.</b> 격자를 안 쓰기로 했으므로 이쪽이 남고, 320 에서 멀리서 찍은 성적을 올린 유일한 구조 처방이기도 하다. <b>둘을 같이 올리지 않는다</b></td></tr>
         <tr><td>증강</td><td><b>노이즈·흐림·압축을 켠다.</b> 낯선 작업장 성적을 지킨다</td></tr>
-        <tr><td>대비 조작</td><td><b>하지 않는다.</b> 이득은 잡음 범위인데 낯선 환경을 잃는다</td></tr>
+        <tr><td>대비 조작</td><td><b>하지 않는다.</b> 낯선 환경을 올리기는 하지만(+13.9%) 거칠게 만들기의 <b>3분의 1</b>이고, 멀리서 찍은 사진 −4.7% · 근접 −2.9%를 내준다<br/><span style="opacity:.7">정정 — 원래 "이득은 잡음 범위인데 낯선 환경을 잃는다"고 적었으나 <b>방향이 둘 다 반대</b>였다. 기준선을 100회로 맞춰 다시 잰 것이 거칠게 만들기뿐이라 이쪽만 옛 기준선에 남아 있었다</span></td></tr>
         <tr><td>채점표</td><td><b>줄이지 않은 진짜 소형 데이터를 따로 두고 학습에 절대 넣지 않는다</b></td></tr>
         <tr><td><b>기대치</b></td><td>16픽셀 이상이면 93~95% 찾고 마스크도 쓸 만하다. <b>12픽셀 미만은 못 한다</b>(08절)</td></tr>
       </tbody>
@@ -549,7 +549,7 @@
         <tr><td>YOLO11 s · 둘 다</td><td class="n v-hi">0.956</td><td class="n">0.609</td><td class="n v-lo">0.328</td><td class="n v-hi"><b>0.920</b></td></tr>
         <tr><td>YOLO26 s</td><td class="n v-hi">0.952</td><td class="n">0.608</td><td class="n v-lo">0.345</td><td class="n">0.688</td></tr>
         <tr><td>YOLO11 s + 4픽셀격자 · 열화증강 <sup>*</sup></td><td class="n v-hi">0.945</td><td class="n">0.603</td><td class="n v-lo">0.355</td><td class="n v-hi">0.889</td></tr>
-        <tr><td>YOLO11 s + 4픽셀격자 (열화 없음)</td><td class="n v-hi">0.928</td><td class="n">0.590</td><td class="n v-lo">0.320</td><td class="n">0.670</td></tr>
+        <tr><td>YOLO11 s + 4픽셀격자 (열화 없음)</td><td class="n v-hi">0.942</td><td class="n">0.590</td><td class="n v-lo">0.320</td><td class="n">0.670</td></tr>
         <tr><td>YOLO11 s + 4픽셀격자 · 열화증강 (묶음 맞춘 정본)</td><td class="n v-hi">0.872</td><td class="n">0.557</td><td class="n v-lo">0.330</td><td class="n v-hi">0.885</td></tr>
         <tr><td>YOLO11 m (2배 큰 모델)</td><td class="n v-hi">0.937</td><td class="n">0.598</td><td class="n v-lo">0.321</td><td class="n v-hi">0.822</td></tr>
         <tr><td>YOLO11 n (작은 모델)</td><td class="n v-hi">0.919</td><td class="n">0.577</td><td class="n v-lo">0.267</td><td class="n v-hi">0.853</td></tr>
